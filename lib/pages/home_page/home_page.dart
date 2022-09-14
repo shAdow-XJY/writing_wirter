@@ -1,4 +1,7 @@
+import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
+import 'package:writing_writer/components/left_drawer.dart';
+import 'package:writing_writer/components/right_drawer.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key,}) : super(key: key);
@@ -54,19 +57,24 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         title: const Text('chapter name'),
       ),
+      drawer: LeftDrawer(),
+      endDrawer: RightDrawer(),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(vertical: screenSize.height / 10.0, horizontal: screenSize.width / 4.0),
+        padding: EdgeInsets.symmetric(vertical: screenSize.height / 12.0, horizontal: screenSize.width / 5.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            TextField(
-              controller: textEditingController,
-              maxLines: null,
-              decoration: const InputDecoration(
-                /// 消除下边框
-                border: OutlineInputBorder(borderSide: BorderSide.none,),
-              ),
-            )
+            /// 毛玻璃组件做写字板背景
+            BlurGlass(
+                child: TextField(
+                  controller: textEditingController,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    /// 消除下边框
+                    border: OutlineInputBorder(borderSide: BorderSide.none,),
+                  ),
+                ),
+            ),
           ],
         ),
       ),
