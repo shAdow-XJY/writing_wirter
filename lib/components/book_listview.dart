@@ -29,10 +29,10 @@ class _BookListViewState extends State<BookListView> {
       },
       builder: (BuildContext context, List<String> bookNameList) {
         return ListView.separated(
-          separatorBuilder: (context, index) => const Divider(
+          separatorBuilder: (context, index) => Divider(
             thickness: 1,
             height: 1,
-            color: Colors.white24,
+            color: Theme.of(context).colorScheme.inversePrimary,
           ),
           controller: ScrollController(),
           itemCount: bookNameList.length,
@@ -58,27 +58,38 @@ class BookListViewItem extends StatefulWidget {
 }
 
 class _BookListViewItemState extends State<BookListViewItem> {
-  late final String bookName;
   bool isExpanded = false;
 
   @override
   void initState() {
     super.initState();
-    bookName = widget.bookName;
   }
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         InkWell(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(bookName),
-              Icon(isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up),
-            ],
+          child: SizedBox(
+            height: height / 15.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Text(
+                    widget.bookName,
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      wordSpacing: 2.0,
+                    ),
+                  ),
+                ),
+                Icon(isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up),
+              ],
+            ),
           ),
           onTap: () {
             setState(() {
@@ -87,9 +98,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
           },
         ),
         isExpanded
-            ? ChapterListView(
-                bookName: bookName,
-              )
+            ? ChapterListView(bookName: widget.bookName,)
             : const SizedBox(),
       ],
     );

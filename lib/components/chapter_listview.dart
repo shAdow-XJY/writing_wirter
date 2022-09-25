@@ -63,6 +63,7 @@ class ChapterListViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return StoreConnector<AppState, VoidCallback>(
       converter: (Store store) {
         return () => {
@@ -73,12 +74,23 @@ class ChapterListViewItem extends StatelessWidget {
       },
       builder: (BuildContext context, VoidCallback clickChapter) {
         return InkWell(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(chapterName),
-              const Icon(Icons.book),
-            ],
+          child: Container(
+            height: height / 18.0,
+            decoration: BoxDecoration(
+              color: Theme.of(context).highlightColor,
+              border: Border(
+                bottom: BorderSide(
+                  width: 1.0,
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                )
+              )
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(chapterName),
+              ],
+            ),
           ),
           onTap: () {
             clickChapter();
