@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:writing_writer/server/file/IOBase.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import '../redux/action/text_action.dart';
+import '../redux/app_state/state.dart';
 
 class ChapterListView extends StatefulWidget {
-  final IOBase ioBase;
   final String bookName;
+
   const ChapterListView({
     Key? key,
-    required this.ioBase,
     required this.bookName,
   }) : super(key: key);
 
@@ -16,55 +18,73 @@ class ChapterListView extends StatefulWidget {
 
 class _ChapterListViewState extends State<ChapterListView> {
   late final String bookName;
-  List<String> chapterList = [];
-  List<Widget> chapterItems = [];
+  List<Widget> chapterListViewItems = [];
 
   @override
   void initState() {
     super.initState();
-    bookName = widget.bookName;
-    chapterList = widget.ioBase.getAllChapters(bookName);
-    createChapterList(chapterList);
   }
 
   List<Widget> createChapterList(List<String> chapterList) {
-    chapterItems.clear();
+    chapterListViewItems.clear();
     for (var chapterName in chapterList) {
-      chapterItems.add(ChapterListViewItem(chapterName: chapterName,));
+      chapterListViewItems.add(ChapterListViewItem(
+        bookName: widget.bookName,
+        chapterName: chapterName,
+      ));
     }
-    return chapterItems;
+    return chapterListViewItems;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: chapterItems,
+    return StoreConnector<AppState, List<String>>(
+      converter: (Store store) {
+        return store.state.ioBase.getAllChapters(widget.bookName);
+      },
+      builder: (BuildContext context, List<String> chapterList) {
+        return Column(
+          children: createChapterList(chapterList),
+        );
+      },
     );
   }
-
 }
 
 class ChapterListViewItem extends StatelessWidget {
+  final String bookName;
   final String chapterName;
 
   const ChapterListViewItem({
     Key? key,
+    required this.bookName,
     required this.chapterName,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(chapterName),
-          Icon(Icons.arrow_drop_up),
-        ],
-      ),
-      onTap: () {
+    return StoreConnector<AppState, VoidCallback>(
+      converter: (Store store) {
+        return () => {
+          store.dispatch(
+            SetTextDataAction(currentBook: bookName, currentChapter: chapterName),
+          ),
+        };
+      },
+      builder: (BuildContext context, VoidCallback clickChapter) {
+        return InkWell(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(chapterName),
+              const Icon(Icons.book),
+            ],
+          ),
+          onTap: () {
+            clickChapter();
+          },
+        );
       },
     );
   }
-
 }

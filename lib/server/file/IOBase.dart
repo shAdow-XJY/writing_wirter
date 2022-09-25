@@ -96,4 +96,17 @@ class IOBase
     debugPrint(file.readAsStringSync());
     return file.readAsStringSync();
   }
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                             改                                          //
+  ////////////////////////////////////////////////////////////////////////////
+
+  /// 保存章节
+  void saveChapter(String bookName, String chapterName, String content) {
+    File file = File(_rootPath + Platform.pathSeparator + bookName + Platform.pathSeparator + chapterName);
+    if(file.existsSync()) {
+      file.writeAsStringSync(content);
+    }
+  }
+
 }

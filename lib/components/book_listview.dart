@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:writing_writer/server/file/IOBase.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import '../redux/app_state/state.dart';
 import 'chapter_listview.dart';
 
 class BookListView extends StatefulWidget {
-  final IOBase ioBase;
-  final List<String> bookNameList;
 
   const BookListView({
     Key? key,
-    required this.ioBase,
-    required this.bookNameList,
   }) : super(key: key);
 
   @override
@@ -17,40 +15,41 @@ class BookListView extends StatefulWidget {
 }
 
 class _BookListViewState extends State<BookListView> {
-  late final List<String> bookNameList;
 
   @override
   void initState() {
     super.initState();
-    bookNameList = widget.bookNameList;
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      separatorBuilder: (context, index) => const Divider(
-        thickness: 1,
-        height: 1,
-        color: Colors.white24,
-      ),
-      controller: ScrollController(),
-      itemCount: bookNameList.length,
-      itemBuilder: (context, index) => BookListViewItem(
-        ioBase: widget.ioBase,
-        bookName: bookNameList[index],
-      ),
+    return StoreConnector<AppState, List<String>>(
+      converter: (Store store) {
+        return store.state.ioBase.getAllBooks();
+      },
+      builder: (BuildContext context, List<String> bookNameList) {
+        return ListView.separated(
+          separatorBuilder: (context, index) => const Divider(
+            thickness: 1,
+            height: 1,
+            color: Colors.white24,
+          ),
+          controller: ScrollController(),
+          itemCount: bookNameList.length,
+          itemBuilder: (context, index) => BookListViewItem(
+            bookName: bookNameList[index],
+          ),
+        );
+      },
     );
   }
 }
 
-
 class BookListViewItem extends StatefulWidget {
-  final IOBase ioBase;
   final String bookName;
 
   const BookListViewItem({
     Key? key,
-    required this.ioBase,
     required this.bookName,
   }) : super(key: key);
 
@@ -87,10 +86,11 @@ class _BookListViewItemState extends State<BookListViewItem> {
             });
           },
         ),
-        isExpanded ? ChapterListView(
-          ioBase: widget.ioBase,
-          bookName: bookName,
-        ) : const SizedBox(),
+        isExpanded
+            ? ChapterListView(
+                bookName: bookName,
+              )
+            : const SizedBox(),
       ],
     );
   }

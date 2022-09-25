@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:writing_writer/components/book_listview.dart';
-import 'package:writing_writer/server/file/IOBase.dart';
 
 class LeftDrawer extends StatefulWidget {
-  final IOBase ioBase;
-  final Function(String, String) chapterClickedCallBack;
   const LeftDrawer({
     Key? key,
-    required this.ioBase,
-    required this.chapterClickedCallBack,
   }) : super(key: key);
 
   @override
@@ -16,12 +11,10 @@ class LeftDrawer extends StatefulWidget {
 }
 
 class _LeftDrawerState extends State<LeftDrawer> {
-  List<String> bookNameList = [];
 
   @override
   void initState() {
     super.initState();
-    bookNameList = widget.ioBase.getAllBooks();
   }
 
   @override
@@ -48,10 +41,7 @@ class _LeftDrawerState extends State<LeftDrawer> {
             ),
           ],
         ),
-        body: BookListView(
-          ioBase: widget.ioBase,
-          bookNameList: bookNameList,
-        ),
+        body: const BookListView(),
       ),
     );
   }
