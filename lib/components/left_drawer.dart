@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:writing_writer/components/my_listview.dart';
+import 'package:writing_writer/components/book_listview.dart';
 import 'package:writing_writer/server/file/IOBase.dart';
 
 class LeftDrawer extends StatefulWidget {
-  const LeftDrawer({Key? key,}) : super(key: key);
+  final IOBase ioBase;
+  final Function(String, String) chapterClickedCallBack;
+  const LeftDrawer({
+    Key? key,
+    required this.ioBase,
+    required this.chapterClickedCallBack,
+  }) : super(key: key);
 
   @override
   State<LeftDrawer> createState() => _LeftDrawerState();
 }
 
 class _LeftDrawerState extends State<LeftDrawer> {
+  List<String> bookNameList = [];
 
-  IOBase ioBase = IOBase();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
+    bookNameList = widget.ioBase.getAllBooks();
   }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -37,12 +43,15 @@ class _LeftDrawerState extends State<LeftDrawer> {
               icon: const Icon(Icons.add),
               onPressed: (){
                 //ioBase.createBook('bookName');
-                ioBase.getChapterContent('bookName', 'bookName');
+                //ioBase.getChapterContent('bookName', 'bookName');
               },
             ),
           ],
         ),
-        body: MyListView(),
+        body: BookListView(
+          ioBase: widget.ioBase,
+          bookNameList: bookNameList,
+        ),
       ),
     );
   }

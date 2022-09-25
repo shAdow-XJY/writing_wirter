@@ -2,6 +2,7 @@ import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
 import 'package:writing_writer/components/left_drawer.dart';
 import 'package:writing_writer/components/right_drawer.dart';
+import 'package:writing_writer/server/file/IOBase.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -13,6 +14,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  /// 文件操作类
+  IOBase ioBase = IOBase();
+
   /// 输入框控制器
   late final TextEditingController textEditingController;
 
@@ -69,7 +73,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       drawerEdgeDragWidth: screenSize.width / 2.0,
-      drawer: const LeftDrawer(),
+      drawer: LeftDrawer(
+        ioBase: ioBase,
+        chapterClickedCallBack: (bookName , chapterName ) {
+
+        },
+      ),
       endDrawer: const RightDrawer(),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
