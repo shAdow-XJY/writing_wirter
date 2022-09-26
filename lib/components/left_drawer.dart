@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'package:writing_writer2/components/toast_dialog.dart';
+import '../redux/app_state/state.dart';
 import 'book_listview.dart';
-
 
 class LeftDrawer extends StatefulWidget {
   const LeftDrawer({
@@ -12,7 +15,6 @@ class LeftDrawer extends StatefulWidget {
 }
 
 class _LeftDrawerState extends State<LeftDrawer> {
-
   @override
   void initState() {
     super.initState();
@@ -21,30 +23,47 @@ class _LeftDrawerState extends State<LeftDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: MediaQuery.of(context).size.width / 4.0,
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Directory'),
-          leading: IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: (){
-                Navigator.of(context).pop();
-              },
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: (){
-                //ioBase.createBook('bookName');
-                //ioBase.getChapterContent('bookName', 'bookName');
-              },
-            ),
-          ],
+        width: MediaQuery.of(context).size.width / 4.0,
+        child: StoreConnector<AppState, Function(String)>(
+          converter: (Store store) {
+            return (String bookName) => {
+              store.state.ioBase.createBook(bookName),
+            };
+          },
+          builder: (BuildContext context, Function(String) createBook) {
+            return Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                title: const Text('Directory'),
+                leading: IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => ToastDialog(
+                          title: '新建书籍',
+                          callBack: (strBack) => {
+                            if (strBack.isNotEmpty) {
+                              createBook(strBack),
+                            },
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              body: const BookListView(),
+            );
+          },
         ),
-        body: const BookListView(),
-      ),
     );
   }
-  
 }
