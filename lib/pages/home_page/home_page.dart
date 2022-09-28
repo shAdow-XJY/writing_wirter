@@ -5,6 +5,8 @@ import 'package:redux/redux.dart';
 
 import '../../components/left_drawer.dart';
 import '../../components/right_drawer.dart';
+import '../../components/toast_dialog.dart';
+import '../../redux/action/text_action.dart';
 import '../../redux/app_state/state.dart';
 import '../../server/file/IOBase.dart';
 
@@ -21,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// 文件操作类
   IOBase ioBase = IOBase();
 
-  /// 输入框控制器
+  /// 章节内容输入框控制器
   late final TextEditingController textEditingController;
 
   /// text
@@ -41,11 +43,13 @@ class _MyHomePageState extends State<MyHomePage> {
       TextEditingValue(
         ///用来设置文本 controller.text = "0000"
         text: currentText,
+
         ///设置光标的位置
         selection: TextSelection.fromPosition(
           ///用来设置文本的位置
           TextPosition(
               affinity: TextAffinity.downstream,
+
               /// 光标向后移动的长度
               offset: currentText.length),
         ),
@@ -77,69 +81,108 @@ class _MyHomePageState extends State<MyHomePage> {
     ioBase.saveChapter(currentBook, currentChapter, currentText);
   }
 
+  /// 章节重命名
+  void changeChapterName(String newChapterName) {
+    if (newChapterName.compareTo(currentChapter) == 0) {
+      return;
+    }
+    // 先保存再重命名文件
+    ioBase.saveChapter(currentBook, currentChapter, currentText);
+    ioBase.renameChapter(currentBook, currentChapter, newChapterName);
+    currentChapter = newChapterName;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    return StoreConnector<AppState, Map<String,String>>(
-    converter: (Store store) {
-      saveText();
-      currentBook = store.state.textModel.currentBook;
-      currentChapter = store.state.textModel.currentChapter;
-      textEditingController.text = getText();
-      currentText = textEditingController.text;
-      return {
-        "currentBook" : currentBook,
-        "currentChapter" : currentChapter,
-        "currentText" : currentText,
-      };
-    },
-    builder: (BuildContext context, Map<String,String> info) {
-      return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(info["currentChapter"]??""),
-          actions: [
-            Builder(builder: (BuildContext context) {
-              return IconButton(
-                  icon: const Icon(Icons.settings),
-                  onPressed: () {
-                    Scaffold.of(context).openEndDrawer();
-                  });
-            })
-          ],
-        ),
-        drawerEdgeDragWidth: screenSize.width / 2.0,
-        drawer: const LeftDrawer(),
-        endDrawer: const RightDrawer(),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-              vertical: screenSize.height / 12.0,
-              horizontal: screenSize.width / 5.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              /// 毛玻璃组件做写字板背景
-              BlurGlass(
-                child: TextField(
-                  controller: textEditingController,
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                    /// 消除下边框
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
+    return StoreConnector<AppState, Map<String, String>>(
+      converter: (Store store) {
+        saveText();
+        currentBook = store.state.textModel.currentBook;
+        currentChapter = store.state.textModel.currentChapter;
+        textEditingController.text = getText();
+        currentText = textEditingController.text;
+        return {
+          "currentBook": currentBook,
+          "currentChapter": currentChapter,
+          "currentText": currentText,
+        };
+      },
+      builder: (BuildContext context, Map<String, String> info) {
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: StoreConnector<AppState, VoidCallback>(
+              converter: (Store store) {
+                return () => {
+                      store.dispatch(SetTextDataAction(currentBook: currentBook, currentChapter: currentChapter),),
+                };
+              },
+              builder: (BuildContext context, VoidCallback renameChapter) {
+                return InkWell(
+                  child: Text(info["currentChapter"] ?? ""),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => ToastDialog(
+                        title: '章节重命名',
+                        init: currentChapter,
+                        callBack: (strBack) => {
+                          if (strBack.isNotEmpty)
+                            {
+                              changeChapterName(strBack),
+                              renameChapter(),
+                            },
+                        },
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+            actions: [
+              Builder(builder: (BuildContext context) {
+                return IconButton(
+                    icon: const Icon(Icons.settings),
+                    onPressed: () {
+                      Scaffold.of(context).openEndDrawer();
+                    });
+              })
+            ],
+          ),
+          drawerEdgeDragWidth: screenSize.width / 2.0,
+          drawer: const LeftDrawer(),
+          endDrawer: const RightDrawer(),
+          body: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+                vertical: screenSize.height / 12.0,
+                horizontal: screenSize.width / 5.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                /// 毛玻璃组件做写字板背景
+                BlurGlass(
+                  child: TextField(
+                    controller: textEditingController,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      /// 消除下边框
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: _incrementCounter,
-        //   tooltip: 'Increment',
-        //   child: const Icon(Icons.add),
-        // ),
-      );
-    },);
+          // floatingActionButton: FloatingActionButton(
+          //   onPressed: _incrementCounter,
+          //   tooltip: 'Increment',
+          //   child: const Icon(Icons.add),
+          // ),
+        );
+      },
+    );
   }
 }

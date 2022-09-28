@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 class ToastDialog extends StatefulWidget {
   final String title;
   final Function(String) callBack;
+  final String init;
   const ToastDialog({
     Key? key,
     required this.title,
     required this.callBack,
+    this.init = '',
   }) : super(key: key);
 
   @override
@@ -18,6 +20,12 @@ class _ToastDialogState extends State<ToastDialog> {
 
   /// 输入框控制器
   final TextEditingController textEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    textEditingController.text = widget.init;
+  }
 
   @override
   Widget build(BuildContext context) {

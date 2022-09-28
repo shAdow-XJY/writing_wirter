@@ -109,4 +109,12 @@ class IOBase
     }
   }
 
+  /// 章节重命名
+  void renameChapter(String bookName, String oldChapterName, String newChapterName) {
+    File file = File(_rootPath + Platform.pathSeparator + bookName + Platform.pathSeparator + oldChapterName);
+    if(file.existsSync()) {
+      file.renameSync(_rootPath + Platform.pathSeparator + bookName + Platform.pathSeparator + newChapterName);
+    }
+  }
+
 }
