@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class IOBase
 {
@@ -37,6 +38,19 @@ class IOBase
   }
   bool _isChapter(Object object) {
     return (object.runtimeType.toString() == "_File");
+  }
+
+  /// 根据路径打开资源管理器
+  void _openFileManager(String path) {
+    final Uri url = Uri.parse(path);
+    launchUrl(url);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                          额外可供访问函数                                  //
+  ////////////////////////////////////////////////////////////////////////////
+  void openRootDirectory() {
+    _openFileManager(_rootPath);
   }
 
   /////////////////////////////////////////////////////////////////////////////
