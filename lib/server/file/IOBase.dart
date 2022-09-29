@@ -74,6 +74,7 @@ class IOBase
         // debugPrint(fileSystemEntity.path.split(Platform.pathSeparator).last);
       }
     });
+    bookNames.sort();
     return bookNames;
   }
 
@@ -87,6 +88,7 @@ class IOBase
         // debugPrint(fileSystemEntity.path.split(Platform.pathSeparator).last);
       }
     });
+    chapterNames.sort();
     return chapterNames;
   }
 
