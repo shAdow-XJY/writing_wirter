@@ -34,7 +34,7 @@ class _LeftDrawerState extends State<LeftDrawer> {
             return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
-                title: const Text('Directory'),
+                title: const Text('目录'),
                 leading: IconButton(
                   icon: const Icon(Icons.file_open),
                   onPressed: () {

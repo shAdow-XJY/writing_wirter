@@ -2,6 +2,8 @@ import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:writing_writer2/components/detail_container.dart';
+import 'package:writing_writer2/components/float_button.dart';
 
 import '../../components/left_drawer.dart';
 import '../../components/right_drawer.dart';
@@ -32,6 +34,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// 输入框的内容
   String currentText = "";
+
+  /// 详情框打开状态
+  bool isDetailOpened = false;
 
   @override
   void initState() {
@@ -153,34 +158,46 @@ class _MyHomePageState extends State<MyHomePage> {
           drawerEdgeDragWidth: screenSize.width / 2.0,
           drawer: const LeftDrawer(),
           endDrawer: const RightDrawer(),
-          body: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-                vertical: screenSize.height / 12.0,
-                horizontal: screenSize.width / 5.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                /// 毛玻璃组件做写字板背景
-                BlurGlass(
-                  child: TextField(
-                    controller: textEditingController,
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      /// 消除下边框
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                      ),
+          body: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                        vertical: screenSize.height / (isDetailOpened ? 36.0 : 12.0),
+                        horizontal: screenSize.width / (isDetailOpened ? 15.0 : 5.0)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        /// 毛玻璃组件做写字板背景
+                        BlurGlass(
+                          child: TextField(
+                            controller: textEditingController,
+                            maxLines: null,
+                            decoration: const InputDecoration(
+                              /// 消除下边框
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
+              ),
+              isDetailOpened
+                  ? const Expanded(flex: 1, child: DetailContainer())
+                  : const SizedBox()
+            ],
           ),
-          // floatingActionButton: FloatingActionButton(
-          //   onPressed: _incrementCounter,
-          //   tooltip: 'Increment',
-          //   child: const Icon(Icons.add),
-          // ),
+          floatingActionButton: FloatButton(
+            callback: () {
+              setState(() {
+                isDetailOpened = !isDetailOpened;
+              });
+            },
+          )
         );
       },
     );
