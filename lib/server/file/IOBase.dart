@@ -32,10 +32,12 @@ class IOBase
     _rootPath = _rootDir.path;
   }
 
-  /// 判断是书：文件夹
+  /// 判断是书/设定集：文件夹
   bool _isDir(Object object) {
     return (object.runtimeType.toString() == "_Directory");
   }
+
+  /// 判断是章节/设定：文件夹
   bool _isFile(Object object) {
     return (object.runtimeType.toString() == "_File");
   }
@@ -51,6 +53,14 @@ class IOBase
   ////////////////////////////////////////////////////////////////////////////
   void openRootDirectory() {
     _openFileManager(_rootPath);
+  }
+
+  void openBookDirectory(String bookName) {
+    _openFileManager(_rootPath + Platform.pathSeparator + bookName);
+  }
+
+  void openSettingDirectory(String bookName) {
+    _openFileManager("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集");
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -77,6 +87,22 @@ class IOBase
     if(!file.existsSync()) {
       file.create();
       // debugPrint(file.path);
+    }
+  }
+
+  /// 创建一个设定类：文件夹
+  void createSetType(String bookName, String setTypeName) {
+    Directory dir3 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setTypeName");
+    if(!dir3.existsSync()) {
+      dir3.create();
+    }
+  }
+
+  /// 创建一个设定：文件
+  void createSetting(String bookName, String setTypeName, String settingName) {
+    Directory file2 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setTypeName${Platform.pathSeparator}$settingName");
+    if(!file2.existsSync()) {
+      file2.create();
     }
   }
 
