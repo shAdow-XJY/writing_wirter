@@ -33,10 +33,10 @@ class IOBase
   }
 
   /// 判断是书：文件夹
-  bool _isBook(Object object) {
+  bool _isDir(Object object) {
     return (object.runtimeType.toString() == "_Directory");
   }
-  bool _isChapter(Object object) {
+  bool _isFile(Object object) {
     return (object.runtimeType.toString() == "_File");
   }
 
@@ -63,6 +63,11 @@ class IOBase
     if(!dir.existsSync()){
       dir.create();
       // debugPrint(dir.path);
+      /// 创建该书对应设定集：文件夹
+      Directory dir2 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集");
+      if(!dir2.existsSync()){
+        dir2.create();
+      }
     }
   }
 
@@ -83,7 +88,7 @@ class IOBase
   List<String> getAllBooks() {
     List<String> bookNames = [];
     _rootDir.listSync().forEach((fileSystemEntity) {
-      if(_isBook(fileSystemEntity)) {
+      if(_isDir(fileSystemEntity)) {
         bookNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last);
         // debugPrint(fileSystemEntity.path.split(Platform.pathSeparator).last);
       }
@@ -97,13 +102,27 @@ class IOBase
     Directory dir = Directory(_rootPath + Platform.pathSeparator + bookName);
     List<String> chapterNames = [];
     dir.listSync().forEach((fileSystemEntity) {
-      if(_isChapter(fileSystemEntity)) {
+      if(_isFile(fileSystemEntity)) {
         chapterNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last);
         // debugPrint(fileSystemEntity.path.split(Platform.pathSeparator).last);
       }
     });
     chapterNames.sort();
     return chapterNames;
+  }
+
+  /// 遍历书对应设定集下所有设定：遍历书设定集设定名文件夹
+  List<String> getAllSettings(String bookName) {
+    Directory dir2 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集");
+    List<String> settingNames = [];
+    dir2.listSync().forEach((fileSystemEntity) {
+      if(_isDir(fileSystemEntity)) {
+        settingNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last);
+        // debugPrint(fileSystemEntity.path.split(Platform.pathSeparator).last);
+      }
+    });
+    settingNames.sort();
+    return settingNames;
   }
 
   /// 获取章节的文字内容：读取章节文件

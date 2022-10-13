@@ -10,6 +10,13 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 
 ---
 
+## skill quick refer
+1. git checkout -b v1.0.0
+2. git checkout v1.0.0
+3. git push --set-upstream origin v1.0.0
+
+---
+
 ## support readings
 1. [Flutter TextField 控制器TextEditingController](https://zhuanlan.zhihu.com/p/224758373)
 2. [Flutter 去除输入框下边框](https://blog.csdn.net/qq_27318177/article/details/107718101)
