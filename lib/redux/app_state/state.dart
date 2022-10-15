@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:writing_writer2/redux/model/set_model.dart';
 import '../../server/file/IOBase.dart';
+import '../action/set_action.dart';
 import '../action/text_action.dart';
 import '../model/text_model.dart';
 
@@ -7,11 +9,14 @@ class AppState {
 
   /// current text show info
   late TextModel textModel;
+  /// current set show info
+  late SetModel setModel;
   ///
   late IOBase ioBase;
 
   AppState({
     required this.textModel,
+    required this.setModel,
     required this.ioBase,
   });
 
@@ -21,12 +26,14 @@ class AppState {
    */
   AppState.initialState() {
     textModel = TextModel(currentBook: "", currentChapter: "");
+    setModel = SetModel(currentSet: "", currentSetting: "");
     ioBase = IOBase();
   }
 
-  AppState copyWith ({textModel}){
+  AppState copyWith ({textModel, setModel}){
     return AppState(
-      textModel: textModel,
+      textModel: textModel ?? this.textModel,
+      setModel: setModel ?? this.setModel,
       ioBase: ioBase,
     );
   }
@@ -42,6 +49,10 @@ AppState appReducer(AppState state, action) {
     case SetTextDataAction:
     {
       return state.copyWith(textModel: textReducer(state.textModel, action));
+    }
+    case SetSetDataAction:
+    {
+      return state.copyWith(setModel: setReducer(state.setModel, action));
     }
     default:
     {

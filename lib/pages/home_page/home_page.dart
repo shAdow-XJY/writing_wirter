@@ -38,6 +38,33 @@ class _MyHomePageState extends State<MyHomePage> {
   /// 详情框打开状态
   bool isDetailOpened = false;
 
+  /// 获取文本
+  String getText() {
+    if (currentBook.isEmpty || currentChapter.isEmpty) {
+      return '';
+    }
+    return ioBase.getChapterContent(currentBook, currentChapter);
+  }
+
+  /// 保存/更新文本
+  void saveText() {
+    if (currentBook.isEmpty || currentChapter.isEmpty) {
+      return;
+    }
+    ioBase.saveChapter(currentBook, currentChapter, currentText);
+  }
+
+  /// 章节重命名
+  void changeChapterName(String newChapterName) {
+    if (newChapterName.compareTo(currentChapter) == 0) {
+      return;
+    }
+    // 先保存再重命名文件
+    ioBase.saveChapter(currentBook, currentChapter, currentText);
+    ioBase.renameChapter(currentBook, currentChapter, newChapterName);
+    currentChapter = newChapterName;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -70,31 +97,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  /// 获取文本
-  String getText() {
-    if (currentBook.isEmpty || currentChapter.isEmpty) {
-      return '';
-    }
-    return ioBase.getChapterContent(currentBook, currentChapter);
-  }
-
-  /// 保存/更新文本
-  void saveText() {
-    if (currentBook.isEmpty || currentChapter.isEmpty) {
-      return;
-    }
-    ioBase.saveChapter(currentBook, currentChapter, currentText);
-  }
-
-  /// 章节重命名
-  void changeChapterName(String newChapterName) {
-    if (newChapterName.compareTo(currentChapter) == 0) {
-      return;
-    }
-    // 先保存再重命名文件
-    ioBase.saveChapter(currentBook, currentChapter, currentText);
-    ioBase.renameChapter(currentBook, currentChapter, newChapterName);
-    currentChapter = newChapterName;
+  @override
+  void dispose() {
+    saveText();
+    super.dispose();
   }
 
   @override

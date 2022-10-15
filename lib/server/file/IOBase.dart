@@ -22,6 +22,10 @@ class IOBase
     });
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  //                                私有函数                                  //
+  ////////////////////////////////////////////////////////////////////////////
+
   /// 构造函数内部使用：初始化函数
   void _init() {
     _rootDir = Directory(_appDocPath + Platform.pathSeparator + _rootName);
@@ -90,17 +94,17 @@ class IOBase
     }
   }
 
-  /// 创建一个设定类：文件夹
-  void createSetType(String bookName, String setTypeName) {
-    Directory dir3 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setTypeName");
+  /// 创建一个设定集：文件夹
+  void createSet(String bookName, String setName) {
+    Directory dir3 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName");
     if(!dir3.existsSync()) {
       dir3.create();
     }
   }
 
-  /// 创建一个设定：文件
-  void createSetting(String bookName, String setTypeName, String settingName) {
-    Directory file2 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setTypeName${Platform.pathSeparator}$settingName");
+  /// 创建设定集内一个设定：文件
+  void createSetting(String bookName, String setName, String settingName) {
+    File file2 = File("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName${Platform.pathSeparator}$settingName");
     if(!file2.existsSync()) {
       file2.create();
     }
@@ -123,7 +127,7 @@ class IOBase
     return bookNames;
   }
 
-  /// 遍历书下所有章节：遍历书名文件夹
+  /// 遍历指定书下所有章节：遍历书名文件夹
   List<String> getAllChapters(String bookName) {
     Directory dir = Directory(_rootPath + Platform.pathSeparator + bookName);
     List<String> chapterNames = [];
@@ -137,8 +141,8 @@ class IOBase
     return chapterNames;
   }
 
-  /// 遍历书对应设定集下所有设定：遍历书设定集设定名文件夹
-  List<String> getAllSettings(String bookName) {
+  /// 遍历书下所有设定集：遍历一级设定集名文件夹
+  List<String> getAllSet(String bookName) {
     Directory dir2 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集");
     List<String> settingNames = [];
     dir2.listSync().forEach((fileSystemEntity) {
@@ -151,11 +155,31 @@ class IOBase
     return settingNames;
   }
 
+  /// 遍历指定设定集下所有设定：遍历二级设定集名文件夹
+  List<String> getAllSettings(String bookName, String setName) {
+    Directory dir3 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName");
+    List<String> settingNames = [];
+    dir3.listSync().forEach((fileSystemEntity) {
+      if(_isFile(fileSystemEntity)) {
+        settingNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last);
+      }
+    });
+    settingNames.sort();
+    return settingNames;
+  }
+
   /// 获取章节的文字内容：读取章节文件
   String getChapterContent(String bookName, String chapterName) {
     File file = File(_rootPath + Platform.pathSeparator + bookName + Platform.pathSeparator + chapterName);
     debugPrint(file.readAsStringSync());
     return file.readAsStringSync();
+  }
+
+  /// 获取设定的内容：读取设定文件
+  String getSettingContent(String bookName, String setName, String settingName) {
+    File file2 = File("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName${Platform.pathSeparator}$settingName");
+    debugPrint(file2.readAsStringSync());
+    return file2.readAsStringSync();
   }
 
   /////////////////////////////////////////////////////////////////////////////
