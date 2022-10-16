@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:writing_writer2/components/right_drawer/settings_listview.dart';
 import 'package:writing_writer2/components/toast_dialog.dart';
 import 'package:writing_writer2/components/transparent_icon_button.dart';
-import '../redux/app_state/state.dart';
-import 'chapter_listview.dart';
+import '../../redux/app_state/state.dart';
 
-class BookListView extends StatefulWidget {
-  const BookListView({
+class SetListView extends StatefulWidget {
+  const SetListView({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<BookListView> createState() => _BookListViewState();
+  State<SetListView> createState() => _SetListViewState();
 }
 
-class _BookListViewState extends State<BookListView> {
+class _SetListViewState extends State<SetListView> {
   @override
   void initState() {
     super.initState();
@@ -25,9 +25,9 @@ class _BookListViewState extends State<BookListView> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<String>>(
       converter: (Store store) {
-        return store.state.ioBase.getAllBooks();
+        return store.state.ioBase.getAllSet(store.state.textModel.currentBook);
       },
-      builder: (BuildContext context, List<String> bookNameList) {
+      builder: (BuildContext context, List<String> setNameList) {
         return ListView.separated(
           separatorBuilder: (context, index) => Divider(
             thickness: 1,
@@ -35,9 +35,9 @@ class _BookListViewState extends State<BookListView> {
             color: Theme.of(context).colorScheme.inversePrimary,
           ),
           controller: ScrollController(),
-          itemCount: bookNameList.length,
-          itemBuilder: (context, index) => BookListViewItem(
-            bookName: bookNameList[index],
+          itemCount: setNameList.length,
+          itemBuilder: (context, index) => SetListViewItem(
+            setName: setNameList[index],
           ),
         );
       },
@@ -45,19 +45,19 @@ class _BookListViewState extends State<BookListView> {
   }
 }
 
-class BookListViewItem extends StatefulWidget {
-  final String bookName;
+class SetListViewItem extends StatefulWidget {
+  final String setName;
 
-  const BookListViewItem({
+  const SetListViewItem({
     Key? key,
-    required this.bookName,
+    required this.setName,
   }) : super(key: key);
 
   @override
-  State<BookListViewItem> createState() => _BookListViewItemState();
+  State<SetListViewItem> createState() => _SetListViewItemState();
 }
 
-class _BookListViewItemState extends State<BookListViewItem> {
+class _SetListViewItemState extends State<SetListViewItem> {
   bool isExpanded = false;
 
   @override
@@ -68,13 +68,13 @@ class _BookListViewItemState extends State<BookListViewItem> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return StoreConnector<AppState, Function(String, String)>(
+    return StoreConnector<AppState, Function(String)>(
       converter: (Store store) {
-        return (String bookName, String chapterName) => {
-              store.state.ioBase.createChapter(bookName, chapterName),
+        return (String settingName) => {
+              store.state.ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
         };
       },
-      builder: (BuildContext context, Function(String, String) createChapter) {
+      builder: (BuildContext context, Function(String) createSetting) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -87,7 +87,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Text(
-                        widget.bookName,
+                        widget.setName,
                         style: const TextStyle(
                           fontSize: 16.0,
                           wordSpacing: 2.0,
@@ -100,10 +100,10 @@ class _BookListViewItemState extends State<BookListViewItem> {
                         showDialog(
                           context: context,
                           builder: (context) => ToastDialog(
-                            title: '新建章节',
+                            title: '新建设定',
                             callBack: (strBack) => {
                               if (strBack.isNotEmpty) {
-                                createChapter(widget.bookName, strBack),
+                                createSetting(strBack),
                               },
                             },
                           ),
@@ -123,8 +123,8 @@ class _BookListViewItemState extends State<BookListViewItem> {
               },
             ),
             isExpanded
-                ? ChapterListView(
-                    bookName: widget.bookName,
+                ? SettingsListView(
+                    setName: widget.setName,
                   )
                 : const SizedBox(),
           ],

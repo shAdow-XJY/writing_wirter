@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class IOBase
 {
@@ -48,8 +48,10 @@ class IOBase
 
   /// 根据路径打开资源管理器
   void _openFileManager(String path) {
-    final Uri url = Uri.parse(path);
-    launchUrl(url);
+    final Uri url = Uri.file(path);
+    /// launchUrl(url);
+    /// 改用下面的方法解决路径中包含中文导致打开失败
+    launchUrlString(url.toFilePath());
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -64,6 +66,7 @@ class IOBase
   }
 
   void openSettingDirectory(String bookName) {
+    //print("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集");
     _openFileManager("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集");
   }
 
@@ -202,4 +205,19 @@ class IOBase
     }
   }
 
+  /// 保存设定
+  void saveSetting(String bookName, String setName, String settingName, String content) {
+    File file = File("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName${Platform.pathSeparator}$settingName");
+    if(file.existsSync()) {
+      file.writeAsStringSync(content);
+    }
+  }
+
+  /// 设定重命名
+  void renameSetting(String bookName, String setName, String oldSettingName, String newSettingName) {
+    File file = File("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName${Platform.pathSeparator}$oldSettingName");
+    if(file.existsSync()) {
+      file.renameSync("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName${Platform.pathSeparator}$newSettingName");
+    }
+  }
 }

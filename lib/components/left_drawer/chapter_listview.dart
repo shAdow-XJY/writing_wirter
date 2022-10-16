@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import '../redux/action/set_action.dart';
-import '../redux/app_state/state.dart';
+import '../../redux/action/text_action.dart';
+import '../../redux/app_state/state.dart';
 
-class SettingsListView extends StatefulWidget {
-  final String setName;
+class ChapterListView extends StatefulWidget {
+  final String bookName;
 
-  const SettingsListView({
+  const ChapterListView({
     Key? key,
-    required this.setName,
+    required this.bookName,
   }) : super(key: key);
 
   @override
-  State<SettingsListView> createState() => _SettingsListViewState();
+  State<ChapterListView> createState() => _ChapterListViewState();
 }
 
-class _SettingsListViewState extends State<SettingsListView> {
-  List<Widget> settingsListViewItems = [];
+class _ChapterListViewState extends State<ChapterListView> {
+  List<Widget> chapterListViewItems = [];
 
   @override
   void initState() {
@@ -25,21 +25,21 @@ class _SettingsListViewState extends State<SettingsListView> {
   }
 
   List<Widget> createChapterList(List<String> chapterList) {
-    settingsListViewItems.clear();
-    for (var settingName in chapterList) {
-      settingsListViewItems.add(SettingsListViewItem(
-        setName: widget.setName,
-        settingName: settingName,
+    chapterListViewItems.clear();
+    for (var chapterName in chapterList) {
+      chapterListViewItems.add(ChapterListViewItem(
+        bookName: widget.bookName,
+        chapterName: chapterName,
       ));
     }
-    return settingsListViewItems;
+    return chapterListViewItems;
   }
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<String>>(
       converter: (Store store) {
-        return store.state.ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
+        return store.state.ioBase.getAllChapters(widget.bookName);
       },
       builder: (BuildContext context, List<String> chapterList) {
         return Column(
@@ -50,14 +50,14 @@ class _SettingsListViewState extends State<SettingsListView> {
   }
 }
 
-class SettingsListViewItem extends StatelessWidget {
-  final String setName;
-  final String settingName;
+class ChapterListViewItem extends StatelessWidget {
+  final String bookName;
+  final String chapterName;
 
-  const SettingsListViewItem({
+  const ChapterListViewItem({
     Key? key,
-    required this.setName,
-    required this.settingName,
+    required this.bookName,
+    required this.chapterName,
   }) : super(key: key);
 
   @override
@@ -67,11 +67,11 @@ class SettingsListViewItem extends StatelessWidget {
       converter: (Store store) {
         return () => {
           store.dispatch(
-            SetSetDataAction(currentSet: setName, currentSetting: settingName),
+            SetTextDataAction(currentBook: bookName, currentChapter: chapterName),
           ),
         };
       },
-      builder: (BuildContext context, VoidCallback clickSetting) {
+      builder: (BuildContext context, VoidCallback clickChapter) {
         return InkWell(
           child: Container(
             height: height / 18.0,
@@ -87,12 +87,12 @@ class SettingsListViewItem extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(settingName),
+                Text(chapterName),
               ],
             ),
           ),
           onTap: () {
-            clickSetting();
+            clickChapter();
           },
         );
       },

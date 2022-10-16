@@ -2,11 +2,11 @@ import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer2/components/detail_container.dart';
+import 'package:writing_writer2/pages/detail_sub_page/detail_sub_page.dart';
 import 'package:writing_writer2/components/float_button.dart';
 
-import '../../components/left_drawer.dart';
-import '../../components/right_drawer.dart';
+import '../../components/left_drawer/left_drawer.dart';
+import '../../components/right_drawer/right_drawer.dart';
 import '../../components/toast_dialog.dart';
 import '../../redux/action/text_action.dart';
 import '../../redux/app_state/state.dart';
@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
     textEditingController.addListener(() {
       ///获取输入的内容
       currentText = textEditingController.text;
-      debugPrint(" controller 兼听 $currentText");
+      debugPrint(" controller 兼听章节内容 $currentText");
     });
   }
 
@@ -106,48 +106,43 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    return StoreConnector<AppState, Map<String, String>>(
+    return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
         saveText();
         currentBook = store.state.textModel.currentBook;
         currentChapter = store.state.textModel.currentChapter;
         textEditingController.text = getText();
         currentText = textEditingController.text;
+        void renameChapter() {
+          store.dispatch(SetTextDataAction(currentBook: currentBook, currentChapter: currentChapter));
+        }
         return {
           "currentBook": currentBook,
           "currentChapter": currentChapter,
           "currentText": currentText,
+          "renameChapter": renameChapter,
         };
       },
-      builder: (BuildContext context, Map<String, String> info) {
+      builder: (BuildContext context, Map<String, dynamic> map) {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: StoreConnector<AppState, VoidCallback>(
-              converter: (Store store) {
-                return () => {
-                      store.dispatch(SetTextDataAction(currentBook: currentBook, currentChapter: currentChapter),),
-                };
-              },
-              builder: (BuildContext context, VoidCallback renameChapter) {
-                return InkWell(
-                  child: Text(info["currentChapter"] ?? ""),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => ToastDialog(
-                        title: '章节重命名',
-                        init: currentChapter,
-                        callBack: (strBack) => {
-                          if (strBack.isNotEmpty)
-                            {
-                              changeChapterName(strBack),
-                              renameChapter(),
-                            },
+            title: InkWell(
+              child: Text(map["currentChapter"] ?? ""),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => ToastDialog(
+                    title: '章节重命名',
+                    init: currentChapter,
+                    callBack: (strBack) => {
+                      if (strBack.isNotEmpty)
+                        {
+                          changeChapterName(strBack),
+                          map["renameChapter"](),
                         },
-                      ),
-                    );
-                  },
+                    },
+                  ),
                 );
               },
             ),
@@ -193,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
               ),
               isDetailOpened
-                  ? const Expanded(flex: 1, child: DetailContainer())
+                  ? Expanded(flex: 1, child: DetailSubPage(ioBase: ioBase,))
                   : const SizedBox()
             ],
           ),
