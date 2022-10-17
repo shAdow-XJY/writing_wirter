@@ -79,6 +79,7 @@ class _DetailSubPageState extends State<DetailSubPage>{
 
   @override
   void dispose() {
+    saveText();
     super.dispose();
   }
 

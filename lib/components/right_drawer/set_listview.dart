@@ -68,13 +68,20 @@ class _SetListViewItemState extends State<SetListViewItem> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return StoreConnector<AppState, Function(String)>(
+    return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        return (String settingName) => {
-              store.state.ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
+        void renameSet(String oldSetName, String newSetName) => {
+          store.state.ioBase.renameSet(store.state.textModel.currentBook, oldSetName, newSetName),
+        };
+        void createSetting(String settingName) => {
+          store.state.ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
+        };
+        return {
+          "renameSet": renameSet,
+          "createSetting": createSetting
         };
       },
-      builder: (BuildContext context, Function(String) createSetting) {
+      builder: (BuildContext context, Map<String, dynamic> map) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -84,35 +91,64 @@ class _SetListViewItemState extends State<SetListViewItem> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        widget.setName,
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          wordSpacing: 2.0,
-                        ),
-                      ),
-                    ),
-                    TransIconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => ToastDialog(
-                            title: '新建设定',
-                            callBack: (strBack) => {
-                              if (strBack.isNotEmpty) {
-                                createSetting(strBack),
-                              },
+                    Expanded(
+                      flex: 3,
+                      child: Row(
+                        children: [
+                          TransIconButton(
+                            icon: const Icon(Icons.drive_file_rename_outline),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => ToastDialog(
+                                  init: widget.setName,
+                                  title: '重命名设定类',
+                                  callBack: (strBack) => {
+                                    if (strBack.isNotEmpty) {
+                                      map["renameSet"](widget.setName, strBack),
+                                    },
+                                  },
+                                ),
+                              );
                             },
                           ),
-                        );
-                      },
+                          Text(
+                            widget.setName,
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              wordSpacing: 2.0,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    Icon(isExpanded
-                        ? Icons.arrow_drop_down
-                        : Icons.arrow_drop_up),
+                    Expanded(
+                      flex: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TransIconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => ToastDialog(
+                                  title: '新建设定',
+                                  callBack: (strBack) => {
+                                    if (strBack.isNotEmpty) {
+                                      map["createSetting"](strBack),
+                                    },
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                          Icon(isExpanded
+                              ? Icons.arrow_drop_down
+                              : Icons.arrow_drop_up),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),

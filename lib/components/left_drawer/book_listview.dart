@@ -68,13 +68,20 @@ class _BookListViewItemState extends State<BookListViewItem> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return StoreConnector<AppState, Function(String, String)>(
+    return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        return (String bookName, String chapterName) => {
-              store.state.ioBase.createChapter(bookName, chapterName),
+        void renameBook(String oldBookName, String newBookName) => {
+          store.state.ioBase.renameBook(oldBookName, newBookName),
+        };
+        void createChapter(String bookName, String chapterName) => {
+          store.state.ioBase.createChapter(bookName, chapterName),
+        };
+        return {
+          "renameBook": renameBook,
+          "createChapter": createChapter,
         };
       },
-      builder: (BuildContext context, Function(String, String) createChapter) {
+      builder: (BuildContext context, Map<String, dynamic> map) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -84,35 +91,64 @@ class _BookListViewItemState extends State<BookListViewItem> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        widget.bookName,
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          wordSpacing: 2.0,
-                        ),
-                      ),
-                    ),
-                    TransIconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => ToastDialog(
-                            title: '新建章节',
-                            callBack: (strBack) => {
-                              if (strBack.isNotEmpty) {
-                                createChapter(widget.bookName, strBack),
+                    Expanded(
+                        flex: 3,
+                        child: Row(
+                          children: [
+                            TransIconButton(
+                              icon: const Icon(Icons.drive_file_rename_outline),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => ToastDialog(
+                                    init: widget.bookName,
+                                    title: '重命名书籍',
+                                    callBack: (strBack) => {
+                                      if (strBack.isNotEmpty) {
+                                        map["renameBook"](widget.bookName, strBack),
+                                      },
+                                    },
+                                  ),
+                                );
                               },
+                            ),
+                            Text(
+                              widget.bookName,
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                wordSpacing: 2.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TransIconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => ToastDialog(
+                                  title: '新建章节',
+                                  callBack: (strBack) => {
+                                    if (strBack.isNotEmpty) {
+                                      map["createChapter"](widget.bookName, strBack),
+                                    },
+                                  },
+                                ),
+                              );
                             },
                           ),
-                        );
-                      },
+                          Icon(isExpanded
+                              ? Icons.arrow_drop_down
+                              : Icons.arrow_drop_up),
+                        ],
+                      ),
                     ),
-                    Icon(isExpanded
-                        ? Icons.arrow_drop_down
-                        : Icons.arrow_drop_up),
                   ],
                 ),
               ),

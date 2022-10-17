@@ -29,7 +29,7 @@ class _RightDrawerState extends State<RightDrawer> {
           return Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: Text('${map['currentBookName']}——设定集'),
+              title: Text(map['currentBookName']??''),
               leading: IconButton(
                 icon: const Icon(Icons.file_open),
                 onPressed: () {
