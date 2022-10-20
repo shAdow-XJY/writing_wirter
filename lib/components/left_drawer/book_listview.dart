@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer2/components/toast_dialog.dart';
-import 'package:writing_writer2/components/transparent_icon_button.dart';
 import '../../redux/app_state/state.dart';
+import '../toast_dialog.dart';
+import '../transparent_icon_button.dart';
 import 'chapter_listview.dart';
 
 class BookListView extends StatefulWidget {

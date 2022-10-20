@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:writing_writer2/redux/model/set_model.dart';
 import '../../server/file/IOBase.dart';
 import '../action/set_action.dart';
 import '../action/text_action.dart';
+import '../model/set_model.dart';
 import '../model/text_model.dart';
 
 class AppState {

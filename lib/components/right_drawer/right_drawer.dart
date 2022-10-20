@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer2/components/right_drawer/set_listview.dart';
-import 'package:writing_writer2/components/toast_dialog.dart';
+import 'package:writing_writer/components/right_drawer/set_listview.dart';
 import '../../redux/app_state/state.dart';
+import '../toast_dialog.dart';
 
 class RightDrawer extends StatefulWidget {
   const RightDrawer({Key? key,}) : super(key: key);
