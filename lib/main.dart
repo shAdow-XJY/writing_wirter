@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer2/redux/app_state/state.dart';
-import 'package:writing_writer2/router/router.dart';
+import 'package:writing_writer/redux/app_state/state.dart';
+import 'package:writing_writer/router/router.dart';
 
 
 void main() {
