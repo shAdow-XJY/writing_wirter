@@ -32,6 +32,8 @@ dependencies:
   # 状态管理
   redux: ^5.0.0
   flutter_redux: ^0.10.0
+  # 不同设备
+  responsive_builder: ^0.4.3
 
 dev_dependencies:
   flutter_test:

@@ -30,5 +30,8 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 ---
 
 ## support packages
-1.[blur_glass](https://pub.dev/packages/blur_glass)
-2.[url_launch](https://pub.dev/packages/url_launcher)
+1. [blur_glass](https://pub.dev/packages/blur_glass)
+2. [url_launch](https://pub.dev/packages/url_launcher)
+3. [path_provider](https://pub.dev/packages/path_provider/score)
+4. [flutter_redux](https://pub.dev/packages/flutter_redux)
+5. [redux](https://pub.dev/packages/redux)
