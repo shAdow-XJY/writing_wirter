@@ -1,5 +1,4 @@
-# writing_writer2
-# writing_wirter
+# writing_writer
 A write desktop application developed and used myself with local storage.
 
 ---
@@ -35,3 +34,4 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 3. [path_provider](https://pub.dev/packages/path_provider/score)
 4. [flutter_redux](https://pub.dev/packages/flutter_redux)
 5. [redux](https://pub.dev/packages/redux)
+6. [responsive_builder](https://pub.dev/packages/responsive_builder)
