@@ -24,14 +24,14 @@ class _LeftDrawerState extends State<LeftDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-        width: MediaQuery.of(context).size.width / 4.0,
-        child: StoreConnector<AppState, IOBase>(
-          converter: (Store store) {
-            return store.state.ioBase;
-          },
-          builder: (BuildContext context, IOBase ioBase) {
-            return Scaffold(
+    return StoreConnector<AppState, IOBase>(
+      converter: (Store store) {
+        return store.state.ioBase;
+      },
+      builder: (BuildContext context, IOBase ioBase) {
+        return Drawer(
+            width: MediaQuery.of(context).size.width / 4.0,
+            child: Scaffold(
               appBar: AppBar(
                 centerTitle: true,
                 title: const Text('目录'),
@@ -62,9 +62,9 @@ class _LeftDrawerState extends State<LeftDrawer> {
                 ],
               ),
               body: const BookListView(),
-            );
-          },
-        ),
+            )
+        );
+      },
     );
   }
 }
