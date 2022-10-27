@@ -17,8 +17,6 @@ class PrePage extends StatefulWidget {
 class _PrePageState extends State<PrePage> with TickerProviderStateMixin {
   late final AnimationController _controller;
 
-  /// 需要预先存储的数据
-
   @override
   void initState() {
     super.initState();
@@ -39,22 +37,23 @@ class _PrePageState extends State<PrePage> with TickerProviderStateMixin {
       return StoreConnector<AppState, AsyncCallback>(
         converter: (Store store) {
           return () async => {
-            store.dispatch(
-                SetStyleDataAction(deviceScreenType: sizingInformation.deviceScreenType)
-            ),
-          };
+                store.dispatch(SetStyleDataAction(
+                    deviceScreenType: sizingInformation.deviceScreenType)),
+              };
         },
         builder: (BuildContext context, AsyncCallback callback) {
           return Container(
-            decoration: (BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.bottomLeft,
-                    end: Alignment.topRight,
-                    tileMode: TileMode.clamp,
-                    colors: [
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+                tileMode: TileMode.clamp,
+                colors: [
                   Theme.of(context).primaryColor.withOpacity(0.5),
                   Theme.of(context).primaryColor,
-                ]))),
+                ],
+              ),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -73,8 +72,10 @@ class _PrePageState extends State<PrePage> with TickerProviderStateMixin {
                             BoxShadow(
                                 blurRadius: 5,
                                 color: Colors.white.withOpacity(0.54)),
-                          ]),
-                    )),
+                          ],
+                      ),
+                    ),
+                ),
                 Expanded(
                   flex: 2,
                   child: Lottie.asset(
@@ -83,10 +84,12 @@ class _PrePageState extends State<PrePage> with TickerProviderStateMixin {
                     onLoaded: (composition) {
                       // Configure the AnimationController with the duration of the
                       // Lottie file and start the animation.
-                      _controller.forward().whenComplete(() => {
-                            callback(),
-                            Navigator.popAndPushNamed(context, '/homepage'),
-                          });
+                      _controller.forward().whenComplete(
+                            () => {
+                              callback(),
+                              Navigator.popAndPushNamed(context, '/homepage'),
+                            },
+                          );
                     },
                   ),
                 ),
@@ -99,53 +102,3 @@ class _PrePageState extends State<PrePage> with TickerProviderStateMixin {
     });
   }
 }
-// import 'dart:async';
-//
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter_redux/flutter_redux.dart';
-// import 'package:redux/redux.dart';
-// import 'package:responsive_builder/responsive_builder.dart';
-//
-// import '../../redux/action/style_action.dart';
-// import '../../redux/app_state/state.dart';
-//
-// class PrePage extends StatefulWidget {
-//   const PrePage({
-//     Key? key,
-//   }) : super(key: key);
-//
-//   @override
-//   State<PrePage> createState() => _PrePageState();
-// }
-//
-// class _PrePageState extends State<PrePage> {
-//
-//
-//
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     super.initState();
-//     const timeout = Duration(seconds: 6);
-//     Timer(timeout, () {
-//       Navigator.of(context).popAndPushNamed('/homepage');
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     /// ResponsiveBuilder 获取不同设备类型的信息
-//     return ResponsiveBuilder(
-//       builder: (context, sizingInformation) {
-//         return StoreConnector<AppState, void>(
-//             converter: (Store store) {
-//               store.dispatch(SetStyleDataAction(deviceScreenType: sizingInformation.deviceScreenType));
-//             },
-//             builder: (BuildContext context, void nothing) {
-//               return const SizedBox();
-//             },
-//         );
-//       },
-//     );
-//   }
-// }
