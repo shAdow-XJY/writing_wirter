@@ -4,6 +4,7 @@ import 'package:redux/redux.dart';
 import 'package:writing_writer/components/right_drawer/settings_listview.dart';
 import '../../redux/app_state/state.dart';
 import '../toast_dialog.dart';
+import '../transparent_checkbox.dart';
 import '../transparent_icon_button.dart';
 
 class SetListView extends StatefulWidget {
@@ -58,7 +59,10 @@ class SetListViewItem extends StatefulWidget {
 }
 
 class _SetListViewItemState extends State<SetListViewItem> {
+  /// 列表展开
   bool isExpanded = false;
+  /// 设定集是否加入文本解析
+  bool addTextIndex = false;
 
   @override
   void initState() {
@@ -127,6 +131,14 @@ class _SetListViewItemState extends State<SetListViewItem> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          TransCheckBox(
+                            initBool: addTextIndex,
+                            onChanged: (bool changedResult) {
+                              setState(() {
+                                addTextIndex = changedResult;
+                              });
+                            },
+                          ),
                           TransIconButton(
                             icon: const Icon(Icons.add),
                             onPressed: () {

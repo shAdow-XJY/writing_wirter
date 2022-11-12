@@ -31,7 +31,7 @@ class AppState {
    * 这里用来初始化
    */
   AppState.initialState() {
-    textModel = TextModel(currentBook: "", currentChapter: "");
+    textModel = TextModel(currentBook: "", currentChapter: "", currentParser: {});
     setModel = SetModel(currentSet: "", currentSetting: "");
     styleModel = StyleModel(deviceScreenType: DeviceScreenType.desktop);
     ioBase = IOBase();
