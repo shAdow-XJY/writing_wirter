@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/components/right_drawer/settings_listview.dart';
+import '../../redux/action/parser_action.dart';
 import '../../redux/app_state/state.dart';
+import '../../server/parser/Parser.dart';
 import '../toast_dialog.dart';
 import '../transparent_checkbox.dart';
 import '../transparent_icon_button.dart';
@@ -62,7 +64,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
   /// 列表展开
   bool isExpanded = false;
   /// 设定集是否加入文本解析
-  bool addTextIndex = false;
+  bool addTextParser = false;
 
   @override
   void initState() {
@@ -80,9 +82,19 @@ class _SetListViewItemState extends State<SetListViewItem> {
         void createSetting(String settingName) => {
           store.state.ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
         };
+        void changeParser(){
+          store.dispatch(
+            SetParserDataAction(
+                currentParser: addTextParser
+                    ? Parser.addSetToParser(store.state.parserModel.currentParser, widget.setName, store.state.ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName))
+                    : Parser.removeSetInParser(store.state.parserModel.currentParser, widget.setName)
+            ),
+          );
+        }
         return {
           "renameSet": renameSet,
-          "createSetting": createSetting
+          "createSetting": createSetting,
+          "changeParser": changeParser,
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
@@ -132,11 +144,12 @@ class _SetListViewItemState extends State<SetListViewItem> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TransCheckBox(
-                            initBool: addTextIndex,
+                            initBool: addTextParser,
                             onChanged: (bool changedResult) {
                               setState(() {
-                                addTextIndex = changedResult;
+                                addTextParser = changedResult;
                               });
+                              map["changeParser"]();
                             },
                           ),
                           TransIconButton(
@@ -173,6 +186,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
             isExpanded
                 ? SettingsListView(
                     setName: widget.setName,
+                    addTextParser: addTextParser,
                   )
                 : const SizedBox(),
           ],

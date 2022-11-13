@@ -1,5 +1,3 @@
-import '../file/IOBase.dart';
-
 class Parser
 {
   static Map<String, Set<String>> addSetToParser(Map<String, Set<String>> currentParser, String addedSetName, List<String> addedSettingsName) {
