@@ -37,4 +37,5 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 4. [flutter_redux](https://pub.dev/packages/flutter_redux)
 5. [redux](https://pub.dev/packages/redux)
 6. [responsive_builder](https://pub.dev/packages/responsive_builder)
-7. [lottie]()
+7. [lottie](https://pub.dev/packages/lottie)
+8. [string_scanner](https://pub.dev/packages/string_scanner)

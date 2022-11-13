@@ -36,6 +36,8 @@ dependencies:
   responsive_builder: ^0.4.3
   # 动画
   lottie: ^1.4.3
+  # api
+  string_scanner: ^1.1.1
 
 dev_dependencies:
   flutter_test:

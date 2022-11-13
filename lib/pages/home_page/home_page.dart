@@ -10,6 +10,7 @@ import '../../components/toast_dialog.dart';
 import '../../redux/action/text_action.dart';
 import '../../redux/app_state/state.dart';
 import '../../server/file/IOBase.dart';
+import '../../server/parser/StringParser.dart';
 import '../detail_sub_page/detail_sub_page.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -27,6 +28,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// 章节内容输入框控制器
   late final TextEditingController textEditingController;
+  late InlineSpan span;
+  late StringParser parser;
 
   /// text
   String currentBook = "";
@@ -68,7 +71,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-
     ///控制 初始化的时候光标保持在文字最后
     textEditingController = TextEditingController.fromValue(
       ///用来设置初始化时显示
@@ -95,6 +97,9 @@ class _MyHomePageState extends State<MyHomePage> {
       currentText = textEditingController.text;
       debugPrint(" controller 兼听章节内容 $currentText");
     });
+
+    parser = StringParser('textEditingController.text`.*?``.*?``.*?``.*?`');
+    span = parser.parser();
   }
 
   @override
@@ -183,6 +188,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text.rich(span),
+                        )
                       ],
                     ),
                   ),
