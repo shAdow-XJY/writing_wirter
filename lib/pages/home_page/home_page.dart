@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
       debugPrint(" controller 兼听章节内容 $currentText");
     });
 
-    parser = StringParser('textEditingController.text`.*?``.*?``.*?``.*?`');
+    parser = StringParser('我是人物a， 他是 人物b 。 欧克？ 我是人物a， 他是 人物b 。 ', {});
     span = parser.parser();
   }
 

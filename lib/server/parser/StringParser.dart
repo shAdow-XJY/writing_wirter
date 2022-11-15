@@ -1,16 +1,51 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:string_scanner/string_scanner.dart';
 
 class StringParser {
-  late final String content;
-  late final StringScanner _scanner;
-
-  StringParser(this.content) {
-    _scanner = StringScanner(content);
-  }
-
+  String _content;
+  late StringScanner _scanner;
+  Map<String, Set<String>> _currentParser;
   final List<SpanBean> _spans = [];
 
+  StringParser(this._content, this._currentParser) {
+    _scanner = StringScanner(_content);
+    parseContent();
+  }
+
+  void resetContent(String content) {
+    _content = content;
+    _scanner = StringScanner(_content);
+  }
+
+  void resetParser(Map<String, Set<String>> currentParser) {
+    _currentParser = currentParser;
+  }
+
+  /// 点击事件
+  void a() {
+  }
+
+  /// 正则匹配位置传入_spans
+  void parseContent() {
+    _spans.clear();
+    while (!_scanner.isDone) {
+      _currentParser.forEach((setName, settingNameList) {
+        for (var settingName in settingNameList) {
+          if (_scanner.scan(RegExp(settingName))) {
+            int startIndex = _scanner.lastMatch?.start ?? 0 ;
+            int endIndex = _scanner.lastMatch?.end ?? 0;
+            _spans.add(SpanBean(startIndex, endIndex));
+          }
+        }
+      });
+      if (!_scanner.isDone) {
+        _scanner.position++;
+      }
+    }
+  }
+
+  /// 返回parser结果
   InlineSpan parser() {
     parseContent();
 
@@ -20,29 +55,18 @@ class StringParser {
 
     for (SpanBean span in _spans) {
       if (currentPosition != span.start) {
-        spans.add(TextSpan(text: content.substring(currentPosition, span.start)));
+        spans.add(TextSpan(text: _content.substring(currentPosition, span.start), ));
       }
-      spans.add(TextSpan(style: span.style, text: span.text(content)));
+      spans.add(TextSpan(style: span.style, text: span.text(_content)));
       currentPosition = span.end;
     }
-    if (currentPosition != content.length) {
-      spans.add(TextSpan(text: content.substring(currentPosition, content.length)));
+    if (currentPosition != _content.length) {
+      spans.add(TextSpan(text: _content.substring(currentPosition, _content.length)));
     }
     return TextSpan(style: TextStyleSupport.defaultStyle, children: spans);
   }
 
-  void parseContent() {
-    while (!_scanner.isDone) {
-      if (_scanner.scan(RegExp('`.*?`'))) {
-        int startIndex = _scanner.lastMatch?.start ?? 0 ;
-        int endIndex = _scanner.lastMatch?.end ?? 0;
-        _spans.add(SpanBean(startIndex, endIndex));
-      }
-      if (!_scanner.isDone) {
-        _scanner.position++;
-      }
-    }
-  }
+
 }
 
 class SpanBean {
@@ -52,7 +76,7 @@ class SpanBean {
   final int end;
 
   String text(String src) {
-    return src.substring(start+1, end-1);
+    return src.substring(start, end);
   }
 
   TextStyle get style => TextStyleSupport.dotWrapStyle;
