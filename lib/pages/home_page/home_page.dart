@@ -10,8 +10,8 @@ import '../../components/toast_dialog.dart';
 import '../../redux/action/text_action.dart';
 import '../../redux/app_state/state.dart';
 import '../../server/file/IOBase.dart';
-import '../../server/parser/StringParser.dart';
 import '../detail_sub_page/detail_sub_page.dart';
+import '../readmode_sub_page/readmode_sub_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -28,8 +28,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// 章节内容输入框控制器
   late final TextEditingController textEditingController;
-  late InlineSpan span;
-  late StringParser parser;
 
   /// text
   String currentBook = "";
@@ -77,13 +75,11 @@ class _MyHomePageState extends State<MyHomePage> {
       TextEditingValue(
         ///用来设置文本 controller.text = "0000"
         text: currentText,
-
         ///设置光标的位置
         selection: TextSelection.fromPosition(
           ///用来设置文本的位置
           TextPosition(
               affinity: TextAffinity.downstream,
-
               /// 光标向后移动的长度
               offset: currentText.length),
         ),
@@ -97,9 +93,6 @@ class _MyHomePageState extends State<MyHomePage> {
       currentText = textEditingController.text;
       debugPrint(" controller 兼听章节内容 $currentText");
     });
-
-    parser = StringParser('我是人物a， 他是 人物b 。 欧克？ 我是人物a， 他是 人物b 。 ', {});
-    span = parser.parser();
   }
 
   @override
@@ -188,10 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text.rich(span),
-                        )
+                        const ReadModeSubPage()
                       ],
                     ),
                   ),

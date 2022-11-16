@@ -5,29 +5,42 @@ import 'package:string_scanner/string_scanner.dart';
 class StringParser {
   String _content;
   late StringScanner _scanner;
+  
   Map<String, Set<String>> _currentParser;
   final List<SpanBean> _spans = [];
+  InlineSpan inlineSpan = const TextSpan();
+  
+  TapGestureRecognizer ?_onTap;
 
+  /// 构造函数
   StringParser(this._content, this._currentParser) {
     _scanner = StringScanner(_content);
-    parseContent();
+    _parser();
+  }
+
+  /// 离开函数
+  void dispose() {
+    _onTap?.dispose();
   }
 
   void resetContent(String content) {
     _content = content;
     _scanner = StringScanner(_content);
+    _parser();
   }
 
   void resetParser(Map<String, Set<String>> currentParser) {
     _currentParser = currentParser;
+    _parser();
   }
 
   /// 点击事件
-  void a() {
+  void addOnTapEvent(VoidCallback onTap) {
+    _onTap = TapGestureRecognizer()..onTap = onTap;
   }
 
   /// 正则匹配位置传入_spans
-  void parseContent() {
+  void _parseContent() {
     _spans.clear();
     while (!_scanner.isDone) {
       _currentParser.forEach((setName, settingNameList) {
@@ -45,17 +58,16 @@ class StringParser {
     }
   }
 
-  /// 返回parser结果
-  InlineSpan parser() {
-    parseContent();
+  /// 得到parser结果
+  void _parser() {
+    _parseContent();
 
     final List<TextSpan> spans = <TextSpan>[];
-
     int currentPosition = 0;
 
     for (SpanBean span in _spans) {
       if (currentPosition != span.start) {
-        spans.add(TextSpan(text: _content.substring(currentPosition, span.start), ));
+        spans.add(TextSpan(text: _content.substring(currentPosition, span.start), recognizer: _onTap));
       }
       spans.add(TextSpan(style: span.style, text: span.text(_content)));
       currentPosition = span.end;
@@ -63,9 +75,9 @@ class StringParser {
     if (currentPosition != _content.length) {
       spans.add(TextSpan(text: _content.substring(currentPosition, _content.length)));
     }
-    return TextSpan(style: TextStyleSupport.defaultStyle, children: spans);
-  }
 
+    inlineSpan = TextSpan(style: TextStyleSupport.defaultStyle, children: spans);
+  }
 
 }
 
