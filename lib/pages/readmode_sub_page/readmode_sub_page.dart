@@ -1,3 +1,4 @@
+import 'package:detectable_text_field/widgets/detectable_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -40,24 +41,33 @@ class _ReadModeSubPageState extends State<ReadModeSubPage> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, InlineSpan>(
       converter: (Store store) {
-        currentBook = store.state.textModel.currentBook;
-        currentChapter = store.state.textModel.currentChapter;
-        currentText = store.state.ioBase.getChapterContent(currentBook, currentChapter);
-        currentSet = store.state.setModel.currentSet;
-        currentSetting = store.state.setModel.currentSetting;
-        parser.resetContent(currentText);
-        parser.resetParser(store.state.parserModel.currentParser);
-        print(store.state.parserModel.currentParser);
-        /// 点击高亮
-        parser.addOnTapEvent(()=>{
-          store.dispatch(SetSetDataAction(currentSet: currentSet, currentSetting: currentSetting)),
-        });
+        // currentBook = store.state.textModel.currentBook;
+        // currentChapter = store.state.textModel.currentChapter;
+        // currentText = store.state.ioBase.getChapterContent(currentBook, currentChapter);
+        // currentSet = store.state.setModel.currentSet;
+        // currentSetting = store.state.setModel.currentSetting;
+        // parser.resetContent(currentText);
+        // parser.resetParser(store.state.parserModel.currentParser);
+        // print(store.state.parserModel.currentParser);
+        // /// 点击高亮
+        // parser.addOnTapEvent(()=>{
+        //   store.dispatch(SetSetDataAction(currentSet: currentSet, currentSetting: currentSetting)),
+        // });
         return parser.inlineSpan;
       },
       builder: (BuildContext context, InlineSpan inlineSpan) {
         return Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Text.rich(inlineSpan),
+          child: DetectableTextField(
+            detectionRegExp: RegExp(r'(人物A|人物a)'), //detectionRegExp() ?? RegExp('source'),
+            decoratedStyle: TextStyle(
+              fontSize: 20,
+              color: Colors.blue,
+            ),
+            basicStyle: TextStyle(
+              fontSize: 20,
+            ),
+          ),
         );
       },
     );

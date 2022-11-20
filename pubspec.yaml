@@ -35,9 +35,10 @@ dependencies:
   # 不同设备
   responsive_builder: ^0.4.3
   # 动画
-  lottie: ^1.4.3
+  lottie: ^2.0.0
   # api
   string_scanner: ^1.1.1
+  detectable_text_field: ^2.0.4
 
 dev_dependencies:
   flutter_test:

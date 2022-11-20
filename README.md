@@ -27,7 +27,6 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 8. [listview 在 row 中使用](https://stackoverflow.com/questions/58292530/how-to-put-2-listview-in-a-row)
 9. [flutter 启动屏幕使用 Lottie 动画](https://zhuanlan.zhihu.com/p/376077465)
 10. [checkout box单选框](https://blog.csdn.net/ruoshui_t/article/details/93586543)
-11. [flutter rich text 富文本](https://juejin.cn/post/6919669120330006541)
 
 ---
 
@@ -39,4 +38,4 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 5. [redux](https://pub.dev/packages/redux)
 6. [responsive_builder](https://pub.dev/packages/responsive_builder)
 7. [lottie](https://pub.dev/packages/lottie)
-8. [string_scanner](https://pub.dev/packages/string_scanner)
+8. [detectable_text_field](https://pub.dev/packages/detectable_text_field/score)
