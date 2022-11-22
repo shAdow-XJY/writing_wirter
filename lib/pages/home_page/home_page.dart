@@ -1,4 +1,5 @@
 import 'package:blur_glass/blur_glass.dart';
+import 'package:detectable_text_field/widgets/detectable_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -11,7 +12,6 @@ import '../../redux/action/text_action.dart';
 import '../../redux/app_state/state.dart';
 import '../../server/file/IOBase.dart';
 import '../detail_sub_page/detail_sub_page.dart';
-import '../readmode_sub_page/readmode_sub_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -70,22 +70,22 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     ///控制 初始化的时候光标保持在文字最后
-    textEditingController = TextEditingController.fromValue(
-      ///用来设置初始化时显示
-      TextEditingValue(
-        ///用来设置文本 controller.text = "0000"
-        text: currentText,
-        ///设置光标的位置
-        selection: TextSelection.fromPosition(
-          ///用来设置文本的位置
-          TextPosition(
-              affinity: TextAffinity.downstream,
-              /// 光标向后移动的长度
-              offset: currentText.length),
-        ),
-      ),
-    );
-
+    // textEditingController = TextEditingController.fromValue(
+    //   ///用来设置初始化时显示
+    //   TextEditingValue(
+    //     ///用来设置文本 controller.text = "0000"
+    //     text: currentText,
+    //     ///设置光标的位置
+    //     selection: TextSelection.fromPosition(
+    //       ///用来设置文本的位置
+    //       TextPosition(
+    //           affinity: TextAffinity.downstream,
+    //           /// 光标向后移动的长度
+    //           offset: currentText.length),
+    //     ),
+    //   ),
+    // );
+    textEditingController = OverTextEditingController();
     /// 添加兼听 当TextFeild 中内容发生变化时 回调 焦点变动 也会触发
     /// onChanged 当TextFeild文本发生改变时才会回调
     textEditingController.addListener(() {
@@ -169,19 +169,32 @@ class _MyHomePageState extends State<MyHomePage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         /// 毛玻璃组件做写字板背景
-                        BlurGlass(
-                          child: TextField(
-                            controller: textEditingController,
-                            maxLines: null,
-                            decoration: const InputDecoration(
-                              /// 消除下边框
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const ReadModeSubPage()
+                        // BlurGlass(
+                        //   child: DetectableTextField(
+                        //     controller: textEditingController,
+                        //     maxLines: null,
+                        //     decoration: const InputDecoration(
+                        //       /// 消除下边框
+                        //       border: OutlineInputBorder(
+                        //         borderSide: BorderSide.none,
+                        //       ),
+                        //     ),
+                        //     detectionRegExp: RegExp(r'(人物A|人物a)'), //detectionRegExp() ?? RegExp('source'),
+                        //     decoratedStyle: TextStyle(
+                        //       fontSize: 20,
+                        //       color: Colors.blue,
+                        //     ),
+                        //     basicStyle: TextStyle(
+                        //       fontSize: 20,
+                        //     ),
+                        //     onTap: () {
+                        //       print('asdasdas');
+                        //     },
+                        //   ),
+                        // ),
+                        TextField(
+                          controller: textEditingController,
+                        )
                       ],
                     ),
                   ),
@@ -200,6 +213,37 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         );
       },
+    );
+  }
+}
+
+class OverTextEditingController extends TextEditingController{
+
+  @override
+  TextSpan buildTextSpan({required BuildContext context, TextStyle? style, required bool withComposing}) {
+    final atIndex = text.indexOf('ggg');
+    var spans = <InlineSpan>[];
+
+    if (atIndex != -1) {
+      spans.add(TextSpan(text: text.substring(0, atIndex)));
+      spans.add(
+        WidgetSpan(
+          alignment: PlaceholderAlignment.middle,
+          child: TextButton(
+            child: Text('ggg'),
+            onPressed: () {
+              print('?????????');
+            },
+          )
+        ),
+      );
+      spans.add(TextSpan(text: text.substring(1 + atIndex)));
+    } else {
+      spans.add(TextSpan(text: text));
+    }
+
+    return TextSpan(
+      children: spans,
     );
   }
 }

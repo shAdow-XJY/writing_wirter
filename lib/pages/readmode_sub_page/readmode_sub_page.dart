@@ -1,3 +1,5 @@
+import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
+import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:detectable_text_field/widgets/detectable_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -58,16 +60,20 @@ class _ReadModeSubPageState extends State<ReadModeSubPage> {
       builder: (BuildContext context, InlineSpan inlineSpan) {
         return Padding(
           padding: const EdgeInsets.all(20.0),
-          child: DetectableTextField(
-            detectionRegExp: RegExp(r'(人物A|人物a)'), //detectionRegExp() ?? RegExp('source'),
-            decoratedStyle: TextStyle(
+          child: DetectableText(
+            text: "#HashTag and @AtSign and https://pub.dev/packages/detectable_text_field",
+            detectionRegExp: detectionRegExp() ?? RegExp(r'(人物A|人物a)'),
+            detectedStyle: TextStyle(
               fontSize: 20,
               color: Colors.blue,
             ),
             basicStyle: TextStyle(
               fontSize: 20,
             ),
-          ),
+            onTap: (tappedText){
+              print(tappedText);
+            },
+          )
         );
       },
     );
