@@ -29,6 +29,7 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 10. [checkout box单选框](https://blog.csdn.net/ruoshui_t/article/details/93586543)
 11. [flutter text field overwrite](https://github.com/flutter/flutter/issues/30688)
 12. [flutter text field complete rich text](https://www.jianshu.com/p/83a6fd4e94a8)
+13. [Flutter 输入框获取焦点和失去焦点事件](https://www.jianshu.com/p/f9cd631bd267)
 
 ---
 

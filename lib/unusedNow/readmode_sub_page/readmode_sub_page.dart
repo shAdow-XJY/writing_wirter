@@ -6,7 +6,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import '../../redux/action/set_action.dart';
 import '../../redux/app_state/state.dart';
-import '../../server/parser/StringParser.dart';
+import '../StringParser.dart';
 
 class ReadModeSubPage extends StatefulWidget {
   const ReadModeSubPage({
