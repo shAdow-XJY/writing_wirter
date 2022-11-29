@@ -7,14 +7,28 @@ const clickTextStyle = TextStyle(
 );
 class ClickTextEditingController extends TextEditingController{
 
-  /// late Map<String, Set<String>> _currentParser;
-  RegExp _regExp = RegExp(r'人物a');
   StringScanner _scanner = StringScanner("");
+
+  RegExp _regExp = RegExp(r'');
+  void setRegExp(RegExp regExp) {
+    _regExp = regExp;
+  }
+
+  Function(String)? _onTap;
+  void setOnTapEvent(Function(String) onTap) {
+    _onTap = onTap;
+  }
+
+  @override
+  set text(String newText) {
+    // TODO: implement text
+    super.text = newText;
+    _scanner = StringScanner(text);
+  }
 
   @override
   void addListener(VoidCallback listener) {
     super.addListener(listener);
-    _scanner = StringScanner(text);
   }
   
   @override
@@ -39,6 +53,7 @@ class ClickTextEditingController extends TextEditingController{
             style: clickTextStyle,
             recognizer: TapGestureRecognizer()..onTap = ()=> {
               debugPrint(text.substring(startIndex, endIndex)),
+              _onTap!(text.substring(startIndex, endIndex)),
             }
           ),
         );

@@ -1,6 +1,6 @@
 import 'package:redux/redux.dart';
 
-import '../model/parser_model.dart';
+import 'parser_model.dart';
 
 class SetParserDataAction{
   /// 当前设定集解析加入展示

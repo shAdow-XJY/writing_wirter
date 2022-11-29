@@ -23,7 +23,7 @@ class _EditSubPageState extends State<EditSubPage> {
   late final IOBase ioBase;
 
   /// 章节内容输入框控制器
-  late final TextEditingController textEditingController;
+  final TextEditingController textEditingController = ClickTextEditingController();
   /// 输入框的内容
   String currentText = "";
   /// 输入框的焦点
@@ -33,6 +33,16 @@ class _EditSubPageState extends State<EditSubPage> {
   String currentBook = "";
   String currentChapter = "";
 
+  /// textEditingController点击高亮函数
+  void onTapSetting() {
+
+  }
+
+  /// textEditingController正则匹配函数
+  void regExpSet() {
+
+  }
+
   /// 获取文本
   String getText() {
     if (currentBook.isEmpty || currentChapter.isEmpty) {
@@ -40,24 +50,12 @@ class _EditSubPageState extends State<EditSubPage> {
     }
     return ioBase.getChapterContent(currentBook, currentChapter);
   }
-
   /// 保存/更新文本
   void saveText() {
     if (currentBook.isEmpty || currentChapter.isEmpty) {
       return;
     }
     ioBase.saveChapter(currentBook, currentChapter, currentText);
-  }
-
-  /// 章节重命名
-  void changeChapterName(String newChapterName) {
-    if (newChapterName.compareTo(currentChapter) == 0) {
-      return;
-    }
-    // 先保存再重命名文件
-    ioBase.saveChapter(currentBook, currentChapter, currentText);
-    ioBase.renameChapter(currentBook, currentChapter, newChapterName);
-    currentChapter = newChapterName;
   }
 
   @override
@@ -82,9 +80,6 @@ class _EditSubPageState extends State<EditSubPage> {
     //     ),
     //   ),
     // );
-
-    textEditingController = ClickTextEditingController();
-
     /// textEditingController = TextEditingController();
     /// 添加兼听 当TextFeild 中内容发生变化时 回调 焦点变动 也会触发
     /// onChanged 当TextFeild文本发生改变时才会回调

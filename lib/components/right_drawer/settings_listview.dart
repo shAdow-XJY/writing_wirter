@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer/redux/action/parser_action.dart';
-import 'package:writing_writer/server/parser/Parser.dart';
+import 'package:writing_writer/unusedNow/parser_action.dart';
 import '../../redux/action/set_action.dart';
 import '../../redux/app_state/state.dart';
 import '../transparent_checkbox.dart';
@@ -81,18 +80,8 @@ class _SettingsListViewItemState extends State<SettingsListViewItem> {
         void clickSetting() {
           store.dispatch(SetSetDataAction(currentSet: widget.setName, currentSetting: widget.settingName));
         }
-        void changeParser() {
-          store.dispatch(
-            SetParserDataAction(
-                currentParser: widget.addTextParser
-                    ? Parser.addSettingToParser(store.state.parserModel.currentParser, widget.setName, widget.settingName)
-                    : Parser.removeSettingInParser(store.state.parserModel.currentParser, widget.setName, widget.settingName)
-            ),
-          );
-        }
         return {
           "clickSetting": clickSetting,
-          "changeParser": changeParser
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
@@ -117,7 +106,6 @@ class _SettingsListViewItemState extends State<SettingsListViewItem> {
                     setState(() {
                       widget.addTextParser = changedResult;
                     });
-                    map["changeParser"]();
                   },
                 ),
                 Text(widget.settingName),
