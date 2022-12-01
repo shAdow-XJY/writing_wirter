@@ -46,10 +46,12 @@ class ClickTextEditingController extends TextEditingController{
             style: clickTextStyle,
             recognizer: TapGestureRecognizer()..onTap = ()=> {
               debugPrint(text.substring(startIndex, endIndex)),
-              _onTap!(text.substring(startIndex, endIndex)),
+              _onTap(text.substring(startIndex, endIndex)),
             }
           ),
         );
+        debugPrint('is highlight text span!!!!');
+        print(_regExp);
         // debugPrint('scanning match');
         // debugPrint('scanning match startIndex:');
         // debugPrint(startIndex.toString());

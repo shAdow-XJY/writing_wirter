@@ -47,7 +47,11 @@ class AppState {
       setModel: setModel ?? this.setModel,
       styleModel: styleModel ?? this.styleModel,
       ioBase: ioBase,
-      parserModel: this.textModel.currentBook.compareTo(textModel != null ? textModel!.currentBook : "") == 0 ? parserModel : {},
+      parserModel: this.textModel.currentBook.compareTo(
+          textModel != null
+              ? textModel!.currentBook
+              : this.textModel.currentBook
+      ) == 0 ? parserModel : {},
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/components/click_text_edit_controller.dart';
+import '../../redux/action/set_action.dart';
 import '../../redux/app_state/state.dart';
 import '../../server/file/IOBase.dart';
 import '../../server/parser/Parser.dart';
@@ -34,9 +35,17 @@ class _EditSubPageState extends State<EditSubPage> {
   String currentBook = "";
   String currentChapter = "";
 
-  /// textEditingController点击高亮函数
-  void onTapSetting() {
-
+  /// set parser
+  Map<String, Set<String>> currentParserModel = {};
+  /// textEditingController点击高亮函数返回路径
+  String getSetName(String settingClick) {
+    String result = '';
+    currentParserModel.forEach((setName, settingSet) {
+      if (settingSet.contains(settingClick)) {
+        result = setName;
+      }
+    });
+    return result;
   }
 
   /// textEditingController正则匹配函数
@@ -112,12 +121,20 @@ class _EditSubPageState extends State<EditSubPage> {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
         debugPrint('store in edit_sub_page');
+        // 文本编辑
         saveText();
         currentBook = store.state.textModel.currentBook;
         currentChapter = store.state.textModel.currentChapter;
         textEditingController.text = getText();
         currentText = textEditingController.text;
-        regExpSet(store.state.parserModel);
+        // 文本解析
+        currentParserModel = store.state.parserModel;
+        print('asdasdasd');
+        print(currentParserModel);
+        textEditingController.setOnTapEvent((String settingClick) => {
+          store.dispatch(SetSetDataAction(currentSet: getSetName(settingClick), currentSetting: settingClick))
+        });
+        regExpSet(currentParserModel);
         return {
           "currentBook": currentBook,
           "currentChapter": currentChapter,
