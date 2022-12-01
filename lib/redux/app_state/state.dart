@@ -18,12 +18,15 @@ class AppState {
   late StyleModel styleModel;
   /// IO tool
   late IOBase ioBase;
+  /// all set obj
+  late Map<String, Set<String>> parserModel;
 
   AppState({
     required this.textModel,
     required this.setModel,
     required this.styleModel,
     required this.ioBase,
+    required this.parserModel,
   });
 
   /*
@@ -35,6 +38,7 @@ class AppState {
     setModel = SetModel(currentSet: "", currentSetting: "");
     styleModel = StyleModel(deviceScreenType: DeviceScreenType.desktop);
     ioBase = IOBase();
+    parserModel = {};
   }
 
   AppState copyWith ({textModel, setModel, styleModel}){
@@ -43,6 +47,7 @@ class AppState {
       setModel: setModel ?? this.setModel,
       styleModel: styleModel ?? this.styleModel,
       ioBase: ioBase,
+      parserModel: this.textModel.currentBook.compareTo(textModel != null ? textModel!.currentBook : "") == 0 ? parserModel : {},
     );
   }
 

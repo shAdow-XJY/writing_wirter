@@ -14,16 +14,9 @@ class ClickTextEditingController extends TextEditingController{
     _regExp = regExp;
   }
 
-  Function(String)? _onTap;
+  Function(String) _onTap = (String clickText){};
   void setOnTapEvent(Function(String) onTap) {
     _onTap = onTap;
-  }
-
-  @override
-  set text(String newText) {
-    // TODO: implement text
-    super.text = newText;
-    _scanner = StringScanner(text);
   }
 
   @override
@@ -33,12 +26,12 @@ class ClickTextEditingController extends TextEditingController{
   
   @override
   TextSpan buildTextSpan({required BuildContext context, TextStyle? style, required bool withComposing}) {
-
     // debugPrint('scanning text as follow:');
     // debugPrint(text);
     var atIndex = 0;
     var spans = <InlineSpan>[];
 
+    _scanner = StringScanner(text);
     while (!_scanner.isDone) {
       // debugPrint('scanning');
 
@@ -65,10 +58,9 @@ class ClickTextEditingController extends TextEditingController{
         // debugPrint(text.substring(startIndex, endIndex));
         atIndex = endIndex;
       }
-      if (!_scanner.isDone) {
-        _scanner.position++;
-      }
+      _scanner.position++;
     }
+    _scanner.position = 0;
     spans.add(TextSpan(text: text.substring(atIndex, (text.length - 1 > 0) ? text.length - 1 : 0)));
     debugPrint('build TextSpan successfully');
     return TextSpan(

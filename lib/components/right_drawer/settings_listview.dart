@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer/unusedNow/parser_action.dart';
 import '../../redux/action/set_action.dart';
 import '../../redux/app_state/state.dart';
-import '../transparent_checkbox.dart';
 
 class SettingsListView extends StatefulWidget {
   final String setName;
-  final bool addTextParser;
+  final List<String> settingsList;
 
   const SettingsListView({
     Key? key,
     required this.setName,
-    this.addTextParser = false,
+    required this.settingsList,
   }) : super(key: key);
 
   @override
@@ -28,13 +26,13 @@ class _SettingsListViewState extends State<SettingsListView> {
     super.initState();
   }
 
+  /// 列表项组件
   List<Widget> createChapterList(List<String> settingsList) {
     settingsListViewItems.clear();
     for (var settingName in settingsList) {
       settingsListViewItems.add(SettingsListViewItem(
         setName: widget.setName,
         settingName: settingName,
-        addTextParser: widget.addTextParser,
       ));
     }
     return settingsListViewItems;
@@ -42,15 +40,8 @@ class _SettingsListViewState extends State<SettingsListView> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, List<String>>(
-      converter: (Store store) {
-        return store.state.ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
-      },
-      builder: (BuildContext context, List<String> settingsList) {
-        return Column(
-          children: createChapterList(settingsList),
-        );
-      },
+    return Column(
+      children: createChapterList(widget.settingsList),
     );
   }
 }
@@ -58,13 +49,11 @@ class _SettingsListViewState extends State<SettingsListView> {
 class SettingsListViewItem extends StatefulWidget {
   final String setName;
   final String settingName;
-  bool addTextParser;
 
-  SettingsListViewItem({
+  const SettingsListViewItem({
     Key? key,
     required this.setName,
     required this.settingName,
-    this.addTextParser = false,
   }) : super(key: key);
 
   @override
@@ -98,16 +87,8 @@ class _SettingsListViewItemState extends State<SettingsListViewItem> {
                 )
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TransCheckBox(
-                  initBool: widget.addTextParser,
-                  onChanged: (bool changedResult) {
-                    setState(() {
-                      widget.addTextParser = changedResult;
-                    });
-                  },
-                ),
                 Text(widget.settingName),
               ],
             ),

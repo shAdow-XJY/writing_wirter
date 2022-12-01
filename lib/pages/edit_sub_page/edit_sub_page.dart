@@ -5,6 +5,7 @@ import 'package:redux/redux.dart';
 import 'package:writing_writer/components/click_text_edit_controller.dart';
 import '../../redux/app_state/state.dart';
 import '../../server/file/IOBase.dart';
+import '../../server/parser/Parser.dart';
 
 class EditSubPage extends StatefulWidget {
   final IOBase ioBase;
@@ -23,7 +24,7 @@ class _EditSubPageState extends State<EditSubPage> {
   late final IOBase ioBase;
 
   /// 章节内容输入框控制器
-  final TextEditingController textEditingController = ClickTextEditingController();
+  final ClickTextEditingController textEditingController = ClickTextEditingController();
   /// 输入框的内容
   String currentText = "";
   /// 输入框的焦点
@@ -39,8 +40,8 @@ class _EditSubPageState extends State<EditSubPage> {
   }
 
   /// textEditingController正则匹配函数
-  void regExpSet() {
-
+  void regExpSet(Map<String, Set<String>> parserModel) {
+    textEditingController.setRegExp(Parser.generateRegExp(parserModel));
   }
 
   /// 获取文本
@@ -57,6 +58,7 @@ class _EditSubPageState extends State<EditSubPage> {
     }
     ioBase.saveChapter(currentBook, currentChapter, currentText);
   }
+
 
   @override
   void initState() {
@@ -115,6 +117,7 @@ class _EditSubPageState extends State<EditSubPage> {
         currentChapter = store.state.textModel.currentChapter;
         textEditingController.text = getText();
         currentText = textEditingController.text;
+        regExpSet(store.state.parserModel);
         return {
           "currentBook": currentBook,
           "currentChapter": currentChapter,
