@@ -6,10 +6,12 @@ import '../../redux/app_state/state.dart';
 
 class SettingsListView extends StatefulWidget {
   final String setName;
+  final List<String> settingsList;
 
   const SettingsListView({
     Key? key,
     required this.setName,
+    required this.settingsList,
   }) : super(key: key);
 
   @override
@@ -24,9 +26,10 @@ class _SettingsListViewState extends State<SettingsListView> {
     super.initState();
   }
 
-  List<Widget> createChapterList(List<String> chapterList) {
+  /// 列表项组件
+  List<Widget> createChapterList(List<String> settingsList) {
     settingsListViewItems.clear();
-    for (var settingName in chapterList) {
+    for (var settingName in settingsList) {
       settingsListViewItems.add(SettingsListViewItem(
         setName: widget.setName,
         settingName: settingName,
@@ -37,20 +40,13 @@ class _SettingsListViewState extends State<SettingsListView> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, List<String>>(
-      converter: (Store store) {
-        return store.state.ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
-      },
-      builder: (BuildContext context, List<String> chapterList) {
-        return Column(
-          children: createChapterList(chapterList),
-        );
-      },
+    return Column(
+      children: createChapterList(widget.settingsList),
     );
   }
 }
 
-class SettingsListViewItem extends StatelessWidget {
+class SettingsListViewItem extends StatefulWidget {
   final String setName;
   final String settingName;
 
@@ -61,38 +57,44 @@ class SettingsListViewItem extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<SettingsListViewItem> createState() => _SettingsListViewItemState();
+}
+
+class _SettingsListViewItemState extends State<SettingsListViewItem> {
+  @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return StoreConnector<AppState, VoidCallback>(
+    return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        return () => {
-          store.dispatch(
-            SetSetDataAction(currentSet: setName, currentSetting: settingName),
-          ),
+        void clickSetting() {
+          store.dispatch(SetSetDataAction(currentSet: widget.setName, currentSetting: widget.settingName));
+        }
+        return {
+          "clickSetting": clickSetting,
         };
       },
-      builder: (BuildContext context, VoidCallback clickSetting) {
+      builder: (BuildContext context, Map<String, dynamic> map) {
         return InkWell(
           child: Container(
             height: height / 18.0,
             decoration: BoxDecoration(
-              color: Theme.of(context).highlightColor,
-              border: Border(
-                bottom: BorderSide(
-                  width: 1.0,
-                  color: Theme.of(context).colorScheme.inversePrimary,
+                color: Theme.of(context).highlightColor,
+                border: Border(
+                    bottom: BorderSide(
+                      width: 1.0,
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    )
                 )
-              )
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(settingName),
+                Text(widget.settingName),
               ],
             ),
           ),
           onTap: () {
-            clickSetting();
+            map["clickSetting"]();
           },
         );
       },

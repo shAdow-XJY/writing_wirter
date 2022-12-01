@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:writing_writer/server/style/StyleBase.dart';
 import '../../redux/app_state/state.dart';
 import '../../server/file/IOBase.dart';
 import '../toast_dialog.dart';
@@ -24,21 +25,24 @@ class _LeftDrawerState extends State<LeftDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-        width: MediaQuery.of(context).size.width / 4.0,
-        child: StoreConnector<AppState, IOBase>(
-          converter: (Store store) {
-            return store.state.ioBase;
-          },
-          builder: (BuildContext context, IOBase ioBase) {
-            return Scaffold(
+    return StoreConnector<AppState, Map<String, dynamic>>(
+      converter: (Store store) {
+        return {
+          'ioBase': store.state.ioBase,
+          'deviceType': store.state.styleModel.deviceScreenType,
+        };
+      },
+      builder: (BuildContext context, Map<String, dynamic> map) {
+        return Drawer(
+            width: MediaQuery.of(context).size.width * StyleBase.getDrawerWidthFactor(map['deviceType']),
+            child: Scaffold(
               appBar: AppBar(
                 centerTitle: true,
                 title: const Text('目录'),
                 leading: IconButton(
                   icon: const Icon(Icons.file_open),
                   onPressed: () {
-                    ioBase.openRootDirectory();
+                    map['ioBase'].openRootDirectory();
                   },
                 ),
                 actions: [
@@ -51,7 +55,7 @@ class _LeftDrawerState extends State<LeftDrawer> {
                           title: '新建书籍',
                           callBack: (strBack) => {
                             if (strBack.isNotEmpty) {
-                              ioBase.createBook(strBack),
+                              map['ioBase'].createBook(strBack),
                               Navigator.of(context).pop(),
                             },
                           },
@@ -62,9 +66,9 @@ class _LeftDrawerState extends State<LeftDrawer> {
                 ],
               ),
               body: const BookListView(),
-            );
-          },
-        ),
+            )
+        );
+      },
     );
   }
 }

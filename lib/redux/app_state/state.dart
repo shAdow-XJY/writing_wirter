@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
+import 'package:writing_writer/redux/action/style_action.dart';
+import 'package:writing_writer/redux/model/style_model.dart';
 import '../../server/file/IOBase.dart';
 import '../action/set_action.dart';
 import '../action/text_action.dart';
@@ -11,13 +14,19 @@ class AppState {
   late TextModel textModel;
   /// current set show info
   late SetModel setModel;
-  ///
+  /// device style info
+  late StyleModel styleModel;
+  /// IO tool
   late IOBase ioBase;
+  /// all set obj
+  late Map<String, Set<String>> parserModel;
 
   AppState({
     required this.textModel,
     required this.setModel,
+    required this.styleModel,
     required this.ioBase,
+    required this.parserModel,
   });
 
   /*
@@ -27,14 +36,22 @@ class AppState {
   AppState.initialState() {
     textModel = TextModel(currentBook: "", currentChapter: "");
     setModel = SetModel(currentSet: "", currentSetting: "");
+    styleModel = StyleModel(deviceScreenType: DeviceScreenType.desktop);
     ioBase = IOBase();
+    parserModel = {};
   }
 
-  AppState copyWith ({textModel, setModel}){
+  AppState copyWith ({textModel, setModel, styleModel}){
     return AppState(
       textModel: textModel ?? this.textModel,
       setModel: setModel ?? this.setModel,
+      styleModel: styleModel ?? this.styleModel,
       ioBase: ioBase,
+      parserModel: this.textModel.currentBook.compareTo(
+          textModel != null
+              ? textModel!.currentBook
+              : this.textModel.currentBook
+      ) == 0 ? parserModel : {},
     );
   }
 
@@ -46,16 +63,16 @@ class AppState {
 AppState appReducer(AppState state, action) {
   debugPrint(action.runtimeType.toString());
   switch(action.runtimeType){
-    case SetTextDataAction:
-    {
+    case SetTextDataAction:{
       return state.copyWith(textModel: textReducer(state.textModel, action));
     }
-    case SetSetDataAction:
-    {
+    case SetSetDataAction:{
       return state.copyWith(setModel: setReducer(state.setModel, action));
     }
-    default:
-    {
+    case SetStyleDataAction:{
+      return state.copyWith(styleModel: styleReducer(state.styleModel, action));
+    }
+    default:{
       return state;
     }
   }
