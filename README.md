@@ -3,16 +3,15 @@ A write desktop application developed and used myself with local storage.
 
 ---
 
-## thinking
-emmmm.....
-In fact, it is an excuse for myself not to write novels, and after writing my own software, it is better to record and control the plot by writing my own novels.
+## git code lines
+v2.0.0:
+added lines: 12752, removed lines: 1595, total lines: 11157
 
 ---
 
-## skill quick refer
-1. git checkout -b v1.0.0
-2. git checkout v1.0.0
-3. git push --set-upstream origin v1.0.0
+## thinking
+emmmm.....
+In fact, it is an excuse for myself not to write novels, and after writing my own software, it is better to record and control the plot by writing my own novels.
 
 ---
 
