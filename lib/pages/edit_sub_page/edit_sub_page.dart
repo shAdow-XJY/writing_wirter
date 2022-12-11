@@ -97,7 +97,7 @@ class _EditSubPageState extends State<EditSubPage> {
     textEditingController.addListener(() {
       ///获取输入的内容
       currentText = textEditingController.text;
-      debugPrint("controller 兼听章节内容 $currentText");
+      // debugPrint("controller 兼听章节内容 $currentText");
     });
 
     /// 焦点失焦先保存文章内容
@@ -120,17 +120,17 @@ class _EditSubPageState extends State<EditSubPage> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        debugPrint('store in edit_sub_page');
         // 文本编辑
         saveText();
         currentBook = store.state.textModel.currentBook;
         currentChapter = store.state.textModel.currentChapter;
-        textEditingController.text = getText();
-        currentText = textEditingController.text;
+        if (getText().compareTo(textEditingController.text) != 0) {
+          textEditingController.text = getText();
+          currentText = textEditingController.text;
+        }
         // 文本解析
         currentParserModel = store.state.parserModel;
-        print('asdasdasd');
-        print(currentParserModel);
+        // print(currentParserModel);
         textEditingController.setOnTapEvent((String settingClick) => {
           store.dispatch(SetSetDataAction(currentSet: getSetName(settingClick), currentSetting: settingClick))
         });
