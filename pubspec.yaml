@@ -26,7 +26,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  ## own pack
   blur_glass: ^0.0.1
+  click_text_field: ^0.0.1
+  ## own pack
   path_provider: ^2.0.11
   url_launcher: ^6.1.6
   # 状态管理

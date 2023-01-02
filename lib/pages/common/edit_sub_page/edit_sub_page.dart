@@ -1,8 +1,8 @@
 import 'package:blur_glass/blur_glass.dart';
+import 'package:click_text_field/click_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer/components/common/click_text_edit_controller.dart';
 
 import '../../../redux/action/set_action.dart';
 import '../../../redux/app_state/state.dart';
