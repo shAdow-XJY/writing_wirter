@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer/pages/edit_sub_page/edit_sub_page.dart';
-
-import '../../components/float_button.dart';
-import '../../components/left_drawer/left_drawer.dart';
-import '../../components/right_drawer/right_drawer.dart';
-import '../../components/toast_dialog.dart';
-import '../../redux/action/text_action.dart';
-import '../../redux/app_state/state.dart';
-import '../../server/file/IOBase.dart';
+import '../../../components/common/float_button.dart';
+import '../../../components/common/left_drawer/left_drawer.dart';
+import '../../../components/common/right_drawer/right_drawer.dart';
+import '../../../components/common/toast_dialog.dart';
+import '../../../redux/action/text_action.dart';
+import '../../../redux/app_state/state.dart';
+import '../../../server/file/IOBase.dart';
 import '../detail_sub_page/detail_sub_page.dart';
+import '../edit_sub_page/edit_sub_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({

@@ -2,11 +2,12 @@ import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer/components/click_text_edit_controller.dart';
-import '../../redux/action/set_action.dart';
-import '../../redux/app_state/state.dart';
-import '../../server/file/IOBase.dart';
-import '../../server/parser/Parser.dart';
+import 'package:writing_writer/components/common/click_text_edit_controller.dart';
+
+import '../../../redux/action/set_action.dart';
+import '../../../redux/app_state/state.dart';
+import '../../../server/file/IOBase.dart';
+import '../../../server/parser/Parser.dart';
 
 class EditSubPage extends StatefulWidget {
   final IOBase ioBase;

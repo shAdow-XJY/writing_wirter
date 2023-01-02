@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../pages/pre_page/pre_page.dart';
-import '../pages/home_page/home_page.dart';
+import '../../pages/common/home_page/home_page.dart';
+import '../../pages/common/pre_page/pre_page.dart';
+
 /// 需要引入跳转页面地址
 
 /// 配置路由

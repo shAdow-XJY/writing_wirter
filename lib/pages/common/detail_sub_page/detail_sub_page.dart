@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-import '../../components/toast_dialog.dart';
-import '../../redux/action/set_action.dart';
-import '../../redux/app_state/state.dart';
-import '../../server/file/IOBase.dart';
+import '../../../components/common/toast_dialog.dart';
+import '../../../redux/action/set_action.dart';
+import '../../../redux/app_state/state.dart';
+import '../../../server/file/IOBase.dart';
 
 class DetailSubPage extends StatefulWidget {
   final IOBase ioBase;

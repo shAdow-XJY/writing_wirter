@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/server/style/StyleBase.dart';
-import '../../redux/app_state/state.dart';
-import '../../server/file/IOBase.dart';
+import '../../../redux/app_state/state.dart';
 import '../toast_dialog.dart';
 import 'book_listview.dart';
 

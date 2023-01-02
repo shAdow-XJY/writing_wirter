@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import '../../redux/app_state/state.dart';
+import '../../../redux/app_state/state.dart';
 import '../toast_dialog.dart';
 import '../transparent_icon_button.dart';
 import 'chapter_listview.dart';
