@@ -41,7 +41,8 @@ dependencies:
   lottie: ^2.0.0
   # api
   string_scanner: ^1.1.1
-  detectable_text_field: ^2.0.4
+  # tool
+  collection: ^1.17.0
 
 dev_dependencies:
   flutter_test:

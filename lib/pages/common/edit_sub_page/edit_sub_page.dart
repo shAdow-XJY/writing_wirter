@@ -115,12 +115,13 @@ class _EditSubPageState extends State<EditSubPage> {
         }
         // 文本解析
         print('asdasdasdasd');
-        currentParserObj = store.state.parserModel.parserObj;
-        // print(currentParserObj);
-        textEditingController.setOnTapEvent((String settingClick) => {
-          store.dispatch(SetSetDataAction(currentSet: getSetName(settingClick), currentSetting: settingClick))
-        });
-        regExpSet(currentParserObj);
+        if (!Parser.compareParser(currentParserObj, store.state.parserModel.parserObj)) {
+          currentParserObj = store.state.parserModel.parserObj;
+          textEditingController.setOnTapEvent((String settingClick) => {
+            store.dispatch(SetSetDataAction(currentSet: getSetName(settingClick), currentSetting: settingClick))
+          });
+          regExpSet(currentParserObj);
+        }
         return {
           "currentBook": currentBook,
           "currentChapter": currentChapter,

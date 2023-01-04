@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 class Parser
 {
   static RegExp generateRegExp(Map<String, Set<String>> parser) {
@@ -22,9 +24,9 @@ class Parser
 
   /// parser 对象变量比较
   static bool compareParser(Map<String, Set<String>> parserOne, Map<String, Set<String>> parserTwo) {
-    // DeepCollectionEquality().equals
-    return true;
+    return const DeepCollectionEquality().equals(parserOne, parserTwo);
   }
+
   // static Map<String, Set<String>> addSetToParser(Map<String, Set<String>> currentParser, String addedSetName, List<String> addedSettingsName) {
   //   currentParser[addedSetName]?.addAll(addedSettingsName);
   //   return currentParser;
