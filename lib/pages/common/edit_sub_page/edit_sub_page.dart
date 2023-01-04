@@ -37,11 +37,11 @@ class _EditSubPageState extends State<EditSubPage> {
   String currentChapter = "";
 
   /// set parser
-  Map<String, Set<String>> currentParserModel = {};
+  Map<String, Set<String>> currentParserObj = {};
   /// textEditingController点击高亮函数返回路径
   String getSetName(String settingClick) {
     String result = '';
-    currentParserModel.forEach((setName, settingSet) {
+    currentParserObj.forEach((setName, settingSet) {
       if (settingSet.contains(settingClick)) {
         result = setName;
       }
@@ -52,6 +52,8 @@ class _EditSubPageState extends State<EditSubPage> {
   /// textEditingController正则匹配函数
   void regExpSet(Map<String, Set<String>> parserModel) {
     textEditingController.setRegExp(Parser.generateRegExp(parserModel));
+    // print('asd');
+    // textEditingController.text = "人物a，人物b，人物b,qweqweqweqweqe";
   }
 
   /// 获取文本
@@ -75,24 +77,6 @@ class _EditSubPageState extends State<EditSubPage> {
     super.initState();
     ioBase = widget.ioBase;
 
-    ///控制 初始化的时候光标保持在文字最后
-    // textEditingController = TextEditingController.fromValue(
-    //   ///用来设置初始化时显示
-    //   TextEditingValue(
-    //     ///用来设置文本 controller.text = "0000"
-    //     text: currentText,
-    //     ///设置光标的位置
-    //     selection: TextSelection.fromPosition(
-    //       ///用来设置文本的位置
-    //       TextPosition(
-    //           affinity: TextAffinity.downstream,
-    //           /// 光标向后移动的长度
-    //           offset: currentText.length
-    //       ),
-    //     ),
-    //   ),
-    // );
-    /// textEditingController = TextEditingController();
     /// 添加兼听 当TextFeild 中内容发生变化时 回调 焦点变动 也会触发
     /// onChanged 当TextFeild文本发生改变时才会回调
     textEditingController.addListener(() {
@@ -130,12 +114,13 @@ class _EditSubPageState extends State<EditSubPage> {
           currentText = textEditingController.text;
         }
         // 文本解析
-        currentParserModel = store.state.parserModel;
-        // print(currentParserModel);
+        print('asdasdasdasd');
+        currentParserObj = store.state.parserModel.parserObj;
+        // print(currentParserObj);
         textEditingController.setOnTapEvent((String settingClick) => {
           store.dispatch(SetSetDataAction(currentSet: getSetName(settingClick), currentSetting: settingClick))
         });
-        regExpSet(currentParserModel);
+        regExpSet(currentParserObj);
         return {
           "currentBook": currentBook,
           "currentChapter": currentChapter,

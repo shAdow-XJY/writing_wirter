@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/components/common/right_drawer/settings_listview.dart';
+import 'package:writing_writer/redux/action/parser_action.dart';
 import '../../../redux/app_state/state.dart';
 import '../../../server/parser/Parser.dart';
 import '../toast_dialog.dart';
@@ -86,7 +87,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
         };
         List<String> settingsList = store.state.ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
         if (widget.addTextParser) {
-          store.state.parserModel = Parser.addSetToParser(store.state.parserModel, widget.setName, settingsList);
+          store.dispatch(SetParserDataAction(parserObj: Parser.addSetToParser(store.state.parserModel.parserObj, widget.setName, settingsList)));
         }
         return {
           "renameSet": renameSet,

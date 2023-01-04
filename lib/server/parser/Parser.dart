@@ -20,6 +20,11 @@ class Parser
     return currentParser;
   }
 
+  /// parser 对象变量比较
+  static bool compareParser(Map<String, Set<String>> parserOne, Map<String, Set<String>> parserTwo) {
+    // DeepCollectionEquality().equals
+    return true;
+  }
   // static Map<String, Set<String>> addSetToParser(Map<String, Set<String>> currentParser, String addedSetName, List<String> addedSettingsName) {
   //   currentParser[addedSetName]?.addAll(addedSettingsName);
   //   return currentParser;

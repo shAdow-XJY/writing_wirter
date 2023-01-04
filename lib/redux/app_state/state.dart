@@ -3,8 +3,10 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:writing_writer/redux/action/style_action.dart';
 import 'package:writing_writer/redux/model/style_model.dart';
 import '../../server/file/IOBase.dart';
+import '../action/parser_action.dart';
 import '../action/set_action.dart';
 import '../action/text_action.dart';
+import '../model/parser_model.dart';
 import '../model/set_model.dart';
 import '../model/text_model.dart';
 
@@ -19,7 +21,7 @@ class AppState {
   /// IO tool
   late IOBase ioBase;
   /// all set obj
-  late Map<String, Set<String>> parserModel;
+  late ParserModel parserModel;
 
   AppState({
     required this.textModel,
@@ -38,20 +40,18 @@ class AppState {
     setModel = SetModel(currentSet: "", currentSetting: "");
     styleModel = StyleModel(deviceScreenType: DeviceScreenType.desktop);
     ioBase = IOBase();
-    parserModel = {};
+    parserModel = ParserModel(parserObj: {});
   }
 
-  AppState copyWith ({textModel, setModel, styleModel}){
+  AppState copyWith ({textModel, setModel, styleModel, parserModel}){
     return AppState(
       textModel: textModel ?? this.textModel,
       setModel: setModel ?? this.setModel,
       styleModel: styleModel ?? this.styleModel,
       ioBase: ioBase,
-      parserModel: this.textModel.currentBook.compareTo(
-          textModel != null
-              ? textModel!.currentBook
-              : this.textModel.currentBook
-      ) == 0 ? parserModel : {},
+      parserModel: this.textModel.currentBook.compareTo(textModel != null ? textModel!.currentBook : this.textModel.currentBook) == 0
+          ? (parserModel ?? this.parserModel)
+          : ParserModel(parserObj: {}),
     );
   }
 
@@ -62,15 +62,18 @@ class AppState {
  */
 AppState appReducer(AppState state, action) {
   debugPrint(action.runtimeType.toString());
-  switch(action.runtimeType){
-    case SetTextDataAction:{
+  switch(action.runtimeType) {
+    case SetTextDataAction: {
       return state.copyWith(textModel: textReducer(state.textModel, action));
     }
-    case SetSetDataAction:{
+    case SetSetDataAction: {
       return state.copyWith(setModel: setReducer(state.setModel, action));
     }
-    case SetStyleDataAction:{
+    case SetStyleDataAction: {
       return state.copyWith(styleModel: styleReducer(state.styleModel, action));
+    }
+    case SetParserDataAction: {
+      return state.copyWith(parserModel: parserReducer(state.parserModel, action));
     }
     default:{
       return state;
