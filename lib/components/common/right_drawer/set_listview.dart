@@ -79,6 +79,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
     final height = MediaQuery.of(context).size.height;
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
+        debugPrint('store in set_listview');
         void renameSet(String oldSetName, String newSetName) => {
           store.state.ioBase.renameSet(store.state.textModel.currentBook, oldSetName, newSetName),
         };
@@ -86,8 +87,9 @@ class _SetListViewItemState extends State<SetListViewItem> {
           store.state.ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
         };
         List<String> settingsList = store.state.ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
-        if (widget.addTextParser) {
-          store.dispatch(SetParserDataAction(parserObj: Parser.addSetToParser(store.state.parserModel.parserObj, widget.setName, settingsList)));
+        Map<String, Set<String>> newParserModel = Parser.addSetToParser(store.state.parserModel.parserObj, widget.setName, settingsList);
+        if (widget.addTextParser && !Parser.compareParser(newParserModel, store.state.parserModel.parserObj)) {
+          store.dispatch(SetParserDataAction(parserObj: newParserModel));
         }
         return {
           "renameSet": renameSet,

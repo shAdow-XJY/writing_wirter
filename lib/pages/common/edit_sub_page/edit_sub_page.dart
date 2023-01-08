@@ -105,6 +105,7 @@ class _EditSubPageState extends State<EditSubPage> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
+        debugPrint('store in edit_sub_page');
         // 文本编辑
         saveText();
         currentBook = store.state.textModel.currentBook;
@@ -114,7 +115,6 @@ class _EditSubPageState extends State<EditSubPage> {
           currentText = textEditingController.text;
         }
         // 文本解析
-        print('asdasdasdasd');
         if (!Parser.compareParser(currentParserObj, store.state.parserModel.parserObj)) {
           currentParserObj = store.state.parserModel.parserObj;
           textEditingController.setOnTapEvent((String settingClick) => {
