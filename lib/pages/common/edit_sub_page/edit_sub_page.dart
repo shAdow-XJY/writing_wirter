@@ -22,6 +22,7 @@ class EditSubPage extends StatefulWidget {
 }
 
 class _EditSubPageState extends State<EditSubPage> {
+
   /// 文件操作类
   late final IOBase ioBase;
 
@@ -52,8 +53,6 @@ class _EditSubPageState extends State<EditSubPage> {
   /// textEditingController正则匹配函数
   void regExpSet(Map<String, Set<String>> parserModel) {
     textEditingController.setRegExp(Parser.generateRegExp(parserModel));
-    // print('asd');
-    // textEditingController.text = "人物a，人物b，人物b,qweqweqweqweqe";
   }
 
   /// 获取文本
@@ -117,24 +116,25 @@ class _EditSubPageState extends State<EditSubPage> {
         // 文本解析
         if (!Parser.compareParser(currentParserObj, store.state.parserModel.parserObj)) {
           currentParserObj = store.state.parserModel.parserObj;
-          textEditingController.setOnTapEvent((String settingClick) => {
-            store.dispatch(SetSetDataAction(currentSet: getSetName(settingClick), currentSetting: settingClick))
-          });
-          regExpSet(currentParserObj);
+          // regExpSet(currentParserObj);
+        }
+        void clickHighLightText(String settingClick) {
+          store.dispatch(SetSetDataAction(currentSet: getSetName(settingClick), currentSetting: settingClick));
         }
         return {
-          "currentBook": currentBook,
-          "currentChapter": currentChapter,
-          "currentText": currentText,
+          "clickHighLightText": clickHighLightText,
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
         /// 毛玻璃组件做写字板背景
         return BlurGlass(
-          child: TextField(
-            controller: textEditingController,
+          child: ClickTextField(
             focusNode: focusNode,
-            maxLines: null,
+            controller: textEditingController,
+            regExp: Parser.generateRegExp(currentParserObj),
+            onTapText: (String clickText) {
+              map["clickHighLightText"](clickText);
+            },
             decoration: const InputDecoration(
               /// 消除下边框
               border: OutlineInputBorder(
