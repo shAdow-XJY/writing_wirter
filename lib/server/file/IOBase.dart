@@ -30,6 +30,7 @@ class IOBase
   void _init() {
     _rootDir = Directory(_appDocPath + Platform.pathSeparator + _rootName);
     if(!_rootDir.existsSync()){
+      /// 创建应用文件夹
       _rootDir.create();
       // debugPrint(_rootDir.path);
     }
@@ -64,18 +65,18 @@ class IOBase
       path += "${Platform.pathSeparator}$bookName设定集";
       path += "${Platform.pathSeparator}$setName";
       if(settingName.isNotEmpty) {
-        path += "${Platform.pathSeparator}$settingName";
+        path += "${Platform.pathSeparator}$settingName.json";
       }
     }
     return path;
   }
 
-  /// 判断是书/一级设定：文件夹
+  /// 判断是书/设定集：文件夹
   bool _isDir(Object object) {
     return (object.runtimeType.toString() == "_Directory");
   }
 
-  /// 判断是章节/二级设定：文件夹
+  /// 判断是章节/设定：文件
   bool _isFile(Object object) {
     return (object.runtimeType.toString() == "_File");
   }
@@ -104,50 +105,7 @@ class IOBase
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  //                                增                                       //
-  ////////////////////////////////////////////////////////////////////////////
-
-  /// 创建一本书：文件夹
-  void createBook(String bookName) {
-    Directory dir = Directory(_dirPath(bookName: bookName));
-    if(!dir.existsSync()){
-      dir.create();
-      // debugPrint(dir.path);
-      /// 创建该书对应设定集：文件夹
-      Directory dir2 = Directory(_dirPath(bookName: bookName, isSet: true));
-      if(!dir2.existsSync()){
-        dir2.create();
-      }
-    }
-  }
-
-  /// 创建一章节：文件
-  void createChapter(String bookName, String chapterName) {
-    File file = File(_filePath(bookName: bookName, chapterName: chapterName));
-    if(!file.existsSync()) {
-      file.create();
-      // debugPrint(file.path);
-    }
-  }
-
-  /// 创建一个一级设定：文件夹
-  void createSet(String bookName, String setName) {
-    Directory dir3 = Directory(_dirPath(bookName: bookName, isSet: true, setName: setName));
-    if(!dir3.existsSync()) {
-      dir3.create();
-    }
-  }
-
-  /// 创建一级设定内一个二级设定：文件
-  void createSetting(String bookName, String setName, String settingName) {
-    File file2 = File(_filePath(bookName: bookName, setName: setName, settingName: settingName));
-    if(!file2.existsSync()) {
-      file2.create();
-    }
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  //                             查                                          //
+  //                             书籍                                        //
   ////////////////////////////////////////////////////////////////////////////
 
   /// 遍历所有书名：遍历根文件夹
@@ -167,9 +125,40 @@ class IOBase
     return bookNames;
   }
 
+  /// 创建一本书：文件夹
+  void createBook(String bookName) {
+    Directory dir = Directory(_dirPath(bookName: bookName));
+    if(!dir.existsSync()){
+      dir.create();
+      // debugPrint(dir.path);
+      /// 创建该书对应设定集：文件夹
+      Directory dir2 = Directory(_dirPath(bookName: bookName, isSet: true));
+      if(!dir2.existsSync()){
+        dir2.create();
+      }
+    }
+  }
+
+  /// 书籍重命名
+  void renameBook(String oldBookName, String newBookName) {
+    Directory dir = Directory(_dirPath(bookName: oldBookName));
+    if(dir.existsSync()) {
+      dir.renameSync(_dirPath(bookName: newBookName));
+      /// 再重命名该书对应设定集：文件夹
+      Directory dir2 = Directory("$_rootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}$oldBookName设定集");
+      if(dir2.existsSync()){
+        dir2.renameSync(_dirPath(bookName: newBookName, isSet: true));
+      }
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                             章节                                        //
+  ////////////////////////////////////////////////////////////////////////////
+
   /// 遍历指定书下所有章节：遍历书名文件夹
   List<String> getAllChapters(String bookName) {
-    Directory dir = Directory(_rootPath + Platform.pathSeparator + bookName);
+    Directory dir = Directory(_dirPath(bookName: bookName));
     List<String> chapterNames = [];
     try {
       dir.listSync().forEach((fileSystemEntity) {
@@ -185,12 +174,54 @@ class IOBase
     return chapterNames;
   }
 
-  /// 遍历书下所有一级设定：遍历一级设定名文件夹
+  /// 创建一章节：文件
+  void createChapter(String bookName, String chapterName) {
+    File file = File(_filePath(bookName: bookName, chapterName: chapterName));
+    if(!file.existsSync()) {
+      file.create();
+      // debugPrint(file.path);
+    }
+  }
+
+  /// 章节重命名
+  void renameChapter(String bookName, String oldChapterName, String newChapterName) {
+    File file = File(_filePath(bookName: bookName, chapterName: oldChapterName));
+    if(file.existsSync()) {
+      file.renameSync(_filePath(bookName: bookName, chapterName: newChapterName));
+    }
+  }
+
+  /// 保存章节
+  void saveChapter(String bookName, String chapterName, String content) {
+    File file = File(_filePath(bookName: bookName, chapterName: chapterName));
+    if(file.existsSync()) {
+      file.writeAsStringSync(content);
+    }
+  }
+
+  /// 获取章节的文字内容：读取章节文件
+  String getChapterContent(String bookName, String chapterName) {
+    File file = File(_filePath(bookName: bookName, chapterName: chapterName));
+    String content = "";
+    try {
+      content = file.readAsStringSync();
+      debugPrint(file.readAsStringSync());
+    } on Exception catch (e, s) {
+      print(s);
+    }
+    return content;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                             设定集                                       //
+  ////////////////////////////////////////////////////////////////////////////
+
+  /// 遍历书下所有设定集：遍历设定集文件夹名称
   List<String> getAllSet(String bookName) {
-    Directory dir2 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集");
+    Directory setDir = Directory(_dirPath(bookName: bookName, isSet: true));
     List<String> settingNames = [];
     try {
-      dir2.listSync().forEach((fileSystemEntity) {
+      setDir.listSync().forEach((fileSystemEntity) {
         if(_isDir(fileSystemEntity)) {
           settingNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last);
           // debugPrint(fileSystemEntity.path.split(Platform.pathSeparator).last);
@@ -203,14 +234,34 @@ class IOBase
     return settingNames;
   }
 
-  /// 遍历指定一级设定下所有二级设定：遍历二级设定名文件
+  /// 创建一个设定集：文件夹
+  void createSet(String bookName, String setName) {
+    Directory dir2 = Directory(_dirPath(bookName: bookName, isSet: true, setName: setName));
+    if(!dir2.existsSync()) {
+      dir2.create();
+    }
+  }
+
+  /// 设定集(文件夹)重命名
+  void renameSet(String bookName, String oldSetName, String newSetName) {
+    Directory dir = Directory(_dirPath(bookName: bookName, isSet: true, setName: oldSetName));
+    if(dir.existsSync()) {
+      dir.renameSync(_dirPath(bookName: bookName, isSet: true, setName: newSetName));
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                              设定                                        //
+  ////////////////////////////////////////////////////////////////////////////
+
+  /// 遍历指定设定集下所有设定：遍历设定（.json文件）
   List<String> getAllSettings(String bookName, String setName) {
-    Directory dir3 = Directory("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName");
+    Directory setDir2 = Directory(_dirPath(bookName: bookName, isSet: true, setName: setName));
     List<String> settingNames = [];
     try {
-      dir3.listSync().forEach((fileSystemEntity) {
+      setDir2.listSync().forEach((fileSystemEntity) {
         if(_isFile(fileSystemEntity)) {
-          settingNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last);
+          settingNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last.split('.').first);
         }
       });
     } on Exception catch (e, s) {
@@ -220,22 +271,33 @@ class IOBase
     return settingNames;
   }
 
-  /// 获取章节的文字内容：读取章节文件
-  String getChapterContent(String bookName, String chapterName) {
-    File file = File(_rootPath + Platform.pathSeparator + bookName + Platform.pathSeparator + chapterName);
-    String content = "";
-    try {
-      content = file.readAsStringSync();
-      debugPrint(file.readAsStringSync());
-    } on Exception catch (e, s) {
-      print(s);
+  /// 创建设定集内一个设定：json文件
+  void createSetting(String bookName, String setName, String settingName) {
+    File file2 = File(_filePath(bookName: bookName, setName: setName, settingName: settingName));
+    if(!file2.existsSync()) {
+      file2.create();
     }
-    return content;
   }
 
-  /// 获取二级设定的内容：读取二级设定文件
+  /// 保存设定(json文件)
+  void saveSetting(String bookName, String setName, String settingName, String content) {
+    File file = File(_filePath(bookName: bookName, setName: setName, settingName: settingName));
+    if(file.existsSync()) {
+      file.writeAsStringSync(content);
+    }
+  }
+
+  /// 设定(json文件)重命名
+  void renameSetting(String bookName, String setName, String oldSettingName, String newSettingName) {
+    File file = File(_filePath(bookName: bookName, setName: setName, settingName: oldSettingName));
+    if(file.existsSync()) {
+      file.renameSync(_filePath(bookName: bookName, setName: setName, settingName: newSettingName));
+    }
+  }
+
+  /// 获取设定的内容：读取设定json文件内容
   String getSettingContent(String bookName, String setName, String settingName) {
-    File file2 = File("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName${Platform.pathSeparator}$settingName");
+    File file2 = File(_filePath(bookName: bookName, setName: setName, settingName: settingName));
     String content = "";
     try {
       content = file2.readAsStringSync();
@@ -246,60 +308,4 @@ class IOBase
     return content;
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  //                             改                                          //
-  ////////////////////////////////////////////////////////////////////////////
-
-  /// 书籍重命名
-  void renameBook(String oldBookName, String newBookName) {
-    Directory dir = Directory(_dirPath(bookName: oldBookName));
-    if(dir.existsSync()) {
-      dir.renameSync(_dirPath(bookName: newBookName));
-      /// 再重命名该书对应设定集：文件夹
-      Directory dir2 = Directory("$_rootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}$oldBookName设定集");
-      if(dir2.existsSync()){
-        dir2.renameSync(_dirPath(bookName: newBookName, isSet: true));
-      }
-    }
-  }
-
-  /// 保存章节
-  void saveChapter(String bookName, String chapterName, String content) {
-    File file = File(_rootPath + Platform.pathSeparator + bookName + Platform.pathSeparator + chapterName);
-    if(file.existsSync()) {
-      file.writeAsStringSync(content);
-    }
-  }
-
-  /// 章节重命名
-  void renameChapter(String bookName, String oldChapterName, String newChapterName) {
-    File file = File(_rootPath + Platform.pathSeparator + bookName + Platform.pathSeparator + oldChapterName);
-    if(file.existsSync()) {
-      file.renameSync(_rootPath + Platform.pathSeparator + bookName + Platform.pathSeparator + newChapterName);
-    }
-  }
-
-  /// 一级设定重命名
-  void renameSet(String bookName, String oldSetName, String newSetName) {
-    Directory dir = Directory(_dirPath(bookName: bookName, isSet: true, setName: oldSetName));
-    if(dir.existsSync()) {
-      dir.renameSync(_dirPath(bookName: bookName, isSet: true, setName: newSetName));
-    }
-  }
-
-  /// 保存二级设定
-  void saveSetting(String bookName, String setName, String settingName, String content) {
-    File file = File("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName${Platform.pathSeparator}$settingName");
-    if(file.existsSync()) {
-      file.writeAsStringSync(content);
-    }
-  }
-
-  /// 二级设定重命名
-  void renameSetting(String bookName, String setName, String oldSettingName, String newSettingName) {
-    File file = File("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName${Platform.pathSeparator}$oldSettingName");
-    if(file.existsSync()) {
-      file.renameSync("$_rootPath${Platform.pathSeparator}$bookName${Platform.pathSeparator}$bookName设定集${Platform.pathSeparator}$setName${Platform.pathSeparator}$newSettingName");
-    }
-  }
 }
