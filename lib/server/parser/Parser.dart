@@ -17,34 +17,25 @@ class Parser
 
   /// parser 对象变量构造
   static Map<String, Set<String>> addSetToParser(Map<String, Set<String>> currentParser, String setName, List<String> settingsList) {
-    currentParser[setName] = <String>{};
-    currentParser[setName]?.addAll(settingsList);
-    return currentParser;
+    Map<String, Set<String>> newObj = deepClone(currentParser);
+    newObj[setName] = <String>{};
+    newObj[setName]?.addAll(settingsList);
+    return newObj;
   }
 
   /// parser 对象变量比较
+  /// equals : true
   static bool compareParser(Map<String, Set<String>> parserOne, Map<String, Set<String>> parserTwo) {
     return const DeepCollectionEquality().equals(parserOne, parserTwo);
   }
 
-  // static Map<String, Set<String>> addSetToParser(Map<String, Set<String>> currentParser, String addedSetName, List<String> addedSettingsName) {
-  //   currentParser[addedSetName]?.addAll(addedSettingsName);
-  //   return currentParser;
-  // }
-  //
-  // static Map<String, Set<String>> addSettingToParser(Map<String, Set<String>> currentParser, String addedSetName, String addedSettingName) {
-  //   currentParser[addedSetName]?.add(addedSettingName);
-  //   return currentParser;
-  // }
-  //
-  // static Map<String, Set<String>> removeSetInParser(Map<String, Set<String>> currentParser, String removedSetName) {
-  //   currentParser[removedSetName] = <String>{};
-  //   return currentParser;
-  // }
-  //
-  // static Map<String, Set<String>> removeSettingInParser(Map<String, Set<String>> currentParser, String removedSetName, String removedSettingName) {
-  //   currentParser[removedSetName]?.remove(removedSettingName);
-  //   return currentParser;
-  // }
-
+  /// Map<String, Set<String>> 深拷贝
+  static Map<String, Set<String>> deepClone(Map<String, Set<String>> parser) {
+    Map<String, Set<String>> newObj = {};
+    parser.forEach((set, settings) {
+      newObj[set] = <String>{};
+      newObj[set]?.addAll(settings);
+    });
+    return newObj;
+  }
 }
