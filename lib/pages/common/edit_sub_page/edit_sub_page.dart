@@ -3,7 +3,6 @@ import 'package:click_text_field/click_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-
 import '../../../redux/action/set_action.dart';
 import '../../../redux/app_state/state.dart';
 import '../../../server/file/IOBase.dart';
@@ -48,11 +47,6 @@ class _EditSubPageState extends State<EditSubPage> {
       }
     });
     return result;
-  }
-
-  /// textEditingController正则匹配函数
-  void regExpSet(Map<String, Set<String>> parserModel) {
-    textEditingController.setRegExp(Parser.generateRegExp(parserModel));
   }
 
   /// 获取文本
@@ -116,7 +110,6 @@ class _EditSubPageState extends State<EditSubPage> {
         // 文本解析
         if (!Parser.compareParser(currentParserObj, store.state.parserModel.parserObj)) {
           currentParserObj = store.state.parserModel.parserObj;
-          // regExpSet(currentParserObj);
         }
         void clickHighLightText(String settingClick) {
           store.dispatch(SetSetDataAction(currentSet: getSetName(settingClick), currentSetting: settingClick));
