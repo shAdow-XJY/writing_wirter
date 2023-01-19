@@ -42,4 +42,5 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 5. [redux](https://pub.dev/packages/redux)
 6. [responsive_builder](https://pub.dev/packages/responsive_builder)
 7. [lottie](https://pub.dev/packages/lottie)
-8. [detectable_text_field](https://pub.dev/packages/detectable_text_field/score)
+8. [click_text_field](https://pub.dev/packages/click_text_field)
+9. [event_bus](https://pub.dev/packages/event_bus)
