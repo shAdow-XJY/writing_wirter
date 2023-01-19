@@ -2,7 +2,7 @@ import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-
+import 'dart:convert' as convert;
 import '../../../components/common/toast_dialog.dart';
 import '../../../redux/action/set_action.dart';
 import '../../../redux/app_state/state.dart';
@@ -25,41 +25,44 @@ class _DetailSubPageState extends State<DetailSubPage>{
   late final IOBase ioBase;
   /// 章节内容输入框控制器
   final TextEditingController textEditingController = TextEditingController();
+  /// 输入框的焦点
+  final focusNode = FocusNode();
 
   /// status
   String currentBook = "";
   String currentSet = "";
   String currentSetting = "";
 
+  /// json设定的内容
+  Map<String, dynamic> currentMap = {};
   /// 输入框的内容
-  String currentText = "";
+  String currentDescription = "";
 
-  /// 详情框打开状态
-  bool isDetailOpened = false;
-
-  /// 获取文本
-  String getText() {
+  /// 获取设定
+  void getSetting() {
     if (currentBook.isEmpty || currentSet.isEmpty || currentSetting.isEmpty) {
-      return '';
+      return ;
     }
-    return ioBase.getSettingContent(currentBook, currentSet, currentSetting);
+    currentMap = convert.jsonDecode(ioBase.getSettingContent(currentBook, currentSet, currentSetting));
+    textEditingController.text = currentMap["information"]!["1"]["description"];
+    currentDescription = textEditingController.text;
   }
 
-  /// 保存/更新文本
-  void saveText() {
+  /// 保存/更新设定
+  void saveSetting() {
     if (currentBook.isEmpty || currentSet.isEmpty || currentSetting.isEmpty) {
       return;
     }
-    ioBase.saveSetting(currentBook, currentSet, currentSetting, currentText);
+    ioBase.saveSetting(currentBook, currentSet, currentSetting, convert.jsonEncode(currentMap));
   }
 
-  /// 章节重命名
+  /// 设定重命名
   void changeSettingName(String newSettingName) {
     if (newSettingName.compareTo(currentSetting) == 0) {
       return;
     }
-    // 先保存再重命名文件
-    ioBase.saveSetting(currentBook, currentSet, currentSetting, currentText);
+    // 先保存再重命名设定.json文件
+    ioBase.saveSetting(currentBook, currentSet, currentSetting, currentDescription);
     ioBase.renameSetting(currentBook, currentSet, currentSetting, newSettingName);
     currentSetting = newSettingName;
   }
@@ -72,14 +75,22 @@ class _DetailSubPageState extends State<DetailSubPage>{
     /// onChanged 当TextFeild文本发生改变时才会回调
     textEditingController.addListener(() {
       ///获取输入的内容
-      currentText = textEditingController.text;
-      debugPrint(" controller 兼听设定内容 $currentText");
+      currentDescription = textEditingController.text;
+      debugPrint(" controller 监听设定内容 $currentDescription");
+    });
+    /// 焦点失焦先保存文章内容
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        // TextField has lost focus
+        saveSetting();
+        debugPrint("失去焦点保存内容");
+      }
     });
   }
 
   @override
   void dispose() {
-    saveText();
+    saveSetting();
     super.dispose();
   }
 
@@ -87,19 +98,18 @@ class _DetailSubPageState extends State<DetailSubPage>{
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        saveText();
+        saveSetting();
         currentBook = store.state.textModel.currentBook;
         currentSet = store.state.setModel.currentSet;
         currentSetting = store.state.setModel.currentSetting;
-        textEditingController.text = getText();
-        currentText = textEditingController.text;
+        getSetting();
         void renameSetting() {
           store.dispatch(SetSetDataAction(currentSet: currentSet, currentSetting: currentSetting));
         }
         return {
           "currentSet": currentSet,
           "currentSetting": currentSetting,
-          "currentText": currentText,
+          "currentDescription": currentDescription,
           "renameSetting": renameSetting,
         };
       },
@@ -107,6 +117,7 @@ class _DetailSubPageState extends State<DetailSubPage>{
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             centerTitle: true,
             title: InkWell(
               child: Text(map["currentSetting"] ?? ""),
@@ -135,8 +146,9 @@ class _DetailSubPageState extends State<DetailSubPage>{
               inBorderRadius: 0.0,
               outBorderRadius: 0.0,
               child: TextField(
-                controller: textEditingController,
                 maxLines: null,
+                focusNode: FocusNode(),
+                controller: textEditingController,
                 decoration: const InputDecoration(
                   /// 消除下边框
                   border: OutlineInputBorder(

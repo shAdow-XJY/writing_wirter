@@ -46,9 +46,9 @@ class _BookListViewState extends State<BookListView> {
 }
 
 class BookListViewItem extends StatefulWidget {
-  final String bookName;
+  String bookName;
 
-  const BookListViewItem({
+  BookListViewItem({
     Key? key,
     required this.bookName,
   }) : super(key: key);
@@ -58,6 +58,7 @@ class BookListViewItem extends StatefulWidget {
 }
 
 class _BookListViewItemState extends State<BookListViewItem> {
+  // 列表是否展开
   bool isExpanded = false;
 
   @override
@@ -103,9 +104,9 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   builder: (context) => ToastDialog(
                                     init: widget.bookName,
                                     title: '重命名书籍',
-                                    callBack: (strBack) => {
-                                      if (strBack.isNotEmpty) {
-                                        map["renameBook"](widget.bookName, strBack),
+                                    callBack: (newBookName) => {
+                                      if (newBookName.isNotEmpty) {
+                                        map["renameBook"](widget.bookName, newBookName),
                                       },
                                     },
                                   ),
@@ -134,9 +135,9 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                 context: context,
                                 builder: (context) => ToastDialog(
                                   title: '新建章节',
-                                  callBack: (strBack) => {
-                                    if (strBack.isNotEmpty) {
-                                      map["createChapter"](widget.bookName, strBack),
+                                  callBack: (chapterName) => {
+                                    if (chapterName.isNotEmpty) {
+                                      map["createChapter"](widget.bookName, chapterName),
                                     },
                                   },
                                 ),

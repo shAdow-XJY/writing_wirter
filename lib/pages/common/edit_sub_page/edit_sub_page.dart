@@ -30,7 +30,7 @@ class _EditSubPageState extends State<EditSubPage> {
   /// 输入框的内容
   String currentText = "";
   /// 输入框的焦点
-  FocusNode focusNode = FocusNode();
+  final FocusNode focusNode = FocusNode();
 
   /// text
   String currentBook = "";

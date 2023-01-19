@@ -29,6 +29,8 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 11. [flutter text field overwrite](https://github.com/flutter/flutter/issues/30688)
 12. [flutter text field complete rich text](https://www.jianshu.com/p/83a6fd4e94a8)
 13. [Flutter 输入框获取焦点和失去焦点事件](https://www.jianshu.com/p/f9cd631bd267)
+14. [Flutter 文件之间引用(路径，方法等不存在)报错但不影响编译运行问题](https://blog.csdn.net/jia635/article/details/117291927)
+15. [解析json的数据类型不一致导致](https://blog.csdn.net/codekxx/article/details/104557944)
 
 ---
 
