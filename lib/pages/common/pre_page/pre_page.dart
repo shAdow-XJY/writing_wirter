@@ -4,9 +4,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:lottie/lottie.dart';
 import 'package:redux/redux.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
-import '../../../redux/action/style_action.dart';
-import '../../../redux/app_state/state.dart';
+import '../../../state_machine/redux/action/style_action.dart';
+import '../../../state_machine/redux/app_state/state.dart';
 
 class PrePage extends StatefulWidget {
   const PrePage({Key? key}) : super(key: key);

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer/redux/app_state/state.dart';
 import 'package:writing_writer/router/pc/pc_router.dart';
+
+import '../../state_machine/redux/app_state/state.dart';
 
 
 class PcApp extends StatelessWidget {

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:writing_writer/redux/action/style_action.dart';
-import 'package:writing_writer/redux/model/style_model.dart';
-import '../../server/file/IOBase.dart';
+import '../../../server/file/IOBase.dart';
 import '../action/parser_action.dart';
 import '../action/set_action.dart';
+import '../action/style_action.dart';
 import '../action/text_action.dart';
 import '../model/parser_model.dart';
 import '../model/set_model.dart';
+import '../model/style_model.dart';
 import '../model/text_model.dart';
 
 class AppState {

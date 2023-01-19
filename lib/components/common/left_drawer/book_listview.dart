@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import '../../../redux/app_state/state.dart';
+import 'package:event_bus/event_bus.dart';
+import '../../../state_machine/redux/app_state/state.dart';
+import '../../../state_machine/event_bus/events.dart';
 import '../toast_dialog.dart';
 import '../transparent_icon_button.dart';
 import 'chapter_listview.dart';
@@ -58,12 +60,31 @@ class BookListViewItem extends StatefulWidget {
 }
 
 class _BookListViewItemState extends State<BookListViewItem> {
-  // 列表是否展开
+  /// 列表是否展开
   bool isExpanded = false;
+  /// 事件总线
+  EventBus eventBus = EventBus();
 
   @override
   void initState() {
     super.initState();
+    /// bus总线：修改后实时更新
+    eventBus.on<RenameBookNameEvent>().listen((event) {
+      setState(() {
+        widget.bookName;
+      });
+    });
+    eventBus.on<CreateNewChapter>().listen((event) {
+      setState(() {
+        widget.bookName;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    eventBus.destroy();
+    super.dispose();
   }
 
   @override
@@ -107,6 +128,8 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                     callBack: (newBookName) => {
                                       if (newBookName.isNotEmpty) {
                                         map["renameBook"](widget.bookName, newBookName),
+                                        widget.bookName = newBookName,
+                                        eventBus.fire(RenameBookNameEvent()),
                                       },
                                     },
                                   ),
@@ -138,6 +161,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   callBack: (chapterName) => {
                                     if (chapterName.isNotEmpty) {
                                       map["createChapter"](widget.bookName, chapterName),
+                                      eventBus.fire(CreateNewChapter()),
                                     },
                                   },
                                 ),

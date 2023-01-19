@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/components/common/right_drawer/set_listview.dart';
-import '../../../redux/app_state/state.dart';
 import '../../../server/style/StyleBase.dart';
+import '../../../state_machine/redux/app_state/state.dart';
 import '../toast_dialog.dart';
 import '../transparent_checkbox.dart';
 

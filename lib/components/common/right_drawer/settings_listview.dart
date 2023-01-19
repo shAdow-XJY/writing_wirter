@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-
-import '../../../redux/action/set_action.dart';
-import '../../../redux/app_state/state.dart';
+import '../../../state_machine/redux/action/set_action.dart';
+import '../../../state_machine/redux/app_state/state.dart';
 
 class SettingsListView extends StatefulWidget {
   final String setName;
