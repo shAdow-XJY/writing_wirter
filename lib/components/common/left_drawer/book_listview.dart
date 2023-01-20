@@ -18,6 +18,7 @@ class BookListView extends StatefulWidget {
 }
 
 class _BookListViewState extends State<BookListView> {
+
   @override
   void initState() {
     super.initState();
@@ -74,7 +75,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
         widget.bookName;
       });
     });
-    eventBus.on<CreateNewChapter>().listen((event) {
+    eventBus.on<CreateNewBookEvent>().listen((event) {
       setState(() {
         widget.bookName;
       });
@@ -161,7 +162,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   callBack: (chapterName) => {
                                     if (chapterName.isNotEmpty) {
                                       map["createChapter"](widget.bookName, chapterName),
-                                      eventBus.fire(CreateNewChapter()),
+                                      eventBus.fire(CreateNewBookEvent()),
                                     },
                                   },
                                 ),

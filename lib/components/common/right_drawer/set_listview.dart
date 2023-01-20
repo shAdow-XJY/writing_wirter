@@ -1,8 +1,10 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/components/common/right_drawer/settings_listview.dart';
 import '../../../server/parser/Parser.dart';
+import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../toast_dialog.dart';
@@ -51,11 +53,11 @@ class _SetListViewState extends State<SetListView> {
 }
 
 class SetListViewItem extends StatefulWidget {
-  final String setName;
+  String setName;
   /// 设定集是否加入文本解析
   final bool addTextParser;
 
-  const SetListViewItem({
+  SetListViewItem({
     Key? key,
     required this.setName,
     required this.addTextParser,
@@ -69,9 +71,28 @@ class _SetListViewItemState extends State<SetListViewItem> {
   /// 列表展开
   bool isExpanded = false;
 
+  /// 事件总线
+  EventBus eventBus = EventBus();
+
   @override
   void initState() {
     super.initState();
+    eventBus.on<RenameSetEvent>().listen((event) {
+      setState(() {
+        widget.setName;
+      });
+    });
+    eventBus.on<CreateNewSettingEvent>().listen((event) {
+      setState(() {
+        widget.setName;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    eventBus.destroy();
+    super.dispose();
   }
 
   @override
@@ -119,9 +140,11 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                 builder: (context) => ToastDialog(
                                   init: widget.setName,
                                   title: '重命名设定类',
-                                  callBack: (strBack) => {
-                                    if (strBack.isNotEmpty) {
-                                      map["renameSet"](widget.setName, strBack),
+                                  callBack: (newSetName) => {
+                                    if (newSetName.isNotEmpty) {
+                                      map["renameSet"](widget.setName, newSetName),
+                                      widget.setName = newSetName,
+                                      eventBus.fire(RenameSetEvent()),
                                     },
                                   },
                                 ),
@@ -150,9 +173,10 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                 context: context,
                                 builder: (context) => ToastDialog(
                                   title: '新建设定',
-                                  callBack: (strBack) => {
-                                    if (strBack.isNotEmpty) {
-                                      map["createSetting"](strBack),
+                                  callBack: (settingName) => {
+                                    if (settingName.isNotEmpty) {
+                                      map["createSetting"](settingName),
+                                      eventBus.fire(CreateNewSettingEvent()),
                                     },
                                   },
                                 ),

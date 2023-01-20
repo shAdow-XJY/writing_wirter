@@ -211,6 +211,9 @@ class IOBase
   /// 遍历指定书下所有章节：读取对应书籍-章节json文件
   List<String> getAllChapters(String bookName) {
     List<String> chapterNames = [];
+    if (bookName.isEmpty) {
+      return chapterNames;
+    }
     try {
       chapterNames = getBookJsonContent(bookName)["chapterList"].cast<String>() ?? [];
     } on Exception catch (e, s) {
@@ -264,16 +267,19 @@ class IOBase
 
   /// 遍历书下所有设定集：遍历设定集文件夹名称
   List<String> getAllSet(String bookName) {
-    Directory setDir = Directory(_dirPath(bookName: bookName, isSet: true));
     List<String> settingNames = [];
+    if (bookName.isEmpty) {
+      return settingNames;
+    }
+    Directory setDir = Directory(_dirPath(bookName: bookName, isSet: true));
     try {
       setDir.listSync().forEach((fileSystemEntity) {
         if (_isDir(fileSystemEntity)) {
           settingNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last);
-          // debugPrint(fileSystemEntity.path.split(Platform.pathSeparator).last);
         }
       });
     } on Exception catch (e, s) {
+      debugPrint("/// 遍历书下所有设定集：遍历设定集文件夹名称");
       print(s);
     }
     settingNames.sort();
@@ -302,8 +308,11 @@ class IOBase
 
   /// 遍历指定设定集下所有设定：遍历设定（.json文件）
   List<String> getAllSettings(String bookName, String setName) {
-    Directory setDir2 = Directory(_dirPath(bookName: bookName, isSet: true, setName: setName));
     List<String> settingNames = [];
+    if (bookName.isEmpty || setName.isEmpty) {
+      return settingNames;
+    }
+    Directory setDir2 = Directory(_dirPath(bookName: bookName, isSet: true, setName: setName));
     try {
       setDir2.listSync().forEach((fileSystemEntity) {
         if (_isFile(fileSystemEntity)) {
@@ -311,6 +320,7 @@ class IOBase
         }
       });
     } on Exception catch (e, s) {
+      debugPrint("/// 遍历指定设定集下所有设定：遍历设定（.json文件）");
       print(s);
     }
     settingNames.sort();
