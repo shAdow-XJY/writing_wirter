@@ -3,18 +3,23 @@ import 'dart:convert' as convert;
 
 class BookConfig {
 
-  BookConfig() {}
-
-  static String getDefaultBookString({String bookName = ""}) {
-    return convert.jsonEncode(getDefaultBook(bookName: bookName));
+  /// default book-chapter : {$bookName}Chapter.json
+  static String getDefaultBookChapterJsonString({String bookName = ""}) {
+    return convert.jsonEncode(getDefaultBookChapterJson(bookName: bookName));
   }
 
-  static String getDefaultSettingString({String bookName = "", String setName = "", String settingName = ""}) {
-    return convert.jsonEncode(getDefaultSetting(bookName: bookName, setName: setName, settingName: settingName));
+  /// default book-set : {$bookName}Set.json
+  static String getDefaultBookSetJsonString({String bookName = ""}) {
+    return convert.jsonEncode(getDefaultBookSetJson(bookName: bookName));
   }
 
-  /// default book json
-  static Map<String, Object> getDefaultBook({String bookName = ""})
+  /// default set-setting : {$settingName}.json
+  static String getDefaultSetSettingJsonString({String bookName = "", String setName = "", String settingName = ""}) {
+    return convert.jsonEncode(getDefaultSetSettingJson(bookName: bookName, setName: setName, settingName: settingName));
+  }
+
+  /// default book-chapter : {$bookName}Chapter.json
+  static Map<String, Object> getDefaultBookChapterJson({String bookName = ""})
   {
     return {
       "bookName": bookName,
@@ -22,8 +27,22 @@ class BookConfig {
     };
   }
 
-  /// default setting json
-  static Map<String, Object> getDefaultSetting({String bookName = "", String setName = "", String settingName = ""})
+  /// default book-set : {$bookName}Set.json
+  static Map<String, Object> getDefaultBookSetJson({String bookName = ""})
+  {
+    return {
+      "bookName": bookName,
+      "setList": {
+        // "setName": {
+        //   "addToParser": false,
+        //   "settingList": []
+        // }
+      }
+    };
+  }
+
+  /// default set-setting : {$settingName}.json
+  static Map<String, Object> getDefaultSetSettingJson({String bookName = "", String setName = "", String settingName = ""})
   {
     return {
       "bookName": bookName,

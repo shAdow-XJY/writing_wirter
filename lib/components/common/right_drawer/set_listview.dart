@@ -8,13 +8,12 @@ import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../toast_dialog.dart';
+import '../transparent_checkbox.dart';
 import '../transparent_icon_button.dart';
 
 class SetListView extends StatefulWidget {
-  final bool addTextParser;
   const SetListView({
     Key? key,
-    required this.addTextParser,
   }) : super(key: key);
 
   @override
@@ -44,7 +43,6 @@ class _SetListViewState extends State<SetListView> {
           itemCount: setNameList.length,
           itemBuilder: (context, index) => SetListViewItem(
             setName: setNameList[index],
-            addTextParser: widget.addTextParser,
           ),
         );
       },
@@ -54,13 +52,10 @@ class _SetListViewState extends State<SetListView> {
 
 class SetListViewItem extends StatefulWidget {
   String setName;
-  /// 设定集是否加入文本解析
-  final bool addTextParser;
 
   SetListViewItem({
     Key? key,
     required this.setName,
-    required this.addTextParser,
   }) : super(key: key);
 
   @override
@@ -68,9 +63,11 @@ class SetListViewItem extends StatefulWidget {
 }
 
 class _SetListViewItemState extends State<SetListViewItem> {
+
+  /// 设定集是否加入文本解析
+  bool addTextParser = false;
   /// 列表展开
   bool isExpanded = false;
-
   /// 事件总线
   EventBus eventBus = EventBus();
 
@@ -109,7 +106,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
         };
         List<String> settingsList = store.state.ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
         Map<String, Set<String>> newParserModel = Parser.addSetToParser(store.state.parserModel.parserObj, widget.setName, settingsList);
-        if (widget.addTextParser && !Parser.compareParser(newParserModel, store.state.parserModel.parserObj)) {
+        if (addTextParser && !Parser.compareParser(newParserModel, store.state.parserModel.parserObj)) {
           store.dispatch(SetParserDataAction(parserObj: newParserModel));
         }
         return {
@@ -166,6 +163,14 @@ class _SetListViewItemState extends State<SetListViewItem> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          TransCheckBox(
+                            initBool: addTextParser,
+                            onChanged: (bool changedResult) {
+                              setState(() {
+                                addTextParser = changedResult;
+                              });
+                            },
+                          ),
                           TransIconButton(
                             icon: const Icon(Icons.add),
                             onPressed: () {

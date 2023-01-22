@@ -61,6 +61,7 @@ class SettingsListViewItem extends StatefulWidget {
 }
 
 class _SettingsListViewItemState extends State<SettingsListViewItem> {
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;

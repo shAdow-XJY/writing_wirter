@@ -7,7 +7,6 @@ import 'package:writing_writer/state_machine/event_bus/events.dart';
 import '../../../server/style/StyleBase.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../toast_dialog.dart';
-import '../transparent_checkbox.dart';
 
 class RightDrawer extends StatefulWidget {
   const RightDrawer({
@@ -19,9 +18,6 @@ class RightDrawer extends StatefulWidget {
 }
 
 class _RightDrawerState extends State<RightDrawer> {
-  /// 设定集是否加入文本解析
-  bool addTextParser = false;
-
   /// 事件总线
   EventBus eventBus = EventBus();
 
@@ -68,14 +64,6 @@ class _RightDrawerState extends State<RightDrawer> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TransCheckBox(
-                      initBool: addTextParser,
-                      onChanged: (bool changedResult) {
-                        setState(() {
-                          addTextParser = changedResult;
-                        });
-                      },
-                    ),
                     IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
@@ -103,9 +91,8 @@ class _RightDrawerState extends State<RightDrawer> {
               centerTitle: true,
               title: const Text('no book selected'),
             ),
-            body: SetListView(
-              addTextParser: addTextParser,
-            ),
+            /// 不加const，用于刷新
+            body: SetListView(),
           ),
         );
       },
