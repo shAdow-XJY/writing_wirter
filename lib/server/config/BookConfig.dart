@@ -32,12 +32,15 @@ class BookConfig {
   {
     return {
       "bookName": bookName,
-      "setList": {
-        // "setName": {
-        //   "addToParser": false,
-        //   "settingList": []
+      "setList": [
+        // {
+        //   "setName": "",
+        //   "addToParser": true,
         // }
-      }
+      ],
+      // "setName": {
+      //   "settingList": ["settingName"]
+      // }
     };
   }
 
@@ -49,12 +52,12 @@ class BookConfig {
       "setName": setName,
       "settingName": settingName,
       "chapterFlag": [1],
-      "information": {
-        "1": {
+      "information": [
+        {
           "img_url": "",
           "description": ""
         }
-      }
+      ]
     };
   }
 

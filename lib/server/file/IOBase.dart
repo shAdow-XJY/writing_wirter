@@ -184,7 +184,9 @@ class IOBase
       return chapterNames;
     }
     try {
-      chapterNames = getBookChapterJsonContent(bookName)["chapterList"].cast<String>() ?? [];
+      if (getBookChapterJsonContent(bookName)["chapterList"] != null) {
+        chapterNames = getBookChapterJsonContent(bookName)["chapterList"].cast<String>();
+      }
     } on Exception catch (e, s) {
       debugPrint("/// 遍历指定书下所有章节：读取对应书籍-章节json文件");
       print(s);
@@ -254,25 +256,19 @@ class IOBase
     renameBookSetJson(oldBookName, newBookName);
   }
 
-  /// 遍历书下所有设定集：遍历该书对应{$bookName}Set：文件夹
-  List<String> getAllSet(String bookName) {
-    List<String> settingNames = [];
+  /// 遍历书下所有设定集：该书对应{$bookName}Set.json：json文件
+  Map<String, dynamic> getAllSetMap(String bookName) {
+    Map<String, dynamic> bookSetJson = {};
     if (bookName.isEmpty) {
-      return settingNames;
+      return bookSetJson;
     }
-    Directory setDir = Directory(_dirPath(bookName: bookName, isSet: true));
     try {
-      setDir.listSync().forEach((fileSystemEntity) {
-        if (_isDir(fileSystemEntity)) {
-          settingNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last);
-        }
-      });
+      bookSetJson =  getBookSetJsonContent(bookName);
     } on Exception catch (e, s) {
-      debugPrint("/// 遍历书下所有设定集：遍历设定集文件夹名称");
+      debugPrint("/// 遍历书下所有设定集：该书对应{$bookName}Set.json：json文件");
       print(s);
     }
-    settingNames.sort();
-    return settingNames;
+    return bookSetJson;
   }
 
   /// 创建一个设定集：文件夹
@@ -281,6 +277,8 @@ class IOBase
     if (!dir2.existsSync()) {
       dir2.createSync(recursive: true);
     }
+    /// {$bookName}Set.json添加（新建设定类）
+    addBookSetJson(bookName, setName);
   }
 
   /// 设定集(文件夹)重命名
@@ -409,9 +407,9 @@ class IOBase
 
   /// {$bookName}Chapter.json添加（新建章节）
   void addBookChapterJson(String bookName, String chapterName) {
-    Map<String, dynamic> bookJson =  getBookChapterJsonContent(bookName);
-    bookJson["chapterList"].add(chapterName);
-    saveBookChapterJson(bookName, convert.jsonEncode(bookJson));
+    Map<String, dynamic> bookChapterJson =  getBookChapterJsonContent(bookName);
+    bookChapterJson["chapterList"].add(chapterName);
+    saveBookChapterJson(bookName, convert.jsonEncode(bookChapterJson));
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -462,10 +460,13 @@ class IOBase
     }
   }
 
-  /// {$bookName}Set.json添加（新建章节）
-  void addBookSetJson(String bookName, String chapterName) {
-    Map<String, dynamic> bookJson =  getBookChapterJsonContent(bookName);
-    bookJson["chapterList"].add(chapterName);
-    saveBookChapterJson(bookName, convert.jsonEncode(bookJson));
+  /// {$bookName}Set.json添加（新建设定类）
+  void addBookSetJson(String bookName, String setName) {
+    Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
+    Map<String, dynamic> newSetMap = {};
+    newSetMap["setName"] = setName;
+    newSetMap["addToParser"] = true;
+    bookSetJson["setList"].add(newSetMap);
+    saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
   }
 }

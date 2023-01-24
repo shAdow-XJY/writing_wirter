@@ -44,7 +44,7 @@ class _DetailSubPageState extends State<DetailSubPage>{
       return ;
     }
     currentMap = convert.jsonDecode(ioBase.getSettingContent(currentBook, currentSet, currentSetting));
-    textEditingController.text = currentMap["information"]!["1"]["description"];
+    textEditingController.text = currentMap["information"]![0]["description"];
     currentDescription = textEditingController.text;
   }
 
@@ -53,6 +53,7 @@ class _DetailSubPageState extends State<DetailSubPage>{
     if (currentBook.isEmpty || currentSet.isEmpty || currentSetting.isEmpty) {
       return;
     }
+    currentMap["information"][0]["description"] = currentDescription;
     ioBase.saveSetting(currentBook, currentSet, currentSetting, convert.jsonEncode(currentMap));
   }
 

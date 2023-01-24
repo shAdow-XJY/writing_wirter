@@ -28,11 +28,11 @@ class _SetListViewState extends State<SetListView> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, List<String>>(
+    return StoreConnector<AppState, List<dynamic>>(
       converter: (Store store) {
-        return store.state.ioBase.getAllSet(store.state.textModel.currentBook);
+        return store.state.ioBase.getAllSetMap(store.state.textModel.currentBook)["setList"];
       },
-      builder: (BuildContext context, List<String> setNameList) {
+      builder: (BuildContext context, List<dynamic> setList) {
         return ListView.separated(
           separatorBuilder: (context, index) => Divider(
             thickness: 1,
@@ -40,9 +40,10 @@ class _SetListViewState extends State<SetListView> {
             color: Theme.of(context).colorScheme.inversePrimary,
           ),
           controller: ScrollController(),
-          itemCount: setNameList.length,
+          itemCount: setList.length,
           itemBuilder: (context, index) => SetListViewItem(
-            setName: setNameList[index],
+              setName: setList[index]["setName"],
+              addToParser: setList[index]["addToParser"],
           ),
         );
       },
@@ -52,10 +53,12 @@ class _SetListViewState extends State<SetListView> {
 
 class SetListViewItem extends StatefulWidget {
   String setName;
+  final bool addToParser;
 
   SetListViewItem({
     Key? key,
     required this.setName,
+    required this.addToParser,
   }) : super(key: key);
 
   @override
@@ -74,6 +77,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
   @override
   void initState() {
     super.initState();
+    addTextParser = widget.addToParser;
     eventBus.on<RenameSetEvent>().listen((event) {
       setState(() {
         widget.setName;
