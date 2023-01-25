@@ -278,7 +278,7 @@ class IOBase
       dir2.createSync(recursive: true);
     }
     /// {$bookName}Set.json添加（新建设定类）
-    addBookSetJson(bookName, setName);
+    addSetBookSetJson(bookName, setName);
   }
 
   /// 设定集(文件夹)重命名
@@ -299,13 +299,10 @@ class IOBase
     if (bookName.isEmpty || setName.isEmpty) {
       return settingNames;
     }
-    Directory setDir2 = Directory(_dirPath(bookName: bookName, isSet: true, setName: setName));
     try {
-      setDir2.listSync().forEach((fileSystemEntity) {
-        if (_isFile(fileSystemEntity)) {
-          settingNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last.split('.').first);
-        }
-      });
+      if (getBookSetJsonContent(bookName)[setName]["settingList"] != null) {
+        settingNames = getBookSetJsonContent(bookName)[setName]["settingList"].cast<String>();
+      }
     } on Exception catch (e, s) {
       debugPrint("/// 遍历指定设定集下所有设定：遍历设定（.json文件）");
       print(s);
@@ -330,6 +327,8 @@ class IOBase
           settingName: settingName
         )
     );
+    /// {$bookName}Set.json添加设定（新建设定）
+    addSettingBookSetJson(bookName, setName, settingName);
   }
 
   /// 保存设定(json文件)
@@ -460,13 +459,26 @@ class IOBase
     }
   }
 
-  /// {$bookName}Set.json添加（新建设定类）
-  void addBookSetJson(String bookName, String setName) {
+  /// {$bookName}Set.json添加设定类（新建设定类）
+  void addSetBookSetJson(String bookName, String setName) {
     Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
+    /// setList: []
     Map<String, dynamic> newSetMap = {};
     newSetMap["setName"] = setName;
     newSetMap["addToParser"] = true;
     bookSetJson["setList"].add(newSetMap);
+    /// setName: {}
+    bookSetJson[setName] = {"settingList": []};
+    /// 保存
+    saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
+  }
+
+  /// {$bookName}Set.json添加设定（新建设定）
+  void addSettingBookSetJson(String bookName, String setName, String settingName) {
+    Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
+    Map<String, dynamic> newSetSettingMap = bookSetJson[setName];
+    newSetSettingMap["settingList"].add(settingName);
+    /// 保存
     saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
   }
 }
