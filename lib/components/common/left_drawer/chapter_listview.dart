@@ -26,10 +26,11 @@ class _ChapterListViewState extends State<ChapterListView> {
 
   List<Widget> createChapterList(List<String> chapterList) {
     chapterListViewItems.clear();
-    for (var chapterName in chapterList) {
+    for (var index = 0; index < chapterList.length; ++index) {
       chapterListViewItems.add(ChapterListViewItem(
         bookName: widget.bookName,
-        chapterName: chapterName,
+        chapterNumber: (index + 1).toString(),
+        chapterName: chapterList[index],
       ));
     }
     return chapterListViewItems;
@@ -52,11 +53,13 @@ class _ChapterListViewState extends State<ChapterListView> {
 
 class ChapterListViewItem extends StatelessWidget {
   final String bookName;
+  final String chapterNumber;
   final String chapterName;
 
   const ChapterListViewItem({
     Key? key,
     required this.bookName,
+    required this.chapterNumber,
     required this.chapterName,
   }) : super(key: key);
 
@@ -85,8 +88,11 @@ class ChapterListViewItem extends StatelessWidget {
               )
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                const SizedBox(width: 20,),
+                Text('第$chapterNumber章'),
+                const SizedBox(width: 20,),
                 Text(chapterName),
               ],
             ),
