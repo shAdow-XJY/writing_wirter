@@ -113,10 +113,14 @@ class _SetListViewItemState extends State<SetListViewItem> {
         if (addTextParser && !Parser.compareParser(newParserModel, store.state.parserModel.parserObj)) {
           store.dispatch(SetParserDataAction(parserObj: newParserModel));
         }
+        void changeParserOfBookSetJson(bool addToParser) {
+          store.state.ioBase.changeParserOfBookSetJson(store.state.textModel.currentBook, widget.setName, addToParser);
+        }
         return {
           "renameSet": renameSet,
           "createSetting": createSetting,
           "settingsList": settingsList,
+          "changeParserOfBookSetJson": changeParserOfBookSetJson,
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
@@ -172,6 +176,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                             onChanged: (bool changedResult) {
                               setState(() {
                                 addTextParser = changedResult;
+                                map["changeParserOfBookSetJson"](addTextParser);
                               });
                             },
                           ),

@@ -278,7 +278,7 @@ class IOBase
       dir2.createSync(recursive: true);
     }
     /// {$bookName}Set.json添加（新建设定类）
-    addSetBookSetJson(bookName, setName);
+    addSetOfBookSetJson(bookName, setName);
   }
 
   /// 设定集(文件夹)重命名
@@ -287,6 +287,7 @@ class IOBase
     if (dir.existsSync()) {
       dir.renameSync(_dirPath(bookName: bookName, isSet: true, setName: newSetName));
     }
+    ///
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -328,7 +329,7 @@ class IOBase
         )
     );
     /// {$bookName}Set.json添加设定（新建设定）
-    addSettingBookSetJson(bookName, setName, settingName);
+    addSettingOfBookSetJson(bookName, setName, settingName);
   }
 
   /// 保存设定(json文件)
@@ -460,7 +461,7 @@ class IOBase
   }
 
   /// {$bookName}Set.json添加设定类（新建设定类）
-  void addSetBookSetJson(String bookName, String setName) {
+  void addSetOfBookSetJson(String bookName, String setName) {
     Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
     /// setList: []
     Map<String, dynamic> newSetMap = {};
@@ -474,10 +475,24 @@ class IOBase
   }
 
   /// {$bookName}Set.json添加设定（新建设定）
-  void addSettingBookSetJson(String bookName, String setName, String settingName) {
+  void addSettingOfBookSetJson(String bookName, String setName, String settingName) {
     Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
     Map<String, dynamic> newSetSettingMap = bookSetJson[setName];
     newSetSettingMap["settingList"].add(settingName);
+    /// 保存
+    saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
+  }
+
+  /// {$bookName}Set.json 修改属性值addToParser（是否加入解析）
+  void changeParserOfBookSetJson(String bookName, String setName, bool addToParser) {
+    Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
+    List<dynamic> settingList = bookSetJson["setList"];
+    for (var setObj in settingList) {
+      if (setObj["setName"].toString().compareTo(setName) == 0) {
+        setObj["addToParser"] = addToParser;
+        break;
+      }
+    }
     /// 保存
     saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
   }
