@@ -15,11 +15,20 @@ class Parser
     return result;
   }
 
-  /// parser 对象变量构造
+  /// parser 对象: 添加元素
   static Map<String, Set<String>> addSetToParser(Map<String, Set<String>> currentParser, String setName, List<String> settingsList) {
     Map<String, Set<String>> newObj = deepClone(currentParser);
     newObj[setName] = <String>{};
     newObj[setName]?.addAll(settingsList);
+    return newObj;
+  }
+
+  /// parser 对象: 删除元素
+  static Map<String, Set<String>> removeSetFromParser(Map<String, Set<String>> currentParser, String setName) {
+    Map<String, Set<String>> newObj = deepClone(currentParser);
+    if (newObj.containsKey(setName)) {
+      newObj.remove(setName);
+    }
     return newObj;
   }
 

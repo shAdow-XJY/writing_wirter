@@ -102,24 +102,32 @@ class _SetListViewItemState extends State<SetListViewItem> {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
         debugPrint('store in set_listview');
+        List<String> settingsList = store.state.ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
+        Map<String, Set<String>> newParserModel = {};
+        if (addTextParser) {
+          newParserModel = Parser.addSetToParser(store.state.parserModel.parserObj, widget.setName, settingsList);
+        } else {
+          newParserModel = Parser.removeSetFromParser(store.state.parserModel.parserObj, widget.setName);
+        }
+        if (!Parser.compareParser(newParserModel, store.state.parserModel.parserObj)) {
+          store.dispatch(SetParserDataAction(parserObj: newParserModel));
+        }
+        /// 重命名设定集
         void renameSet(String oldSetName, String newSetName) => {
           store.state.ioBase.renameSet(store.state.textModel.currentBook, oldSetName, newSetName),
         };
+        /// 新建设定
         void createSetting(String settingName) => {
           store.state.ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
         };
-        List<String> settingsList = store.state.ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
-        Map<String, Set<String>> newParserModel = Parser.addSetToParser(store.state.parserModel.parserObj, widget.setName, settingsList);
-        if (addTextParser && !Parser.compareParser(newParserModel, store.state.parserModel.parserObj)) {
-          store.dispatch(SetParserDataAction(parserObj: newParserModel));
-        }
+        /// 修改设定集是否加入解析
         void changeParserOfBookSetJson(bool addToParser) {
           store.state.ioBase.changeParserOfBookSetJson(store.state.textModel.currentBook, widget.setName, addToParser);
         }
         return {
+          "settingsList": settingsList,
           "renameSet": renameSet,
           "createSetting": createSetting,
-          "settingsList": settingsList,
           "changeParserOfBookSetJson": changeParserOfBookSetJson,
         };
       },
