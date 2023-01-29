@@ -350,16 +350,16 @@ class IOBase
   }
 
   /// 获取设定的内容：读取设定json文件内容
-  String getSettingContent(String bookName, String setName, String settingName) {
+  Map<String, dynamic> getSettingJson(String bookName, String setName, String settingName) {
     File file2 = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: settingName));
-    String content = "";
+    String bookSettingContent = "";
     try {
-      content = file2.readAsStringSync();
+      bookSettingContent = file2.readAsStringSync();
       debugPrint(file2.readAsStringSync());
     } on Exception catch (e, s) {
       print(s);
     }
-    return content;
+    return convert.jsonDecode(bookSettingContent);
   }
 
   /////////////////////////////////////////////////////////////////////////////

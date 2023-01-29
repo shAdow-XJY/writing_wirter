@@ -43,7 +43,7 @@ class _DetailSubPageState extends State<DetailSubPage>{
     if (currentBook.isEmpty || currentSet.isEmpty || currentSetting.isEmpty) {
       return ;
     }
-    currentMap = convert.jsonDecode(ioBase.getSettingContent(currentBook, currentSet, currentSetting));
+    currentMap = ioBase.getSettingJson(currentBook, currentSet, currentSetting);
     textEditingController.text = currentMap["information"]![0]["description"];
     currentDescription = textEditingController.text;
   }
@@ -139,6 +139,9 @@ class _DetailSubPageState extends State<DetailSubPage>{
                 );
               },
             ),
+            actions: [
+
+            ],
           ),
           body: SingleChildScrollView(
             child: BlurGlass(
