@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'dart:convert' as convert;
+import '../../../components/common/drop_down_button.dart';
 import '../../../components/common/toast_dialog.dart';
 import '../../../server/file/IOBase.dart';
 import '../../../state_machine/redux/action/set_action.dart';
@@ -23,12 +24,8 @@ class DetailSubPage extends StatefulWidget {
 class _DetailSubPageState extends State<DetailSubPage>{
   /// 主页面传过来的ioBase类
   late final IOBase ioBase;
-  /// 章节内容输入框控制器
-  final TextEditingController textEditingController = TextEditingController();
-  /// 输入框的焦点
-  final focusNode = FocusNode();
 
-  /// status
+  /// status 状态变量
   String currentBook = "";
   String currentSet = "";
   String currentSetting = "";
@@ -37,6 +34,10 @@ class _DetailSubPageState extends State<DetailSubPage>{
   Map<String, dynamic> currentMap = {};
   /// 输入框的内容
   String currentDescription = "";
+  /// 设定内容输入框控制器
+  final TextEditingController textEditingController = TextEditingController();
+  /// 输入框的焦点
+  final focusNode = FocusNode();
 
   /// 获取设定
   void getSetting() {
@@ -140,7 +141,10 @@ class _DetailSubPageState extends State<DetailSubPage>{
               },
             ),
             actions: [
-
+              DropDownButton(
+                items: ["item1", "item2"],
+                onChanged: (String selected) {  },
+              )
             ],
           ),
           body: SingleChildScrollView(
