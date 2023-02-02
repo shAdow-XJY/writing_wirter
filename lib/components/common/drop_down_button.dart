@@ -22,6 +22,9 @@ class _DropDownButtonState extends State<DropDownButton> {
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
+        buttonHeight: 40,
+        buttonWidth: 140,
+        itemHeight: 40,
         hint: Text(
           'Select Item',
           style: TextStyle(
@@ -29,6 +32,8 @@ class _DropDownButtonState extends State<DropDownButton> {
             color: Theme.of(context).hintColor,
           ),
         ),
+        buttonPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+        value: selectedValue,
         items: widget.items
             .map(
               (item) => DropdownMenuItem<String>(
@@ -42,16 +47,12 @@ class _DropDownButtonState extends State<DropDownButton> {
               ),
             )
             .toList(),
-        value: selectedValue,
         onChanged: (value) {
           setState(() {
             selectedValue = value as String;
             widget.onChanged(selectedValue??"");
           });
         },
-        buttonHeight: 40,
-        buttonWidth: 140,
-        itemHeight: 40,
       ),
     );
   }

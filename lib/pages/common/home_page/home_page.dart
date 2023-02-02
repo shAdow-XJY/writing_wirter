@@ -29,7 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String currentChapter = "";
 
   /// 详情框打开状态
-  bool isDetailOpened = false;
+  bool isDetailOpened = true;
 
   /// 章节重命名
   void changeChapterName(String newChapterName) {

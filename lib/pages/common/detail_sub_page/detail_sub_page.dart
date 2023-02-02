@@ -30,8 +30,13 @@ class _DetailSubPageState extends State<DetailSubPage>{
   String currentSet = "";
   String currentSetting = "";
 
-  /// json设定的内容
+  /// {json}设定的内容
   Map<String, dynamic> currentMap = {};
+
+  /// {json {chapterFlag }}
+  /// 标志章节数组
+  List<String> chapterFlags = [];
+  /// {json {information {description }}}
   /// 输入框的内容
   String currentDescription = "";
   /// 设定内容输入框控制器
@@ -45,6 +50,7 @@ class _DetailSubPageState extends State<DetailSubPage>{
       return ;
     }
     currentMap = ioBase.getSettingJson(currentBook, currentSet, currentSetting);
+    chapterFlags = currentMap["chapterFlag"].cast<String>()??[];
     textEditingController.text = currentMap["information"]![0]["description"];
     currentDescription = textEditingController.text;
   }
@@ -52,6 +58,9 @@ class _DetailSubPageState extends State<DetailSubPage>{
   /// 保存/更新设定
   void saveSetting() {
     if (currentBook.isEmpty || currentSet.isEmpty || currentSetting.isEmpty) {
+      return;
+    }
+    if (currentMap.isEmpty) {
       return;
     }
     currentMap["information"][0]["description"] = currentDescription;
@@ -141,9 +150,18 @@ class _DetailSubPageState extends State<DetailSubPage>{
               },
             ),
             actions: [
-              DropDownButton(
-                items: ["item1", "item2"],
-                onChanged: (String selected) {  },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Text('第'),
+                  DropDownButton(
+                    items: chapterFlags,
+                    onChanged: (String selected) {
+
+                    },
+                  ),
+                  const Text('章')
+                ],
               )
             ],
           ),
