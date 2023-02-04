@@ -14,8 +14,9 @@ class TransIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       focusColor: Colors.transparent,
-      hoverColor: Colors.transparent,
-      splashColor: Colors.transparent,
+      hoverColor: Theme.of(context).focusColor,
+      splashRadius: 20.0,
+      splashColor: Theme.of(context).focusColor.withOpacity(0.1),
       highlightColor: Colors.transparent,
       icon: icon,
       onPressed: () {

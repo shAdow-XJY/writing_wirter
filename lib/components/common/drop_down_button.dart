@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 class DropDownButton extends StatefulWidget {
   final List<String> items;
   final Function(String) onChanged;
+  final String? hintText;
+  final String? initValue;
 
   const DropDownButton({
     Key? key,
     required this.items,
     required this.onChanged,
+    this.hintText,
+    this.initValue,
   }) : super(key: key);
 
   @override
@@ -19,6 +23,12 @@ class _DropDownButtonState extends State<DropDownButton> {
   String? selectedValue;
 
   @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.initValue;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
@@ -26,7 +36,7 @@ class _DropDownButtonState extends State<DropDownButton> {
         buttonWidth: 140,
         itemHeight: 40,
         hint: Text(
-          'Select Item',
+          widget.hintText??'Select Item',
           style: TextStyle(
             fontSize: 14,
             color: Theme.of(context).hintColor,

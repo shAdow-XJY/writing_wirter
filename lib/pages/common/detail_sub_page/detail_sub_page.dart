@@ -2,6 +2,7 @@ import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:writing_writer/components/common/transparent_icon_button.dart';
 import 'dart:convert' as convert;
 import '../../../components/common/drop_down_button.dart';
 import '../../../components/common/toast_dialog.dart';
@@ -157,10 +158,16 @@ class _DetailSubPageState extends State<DetailSubPage>{
                   DropDownButton(
                     items: chapterFlags,
                     onChanged: (String selected) {
-
+                      debugPrint(selected);
                     },
                   ),
-                  const Text('章')
+                  const Text('章'),
+                  TransIconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+
+                      },
+                  )
                 ],
               )
             ],
