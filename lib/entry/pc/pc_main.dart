@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/router/pc/pc_router.dart';
-
 import '../../state_machine/redux/app_state/state.dart';
 
 
@@ -10,6 +9,7 @@ class PcApp extends StatelessWidget {
   PcApp({Key? key}) : super(key: key);
 
   final store = Store<AppState>(appReducer, initialState: AppState.initialState());
+
 
   @override
   Widget build(BuildContext context) {

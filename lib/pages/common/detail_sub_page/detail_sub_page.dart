@@ -165,7 +165,17 @@ class _DetailSubPageState extends State<DetailSubPage>{
                   TransIconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => ToastDialog(
+                            title: '新建设定节点',
+                            callBack: (flagChapter) => {
+                              if (flagChapter.isNotEmpty) {
 
+                              },
+                            },
+                          ),
+                        );
                       },
                   )
                 ],

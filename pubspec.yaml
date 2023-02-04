@@ -22,6 +22,8 @@ dependencies:
   # 状态管理
   redux: ^5.0.0
   flutter_redux: ^0.10.0
+  # 全局单例模式
+  get_it: ^7.2.0
   # 事件总线
   event_bus: ^2.0.0
   # 不同设备屏幕
