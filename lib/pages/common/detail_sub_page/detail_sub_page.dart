@@ -7,24 +7,22 @@ import 'dart:convert' as convert;
 import '../../../components/common/drop_down_button.dart';
 import '../../../components/common/toast_dialog.dart';
 import '../../../server/file/IOBase.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
 class DetailSubPage extends StatefulWidget {
-  final IOBase ioBase;
-  const DetailSubPage(
-      {
-        Key? key,
-        required this.ioBase,
-      }) : super(key: key);
+  const DetailSubPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<DetailSubPage> createState() => _DetailSubPageState();
 }
 
 class _DetailSubPageState extends State<DetailSubPage>{
-  /// 主页面传过来的ioBase类
-  late final IOBase ioBase;
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt<IOBase>();
 
   /// status 状态变量
   String currentBook = "";
@@ -82,7 +80,6 @@ class _DetailSubPageState extends State<DetailSubPage>{
   @override
   void initState() {
     super.initState();
-    ioBase = widget.ioBase;
     /// 添加兼听 当TextFeild 中内容发生变化时 回调 焦点变动 也会触发
     /// onChanged 当TextFeild文本发生改变时才会回调
     textEditingController.addListener(() {

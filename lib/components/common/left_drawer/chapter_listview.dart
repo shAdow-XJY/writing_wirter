@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import '../../../server/file/IOBase.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/text_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
@@ -17,6 +19,9 @@ class ChapterListView extends StatefulWidget {
 }
 
 class _ChapterListViewState extends State<ChapterListView> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt<IOBase>();
+
   List<Widget> chapterListViewItems = [];
 
   @override
@@ -24,8 +29,9 @@ class _ChapterListViewState extends State<ChapterListView> {
     super.initState();
   }
 
-  List<Widget> createChapterList(List<String> chapterList) {
+  List<Widget> createChapterList() {
     chapterListViewItems.clear();
+    List<String> chapterList = ioBase.getAllChapters(widget.bookName);
     for (var index = 0; index < chapterList.length; ++index) {
       chapterListViewItems.add(ChapterListViewItem(
         bookName: widget.bookName,
@@ -38,15 +44,8 @@ class _ChapterListViewState extends State<ChapterListView> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, List<String>>(
-      converter: (Store store) {
-        return store.state.ioBase.getAllChapters(widget.bookName);
-      },
-      builder: (BuildContext context, List<String> chapterList) {
-        return Column(
-          children: createChapterList(chapterList),
-        );
-      },
+    return Column(
+      children: createChapterList(),
     );
   }
 }

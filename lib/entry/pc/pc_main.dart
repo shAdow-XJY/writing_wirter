@@ -10,7 +10,6 @@ class PcApp extends StatelessWidget {
 
   final store = Store<AppState>(appReducer, initialState: AppState.initialState());
 
-
   @override
   Widget build(BuildContext context) {
     /// 使用StoreProvider 包裹根元素，使其提供store

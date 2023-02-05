@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/server/style/StyleBase.dart';
+import '../../../server/file/IOBase.dart';
 import '../../../state_machine/event_bus/events.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../toast_dialog.dart';
 import 'book_listview.dart';
@@ -18,6 +20,8 @@ class LeftDrawer extends StatefulWidget {
 }
 
 class _LeftDrawerState extends State<LeftDrawer> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt<IOBase>();
 
   /// 事件总线
   EventBus eventBus = EventBus();
@@ -41,7 +45,6 @@ class _LeftDrawerState extends State<LeftDrawer> {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
         return {
-          'ioBase': store.state.ioBase,
           'deviceType': store.state.styleModel.deviceScreenType,
         };
       },
@@ -55,7 +58,7 @@ class _LeftDrawerState extends State<LeftDrawer> {
                 leading: IconButton(
                   icon: const Icon(Icons.file_open),
                   onPressed: () {
-                    map['ioBase'].openRootDirectory();
+                    ioBase.openRootDirectory();
                   },
                 ),
                 actions: [
@@ -68,7 +71,7 @@ class _LeftDrawerState extends State<LeftDrawer> {
                           title: '新建书籍',
                           callBack: (bookName) => {
                             if (bookName.isNotEmpty) {
-                              map['ioBase'].createBook(bookName),
+                              ioBase.createBook(bookName),
                               eventBus.fire(CreateNewBookEvent()),
                             },
                           },

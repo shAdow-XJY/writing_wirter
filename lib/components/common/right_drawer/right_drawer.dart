@@ -4,7 +4,9 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/components/common/right_drawer/set_listview.dart';
 import 'package:writing_writer/state_machine/event_bus/events.dart';
+import '../../../server/file/IOBase.dart';
 import '../../../server/style/StyleBase.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../toast_dialog.dart';
 
@@ -18,6 +20,9 @@ class RightDrawer extends StatefulWidget {
 }
 
 class _RightDrawerState extends State<RightDrawer> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt<IOBase>();
+  
   /// 事件总线
   EventBus eventBus = EventBus();
 
@@ -41,7 +46,6 @@ class _RightDrawerState extends State<RightDrawer> {
       converter: (Store store) {
         return {
           'currentBookName': store.state.textModel.currentBook,
-          'ioBase': store.state.ioBase,
           'deviceType': store.state.styleModel.deviceScreenType,
         };
       },
@@ -57,7 +61,7 @@ class _RightDrawerState extends State<RightDrawer> {
               leading: IconButton(
                 icon: const Icon(Icons.file_open),
                 onPressed: () {
-                  map['ioBase'].openSettingDirectory(map['currentBookName']);
+                  ioBase.openSettingDirectory(map['currentBookName']);
                 },
               ),
               actions: [
@@ -74,7 +78,7 @@ class _RightDrawerState extends State<RightDrawer> {
                             callBack: (setName) => {
                               if (setName.isNotEmpty)
                                 {
-                                  map['ioBase'].createSet(map['currentBookName'], setName),
+                                  ioBase.createSet(map['currentBookName'], setName),
                                   eventBus.fire(CreateNewSetEvent()),
                                 },
                             },

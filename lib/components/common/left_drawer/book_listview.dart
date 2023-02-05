@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:event_bus/event_bus.dart';
+import '../../../server/file/IOBase.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../../../state_machine/event_bus/events.dart';
 import '../toast_dialog.dart';
@@ -18,32 +20,30 @@ class BookListView extends StatefulWidget {
 }
 
 class _BookListViewState extends State<BookListView> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt<IOBase>();
+
+  List<String> bookNameList = [];
 
   @override
   void initState() {
     super.initState();
+    bookNameList = ioBase.getAllBooks();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, List<String>>(
-      converter: (Store store) {
-        return store.state.ioBase.getAllBooks();
-      },
-      builder: (BuildContext context, List<String> bookNameList) {
-        return ListView.separated(
-          separatorBuilder: (context, index) => Divider(
-            thickness: 1,
-            height: 1,
-            color: Theme.of(context).colorScheme.inversePrimary,
-          ),
-          controller: ScrollController(),
-          itemCount: bookNameList.length,
-          itemBuilder: (context, index) => BookListViewItem(
-            bookName: bookNameList[index],
-          ),
-        );
-      },
+    return ListView.separated(
+      separatorBuilder: (context, index) => Divider(
+        thickness: 1,
+        height: 1,
+        color: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      controller: ScrollController(),
+      itemCount: bookNameList.length,
+      itemBuilder: (context, index) => BookListViewItem(
+        bookName: bookNameList[index],
+      ),
     );
   }
 }
@@ -61,6 +61,9 @@ class BookListViewItem extends StatefulWidget {
 }
 
 class _BookListViewItemState extends State<BookListViewItem> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt<IOBase>();
+
   /// 列表是否展开
   bool isExpanded = false;
   /// 事件总线
@@ -93,16 +96,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
     final height = MediaQuery.of(context).size.height;
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        void renameBook(String oldBookName, String newBookName) => {
-          store.state.ioBase.renameBook(oldBookName, newBookName),
-        };
-        void createChapter(String bookName, String chapterName) => {
-          store.state.ioBase.createChapter(bookName, chapterName),
-        };
-        return {
-          "renameBook": renameBook,
-          "createChapter": createChapter,
-        };
+        return {};
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
         return Column(
@@ -128,7 +122,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                     title: '重命名书籍',
                                     callBack: (newBookName) => {
                                       if (newBookName.isNotEmpty) {
-                                        map["renameBook"](widget.bookName, newBookName),
+                                        ioBase.renameBook(widget.bookName, newBookName),
                                         widget.bookName = newBookName,
                                         eventBus.fire(RenameBookNameEvent()),
                                       },
@@ -161,7 +155,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   title: '新建章节',
                                   callBack: (chapterName) => {
                                     if (chapterName.isNotEmpty) {
-                                      map["createChapter"](widget.bookName, chapterName),
+                                      ioBase.createChapter(widget.bookName, chapterName),
                                       eventBus.fire(CreateNewBookEvent()),
                                     },
                                   },

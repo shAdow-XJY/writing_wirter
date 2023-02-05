@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:writing_writer/state_machine/get_it/app_get_it.dart';
 import '../../../components/common/float_button.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
@@ -21,8 +22,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  /// 文件操作类
-  IOBase ioBase = IOBase();
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt<IOBase>();
 
   /// text
   String currentBook = "";
@@ -114,14 +115,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         horizontal: screenSize.width / (isDetailOpened ? 15.0 : 5.0)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        EditSubPage(ioBase: ioBase),
+                      children: const <Widget>[
+                        EditSubPage(),
                       ],
                     ),
                   ),
               ),
               isDetailOpened
-                  ? Expanded(flex: 1, child: DetailSubPage(ioBase: ioBase,))
+                  ? const Expanded(flex: 1, child: DetailSubPage())
                   : const SizedBox()
             ],
           ),

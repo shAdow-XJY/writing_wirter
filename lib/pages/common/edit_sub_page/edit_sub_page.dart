@@ -5,15 +5,13 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import '../../../server/file/IOBase.dart';
 import '../../../server/parser/Parser.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
 class EditSubPage extends StatefulWidget {
-  final IOBase ioBase;
-
   const EditSubPage({
     Key? key,
-    required this.ioBase,
   }) : super(key: key);
 
   @override
@@ -21,9 +19,8 @@ class EditSubPage extends StatefulWidget {
 }
 
 class _EditSubPageState extends State<EditSubPage> {
-
-  /// 文件操作类
-  late final IOBase ioBase;
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt<IOBase>();
 
   /// 章节内容输入框控制器
   final ClickTextEditingController textEditingController = ClickTextEditingController();
@@ -68,7 +65,6 @@ class _EditSubPageState extends State<EditSubPage> {
   @override
   void initState() {
     super.initState();
-    ioBase = widget.ioBase;
 
     /// 添加兼听 当TextFeild 中内容发生变化时 回调 焦点变动 也会触发
     /// onChanged 当TextFeild文本发生改变时才会回调

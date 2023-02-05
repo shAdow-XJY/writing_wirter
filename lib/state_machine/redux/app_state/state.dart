@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import '../../../server/file/IOBase.dart';
 import '../action/parser_action.dart';
 import '../action/set_action.dart';
 import '../action/style_action.dart';
@@ -18,8 +17,6 @@ class AppState {
   late SetModel setModel;
   /// device style info
   late StyleModel styleModel;
-  /// IO tool
-  late IOBase ioBase;
   /// all set obj
   late ParserModel parserModel;
 
@@ -27,7 +24,6 @@ class AppState {
     required this.textModel,
     required this.setModel,
     required this.styleModel,
-    required this.ioBase,
     required this.parserModel,
   });
 
@@ -39,7 +35,6 @@ class AppState {
     textModel = TextModel(currentBook: "", currentChapter: "");
     setModel = SetModel(currentSet: "", currentSetting: "");
     styleModel = StyleModel(deviceScreenType: DeviceScreenType.desktop);
-    ioBase = IOBase();
     parserModel = ParserModel(parserObj: {});
   }
 
@@ -48,7 +43,6 @@ class AppState {
       textModel: textModel ?? this.textModel,
       setModel: setModel ?? this.setModel,
       styleModel: styleModel ?? this.styleModel,
-      ioBase: ioBase,
       parserModel: this.textModel.currentBook.compareTo(textModel != null ? textModel!.currentBook : this.textModel.currentBook) == 0
           ? (parserModel ?? this.parserModel)
           : ParserModel(parserObj: {}),

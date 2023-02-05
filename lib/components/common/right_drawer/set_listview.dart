@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/components/common/right_drawer/settings_listview.dart';
+import '../../../server/file/IOBase.dart';
 import '../../../server/parser/Parser.dart';
 import '../../../state_machine/event_bus/events.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../toast_dialog.dart';
@@ -21,6 +23,9 @@ class SetListView extends StatefulWidget {
 }
 
 class _SetListViewState extends State<SetListView> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt<IOBase>();
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +35,7 @@ class _SetListViewState extends State<SetListView> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<dynamic>>(
       converter: (Store store) {
-        return store.state.ioBase.getAllSetMap(store.state.textModel.currentBook)["setList"];
+        return ioBase.getAllSetMap(store.state.textModel.currentBook)["setList"];
       },
       builder: (BuildContext context, List<dynamic> setList) {
         return ListView.separated(
@@ -66,6 +71,8 @@ class SetListViewItem extends StatefulWidget {
 }
 
 class _SetListViewItemState extends State<SetListViewItem> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt<IOBase>();
 
   /// 设定集是否加入文本解析
   bool addTextParser = false;
@@ -102,7 +109,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
         debugPrint('store in set_listview');
-        List<String> settingsList = store.state.ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
+        List<String> settingsList = ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
         Map<String, Set<String>> newParserModel = {};
         if (addTextParser) {
           newParserModel = Parser.addSetToParser(store.state.parserModel.parserObj, widget.setName, settingsList);
@@ -114,15 +121,15 @@ class _SetListViewItemState extends State<SetListViewItem> {
         }
         /// 重命名设定集
         void renameSet(String oldSetName, String newSetName) => {
-          store.state.ioBase.renameSet(store.state.textModel.currentBook, oldSetName, newSetName),
+          ioBase.renameSet(store.state.textModel.currentBook, oldSetName, newSetName),
         };
         /// 新建设定
         void createSetting(String settingName) => {
-          store.state.ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
+          ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
         };
         /// 修改设定集是否加入解析
         void changeParserOfBookSetJson(bool addToParser) {
-          store.state.ioBase.changeParserOfBookSetJson(store.state.textModel.currentBook, widget.setName, addToParser);
+          ioBase.changeParserOfBookSetJson(store.state.textModel.currentBook, widget.setName, addToParser);
         }
         return {
           "settingsList": settingsList,
