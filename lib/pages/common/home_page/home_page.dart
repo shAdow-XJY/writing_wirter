@@ -9,8 +9,8 @@ import '../../../components/common/toast_dialog.dart';
 import '../../../server/file/IOBase.dart';
 import '../../../state_machine/redux/action/text_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
-import '../detail_sub_page/detail_sub_page.dart';
-import '../edit_sub_page/edit_sub_page.dart';
+import '../chapter_edit_page/chapter_edit_page.dart';
+import '../setting_edit_page/setting_edit_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -116,13 +116,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: const <Widget>[
-                        EditSubPage(),
+                        ChapterEditPage(),
                       ],
                     ),
                   ),
               ),
               isDetailOpened
-                  ? const Expanded(flex: 1, child: DetailSubPage())
+                  ? const Expanded(flex: 1, child: SettingEditPage())
                   : const SizedBox()
             ],
           ),

@@ -9,16 +9,16 @@ import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
-class EditSubPage extends StatefulWidget {
-  const EditSubPage({
+class ChapterEditPage extends StatefulWidget {
+  const ChapterEditPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<EditSubPage> createState() => _EditSubPageState();
+  State<ChapterEditPage> createState() => _ChapterEditPageState();
 }
 
-class _EditSubPageState extends State<EditSubPage> {
+class _ChapterEditPageState extends State<ChapterEditPage> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
 

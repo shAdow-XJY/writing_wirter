@@ -11,16 +11,16 @@ import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
-class DetailSubPage extends StatefulWidget {
-  const DetailSubPage({
+class SettingEditPage extends StatefulWidget {
+  const SettingEditPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<DetailSubPage> createState() => _DetailSubPageState();
+  State<SettingEditPage> createState() => _SettingEditPageState();
 }
 
-class _DetailSubPageState extends State<DetailSubPage>{
+class _SettingEditPageState extends State<SettingEditPage>{
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
 
