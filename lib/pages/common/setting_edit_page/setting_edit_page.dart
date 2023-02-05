@@ -49,7 +49,7 @@ class _SettingEditPageState extends State<SettingEditPage>{
       return ;
     }
     currentMap = ioBase.getSettingJson(currentBook, currentSet, currentSetting);
-    chapterFlags = currentMap["chapterFlag"].cast<String>()??[];
+    chapterFlags = currentMap["chapterFlags"].cast<String>()??[];
     textEditingController.text = currentMap["information"]![0]["description"];
     currentDescription = textEditingController.text;
   }
@@ -168,7 +168,9 @@ class _SettingEditPageState extends State<SettingEditPage>{
                             title: '新建设定节点',
                             callBack: (flagChapter) => {
                               if (flagChapter.isNotEmpty) {
-
+                                currentMap["chapterFlags"].add(flagChapter),
+                                currentMap["information"].add(currentMap["information"].last),
+                                saveSetting(),
                               },
                             },
                           ),

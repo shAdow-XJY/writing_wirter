@@ -51,7 +51,7 @@ class BookConfig {
       "bookName": bookName,
       "setName": setName,
       "settingName": settingName,
-      "chapterFlag": ['1'],
+      "chapterFlags": ['1'],
       "information": [
         {
           "img_url": "",
