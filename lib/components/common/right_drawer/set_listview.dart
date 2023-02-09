@@ -25,10 +25,15 @@ class SetListView extends StatefulWidget {
 class _SetListViewState extends State<SetListView> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt<EventBus>();
 
   @override
   void initState() {
     super.initState();
+    eventBus.on<CreateNewSetEvent>().listen((event) {
+      setState(() {});
+    });
   }
 
   @override
@@ -73,13 +78,13 @@ class SetListViewItem extends StatefulWidget {
 class _SetListViewItemState extends State<SetListViewItem> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt<EventBus>();
 
   /// 设定集是否加入文本解析
   bool addTextParser = false;
   /// 列表展开
   bool isExpanded = false;
-  /// 事件总线
-  EventBus eventBus = EventBus();
 
   @override
   void initState() {
@@ -99,7 +104,6 @@ class _SetListViewItemState extends State<SetListViewItem> {
 
   @override
   void dispose() {
-    eventBus.destroy();
     super.dispose();
   }
 

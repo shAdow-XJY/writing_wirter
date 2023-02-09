@@ -8,7 +8,10 @@ class RenameBookNameEvent {}
 
 /// <!-- Chapter -->
 /// CreateNewChapter
-class CreateNewChapterEvent {}
+class CreateNewChapterEvent {
+  String bookName;
+  CreateNewChapterEvent(this.bookName);
+}
 
 /// <!-- Set -->
 /// CreateNewSet

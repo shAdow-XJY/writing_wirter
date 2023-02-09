@@ -1,6 +1,6 @@
-import 'package:event_bus/event_bus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:writing_writer/server/file/IOBase.dart';
+import 'package:event_bus/event_bus.dart';
 
 /// get_it to easy make Singleton Class
 GetIt appGetIt = GetIt.instance;

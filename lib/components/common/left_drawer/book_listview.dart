@@ -22,6 +22,8 @@ class BookListView extends StatefulWidget {
 class _BookListViewState extends State<BookListView> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt<EventBus>();
 
   List<String> bookNameList = [];
 
@@ -29,6 +31,11 @@ class _BookListViewState extends State<BookListView> {
   void initState() {
     super.initState();
     bookNameList = ioBase.getAllBooks();
+    eventBus.on<CreateNewBookEvent>().listen((event) {
+      setState(() {
+        bookNameList = ioBase.getAllBooks();
+      });
+    });
   }
 
   @override
@@ -63,11 +70,11 @@ class BookListViewItem extends StatefulWidget {
 class _BookListViewItemState extends State<BookListViewItem> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt<EventBus>();
 
   /// 列表是否展开
   bool isExpanded = false;
-  /// 事件总线
-  EventBus eventBus = EventBus();
 
   @override
   void initState() {
@@ -78,16 +85,17 @@ class _BookListViewItemState extends State<BookListViewItem> {
         widget.bookName;
       });
     });
-    eventBus.on<CreateNewBookEvent>().listen((event) {
-      setState(() {
-        widget.bookName;
-      });
+    eventBus.on<CreateNewChapterEvent>().listen((event) {
+      if (event.bookName.compareTo(widget.bookName) == 0) {
+        setState(() {
+          widget.bookName;
+        });
+      }
     });
   }
 
   @override
   void dispose() {
-    eventBus.destroy();
     super.dispose();
   }
 
@@ -156,7 +164,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   callBack: (chapterName) => {
                                     if (chapterName.isNotEmpty) {
                                       ioBase.createChapter(widget.bookName, chapterName),
-                                      eventBus.fire(CreateNewBookEvent()),
+                                      eventBus.fire(CreateNewChapterEvent(widget.bookName)),
                                     },
                                   },
                                 ),

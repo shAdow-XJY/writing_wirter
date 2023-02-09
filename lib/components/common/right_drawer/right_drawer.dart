@@ -22,21 +22,16 @@ class RightDrawer extends StatefulWidget {
 class _RightDrawerState extends State<RightDrawer> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
-  
-  /// 事件总线
-  EventBus eventBus = EventBus();
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt<EventBus>();
 
   @override
   void initState() {
     super.initState();
-    eventBus.on<CreateNewSetEvent>().listen((event) {
-      setState(() {});
-    });
   }
 
   @override
   void dispose() {
-    eventBus.destroy();
     super.dispose();
   }
 
@@ -90,8 +85,7 @@ class _RightDrawerState extends State<RightDrawer> {
                 ),
               ],
             ),
-            /// 不加const，用于刷新
-            body: SetListView(),
+            body: const SetListView(),
           )
             :
           Scaffold(

@@ -22,21 +22,16 @@ class LeftDrawer extends StatefulWidget {
 class _LeftDrawerState extends State<LeftDrawer> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
-
-  /// 事件总线
-  EventBus eventBus = EventBus();
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt<EventBus>();
 
   @override
   void initState() {
     super.initState();
-    eventBus.on<CreateNewBookEvent>().listen((event) {
-      setState(() {});
-    });
   }
 
   @override
   void dispose() {
-    eventBus.destroy();
     super.dispose();
   }
 
@@ -82,7 +77,7 @@ class _LeftDrawerState extends State<LeftDrawer> {
                 ],
               ),
               /// 不加const ，setStateful 可以刷新到
-              body: BookListView(),
+              body: const BookListView(),
             )
         );
       },
