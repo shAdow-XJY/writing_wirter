@@ -67,6 +67,7 @@ class _SettingsListViewItemState extends State<SettingsListViewItem> {
     final height = MediaQuery.of(context).size.height;
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
+        debugPrint("store in settings_listview");
         void clickSetting() {
           store.dispatch(SetSetDataAction(currentSet: widget.setName, currentSetting: widget.settingName));
         }

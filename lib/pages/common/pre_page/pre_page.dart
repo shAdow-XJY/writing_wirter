@@ -36,6 +36,7 @@ class _PrePageState extends State<PrePage> with TickerProviderStateMixin {
     return ResponsiveBuilder(builder: (context, sizingInformation) {
       return StoreConnector<AppState, AsyncCallback>(
         converter: (Store store) {
+          debugPrint("store in pre_page");
           return () async => {
                 store.dispatch(SetStyleDataAction(
                     deviceScreenType: sizingInformation.deviceScreenType)),

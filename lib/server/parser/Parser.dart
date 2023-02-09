@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:writing_writer/server/file/IOBase.dart';
 
 class Parser
 {
@@ -46,5 +47,22 @@ class Parser
       newObj[set]?.addAll(settings);
     });
     return newObj;
+  }
+
+  /// parser 对象: 整本书最开始的parserModel获取（在点击另一本书的章节时调用）
+  static Map<String, Set<String>> getBookInitParserModel(IOBase ioBase, String bookName) {
+    Map<String, Set<String>> newParserModel = {};
+    Map<String, dynamic> setJson = ioBase.getAllSetMap(bookName);
+    List<dynamic> setObjList = setJson["setList"] ?? [];
+    List<String> setList = [];
+    for (var setObj in setObjList) {
+      if (setObj["addToParser"]) {
+        setList.add(setObj["setName"].toString());
+      }
+    }
+    for (var setName in setList) {
+      newParserModel = addSetToParser(newParserModel, setName, ioBase.getAllSettings(bookName, setName));
+    }
+    return newParserModel;
   }
 }

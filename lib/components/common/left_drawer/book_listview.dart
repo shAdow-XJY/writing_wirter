@@ -104,6 +104,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
     final height = MediaQuery.of(context).size.height;
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
+        debugPrint("store in book_listview");
         return {};
       },
       builder: (BuildContext context, Map<String, dynamic> map) {

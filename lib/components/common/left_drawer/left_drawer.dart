@@ -39,6 +39,7 @@ class _LeftDrawerState extends State<LeftDrawer> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
+        debugPrint("store in left_drawer");
         return {
           'deviceType': store.state.styleModel.deviceScreenType,
         };

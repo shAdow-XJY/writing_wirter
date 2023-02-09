@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:writing_writer/server/parser/Parser.dart';
 import '../../../server/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
+import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/action/text_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
@@ -67,7 +69,16 @@ class ChapterListViewItem extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return StoreConnector<AppState, VoidCallback>(
       converter: (Store store) {
+        debugPrint("store in chapter_listview");
+        /// 切换到别的书籍，设定解析addTextParser初始化
+        void clickAnotherBook() {
+          Map<String, Set<String>> newParserModel = Parser.getBookInitParserModel(appGetIt<IOBase>(), bookName);
+          store.dispatch(SetParserDataAction(parserObj: newParserModel));
+        }
         return () => {
+          if (store.state.textModel.currentBook.toString().compareTo(bookName) != 0){
+            clickAnotherBook(),
+          },
           store.dispatch(
             SetTextDataAction(currentBook: bookName, currentChapter: chapterName),
           ),
