@@ -26,6 +26,7 @@ class _SettingEditPageState extends State<SettingEditPage> {
 
   /// status 状态变量
   String currentBook = "";
+  String currentChapterNumber = "";
   String currentSet = "";
   String currentSetting = "";
 
@@ -34,8 +35,9 @@ class _SettingEditPageState extends State<SettingEditPage> {
 
   /// {json {chapterFlag }}
   /// 标志章节数组
-  List<String> chapterFlags = [];
-
+  List<String> chapterFlags = []; // ["1","2"]
+  List<String> chapterFlagsShow = []; // ["1~2","2~"];
+  int currentFlagIndex = 0;
   /// {json {information {description }}}
   /// 输入框的内容
   String currentDescription = "";
@@ -52,8 +54,9 @@ class _SettingEditPageState extends State<SettingEditPage> {
       return;
     }
     currentMap = ioBase.getSettingJson(currentBook, currentSet, currentSetting);
-    chapterFlags = currentMap["chapterFlags"].cast<String>() ?? [];
-    textEditingController.text = currentMap["information"]![0]["description"];
+    chapterFlags = currentMap["chapterFlags"].cast<String>();
+    chapterFlagsPreWork(currentChapterNumber);
+    textEditingController.text = currentMap["information"]![currentFlagIndex]["description"];
     currentDescription = textEditingController.text;
   }
 
@@ -65,9 +68,8 @@ class _SettingEditPageState extends State<SettingEditPage> {
     if (currentMap.isEmpty) {
       return;
     }
-    currentMap["information"][0]["description"] = currentDescription;
-    ioBase.saveSetting(currentBook, currentSet, currentSetting,
-        convert.jsonEncode(currentMap));
+    currentMap["information"][currentFlagIndex]["description"] = currentDescription;
+    ioBase.saveSetting(currentBook, currentSet, currentSetting, convert.jsonEncode(currentMap));
   }
 
   /// 设定重命名
@@ -76,11 +78,28 @@ class _SettingEditPageState extends State<SettingEditPage> {
       return;
     }
     // 先保存再重命名设定.json文件
-    ioBase.saveSetting(
-        currentBook, currentSet, currentSetting, currentDescription);
-    ioBase.renameSetting(
-        currentBook, currentSet, currentSetting, newSettingName);
+    ioBase.saveSetting(currentBook, currentSet, currentSetting, currentDescription);
+    ioBase.renameSetting(currentBook, currentSet, currentSetting, newSettingName);
     currentSetting = newSettingName;
+  }
+
+  /// chapterFlags 处理
+  void chapterFlagsPreWork(String currentChapterNumber) {
+    List<int> chapterNumList = [];
+    for (var index = 0; index < chapterFlags.length; ++index) {
+      chapterNumList.add(int.parse(chapterFlags[index]));
+      String temp = "${chapterFlags[index]}~${chapterFlags[index+1 < chapterFlags.length-1 ? (index+1): chapterFlags.length-1]}";
+      chapterFlagsShow.add(temp);
+    }
+    int nowChapterNum = int.parse(currentChapterNumber);
+    currentFlagIndex = 0;
+    for (var index = 0; index < chapterNumList.length; ++index) {
+      if (nowChapterNum >= chapterNumList[index]) {
+        currentFlagIndex = index;
+      } else {
+        break;
+      }
+    }
   }
 
   @override
@@ -106,18 +125,13 @@ class _SettingEditPageState extends State<SettingEditPage> {
   }
 
   @override
-  void dispose() {
-    saveSetting();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
         debugPrint("store in setting_edit_page");
         saveSetting();
         currentBook = store.state.textModel.currentBook;
+        currentChapterNumber = store.state.textModel.currentChapterNumber;
         currentSet = store.state.setModel.currentSet;
         currentSetting = store.state.setModel.currentSetting;
         getSetting();
@@ -129,11 +143,13 @@ class _SettingEditPageState extends State<SettingEditPage> {
         return {
           "currentSet": currentSet,
           "currentSetting": currentSetting,
-          "currentDescription": currentDescription,
           "renameSetting": renameSetting,
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
+        print(currentFlagIndex);
+        print(chapterFlags);
+        print(chapterFlagsShow);
         return map["currentSetting"].toString().isEmpty
             ? Scaffold(
                 backgroundColor: Theme.of(context).colorScheme.background,
@@ -173,7 +189,8 @@ class _SettingEditPageState extends State<SettingEditPage> {
                       children: [
                         const Text('第'),
                         DropDownButton(
-                          items: chapterFlags,
+                          initValue: chapterFlagsShow[currentFlagIndex],
+                          items: chapterFlagsShow,
                           onChanged: (String selected) {
                             debugPrint(selected);
                           },

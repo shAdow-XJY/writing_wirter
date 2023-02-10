@@ -30,6 +30,7 @@ class _ToastDialogState extends State<ToastDialog> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent.withOpacity(0.5),
       body: CupertinoAlertDialog(
         title: Text(widget.title,),
         content: TextField(

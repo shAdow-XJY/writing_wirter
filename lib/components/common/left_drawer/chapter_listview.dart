@@ -80,7 +80,7 @@ class ChapterListViewItem extends StatelessWidget {
             clickAnotherBook(),
           },
           store.dispatch(
-            SetTextDataAction(currentBook: bookName, currentChapter: chapterName),
+            SetTextDataAction(currentBook: bookName, currentChapter: chapterName, currentChapterNumber: chapterNumber),
           ),
         };
       },

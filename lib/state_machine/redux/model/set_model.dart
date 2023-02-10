@@ -1,7 +1,7 @@
 class SetModel{
-  /// 当前选中的设定集
+  /// 当前选中的设定集名字
   String currentSet;
-  /// 档期选中的设定项
+  /// 当前选中的设定名字
   String currentSetting;
 
   SetModel({
