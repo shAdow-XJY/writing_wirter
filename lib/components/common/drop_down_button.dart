@@ -5,14 +5,14 @@ class DropDownButton extends StatefulWidget {
   final List<String> items;
   final Function(String) onChanged;
   final String? hintText;
-  final String? initValue;
+  final int? initIndex;
 
   const DropDownButton({
     Key? key,
     required this.items,
     required this.onChanged,
     this.hintText,
-    this.initValue,
+    this.initIndex,
   }) : super(key: key);
 
   @override
@@ -21,15 +21,29 @@ class DropDownButton extends StatefulWidget {
 
 class _DropDownButtonState extends State<DropDownButton> {
   String? selectedValue;
+  int? initIndex;
 
   @override
   void initState() {
     super.initState();
-    selectedValue = widget.initValue;
+    initIndex = widget.initIndex;
+    if (initIndex! >= 0) {
+      selectedValue = widget.items[initIndex as int];
+    }
+  }
+
+  @override
+  void dispose() {
+    selectedValue = null;
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (initIndex != widget.initIndex) {
+      initIndex = widget.initIndex;
+      selectedValue = widget.items[initIndex as int];
+    }
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
         buttonHeight: 40,

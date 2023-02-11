@@ -38,29 +38,27 @@ class _SettingEditPageState extends State<SettingEditPage> {
   List<String> chapterFlags = []; // ["1","2"]
   List<String> chapterFlagsShow = []; // ["1~2","2~"];
   int currentFlagIndex = 0;
+  
   /// {json {information {description }}}
   /// 输入框的内容
   String currentDescription = "";
-
   /// 设定内容输入框控制器
   final TextEditingController textEditingController = TextEditingController();
-
   /// 输入框的焦点
   final focusNode = FocusNode();
 
-  /// 获取设定
+  /// 获取设定json
   void getSetting() {
     if (currentBook.isEmpty || currentSet.isEmpty || currentSetting.isEmpty) {
       return;
     }
     currentMap = ioBase.getSettingJson(currentBook, currentSet, currentSetting);
     chapterFlags = currentMap["chapterFlags"].cast<String>();
-    chapterFlagsPreWork(currentChapterNumber);
-    textEditingController.text = currentMap["information"]![currentFlagIndex]["description"];
-    currentDescription = textEditingController.text;
+    chapterFlagShowChange();
+    currentFlagIndexChange(currentChapterNumber);
   }
-
-  /// 保存/更新设定
+  
+  /// 保存/更新设定json
   void saveSetting() {
     if (currentBook.isEmpty || currentSet.isEmpty || currentSetting.isEmpty) {
       return;
@@ -72,7 +70,7 @@ class _SettingEditPageState extends State<SettingEditPage> {
     ioBase.saveSetting(currentBook, currentSet, currentSetting, convert.jsonEncode(currentMap));
   }
 
-  /// 设定重命名
+  /// 设定json重命名
   void changeSettingName(String newSettingName) {
     if (newSettingName.compareTo(currentSetting) == 0) {
       return;
@@ -83,15 +81,22 @@ class _SettingEditPageState extends State<SettingEditPage> {
     currentSetting = newSettingName;
   }
 
-  /// chapterFlags 处理
-  void chapterFlagsPreWork(String currentChapterNumber) {
-    List<int> chapterNumList = [];
+  /// chapterFlagShow 处理
+  void chapterFlagShowChange() {
+    chapterFlagsShow.clear();
     for (var index = 0; index < chapterFlags.length; ++index) {
-      chapterNumList.add(int.parse(chapterFlags[index]));
       String temp = "${chapterFlags[index]}~${chapterFlags[index+1 < chapterFlags.length-1 ? (index+1): chapterFlags.length-1]}";
       chapterFlagsShow.add(temp);
     }
-    int nowChapterNum = int.parse(currentChapterNumber);
+  }
+
+  /// currentFlagIndex 处理
+  void currentFlagIndexChange(String chapterNumber, {bool insertNewFlag = false}) {
+    List<int> chapterNumList = [];
+    for (var index = 0; index < chapterFlags.length; ++index) {
+      chapterNumList.add(int.parse(chapterFlags[index]));
+    }
+    int nowChapterNum = int.parse(chapterNumber);
     currentFlagIndex = 0;
     for (var index = 0; index < chapterNumList.length; ++index) {
       if (nowChapterNum >= chapterNumList[index]) {
@@ -100,8 +105,21 @@ class _SettingEditPageState extends State<SettingEditPage> {
         break;
       }
     }
+    if (insertNewFlag) {
+      ++currentFlagIndex;
+      chapterFlags.insert(currentFlagIndex, chapterNumber);
+      currentMap["information"].insert(currentFlagIndex, currentMap["information"][currentFlagIndex-1]);
+      chapterFlagShowChange();
+    }
+    descriptionChange();
   }
 
+  /// Description 处理
+  void descriptionChange() {
+    textEditingController.text = currentMap["information"][currentFlagIndex]["description"];
+    currentDescription = textEditingController.text;
+  }
+  
   @override
   void initState() {
     super.initState();
@@ -131,15 +149,15 @@ class _SettingEditPageState extends State<SettingEditPage> {
         debugPrint("store in setting_edit_page");
         saveSetting();
         currentBook = store.state.textModel.currentBook;
-        currentChapterNumber = store.state.textModel.currentChapterNumber;
         currentSet = store.state.setModel.currentSet;
-        currentSetting = store.state.setModel.currentSetting;
-        getSetting();
-        void renameSetting() {
-          store.dispatch(SetSetDataAction(
-              currentSet: currentSet, currentSetting: currentSetting));
+        if (currentSetting.compareTo(store.state.setModel.currentSetting) != 0) {
+          currentChapterNumber = store.state.textModel.currentChapterNumber;
+          currentSetting = store.state.setModel.currentSetting;
+          getSetting();
         }
-
+        void renameSetting() {
+          store.dispatch(SetSetDataAction(currentSet: currentSet, currentSetting: currentSetting));
+        }
         return {
           "currentSet": currentSet,
           "currentSetting": currentSetting,
@@ -147,9 +165,6 @@ class _SettingEditPageState extends State<SettingEditPage> {
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
-        print(currentFlagIndex);
-        print(chapterFlags);
-        print(chapterFlagsShow);
         return map["currentSetting"].toString().isEmpty
             ? Scaffold(
                 backgroundColor: Theme.of(context).colorScheme.background,
@@ -189,10 +204,13 @@ class _SettingEditPageState extends State<SettingEditPage> {
                       children: [
                         const Text('第'),
                         DropDownButton(
-                          initValue: chapterFlagsShow[currentFlagIndex],
+                          initIndex: currentFlagIndex,
                           items: chapterFlagsShow,
                           onChanged: (String selected) {
-                            debugPrint(selected);
+                            saveSetting();
+                            setState(() {
+                              currentFlagIndexChange(selected.split('~').first);
+                            });
                           },
                         ),
                         const Text('章'),
@@ -205,13 +223,13 @@ class _SettingEditPageState extends State<SettingEditPage> {
                                 title: '新建设定节点',
                                 callBack: (flagChapter) => {
                                   if (flagChapter.isNotEmpty)
-                                    {
-                                      currentMap["chapterFlags"]
-                                          .add(flagChapter),
-                                      currentMap["information"]
-                                          .add(currentMap["information"].last),
-                                      saveSetting(),
-                                    },
+                                  {
+                                    saveSetting(),
+                                    setState(() {
+                                      currentFlagIndexChange(flagChapter, insertNewFlag: true);
+                                    }),
+                                    saveSetting(),
+                                  },
                                 },
                               ),
                             );
