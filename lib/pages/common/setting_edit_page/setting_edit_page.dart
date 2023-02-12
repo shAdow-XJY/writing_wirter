@@ -112,7 +112,7 @@ class _SettingEditPageState extends State<SettingEditPage> {
     if (insertNewFlag) {
       ++currentFlagIndex;
       chapterFlags.insert(currentFlagIndex, chapterNumber);
-      currentMap["information"].insert(currentFlagIndex, currentMap["information"][currentFlagIndex-1]);
+      currentMap["information"].insert(currentFlagIndex, convert.jsonDecode(convert.jsonEncode(currentMap["information"][currentFlagIndex-1])));
       chapterFlagShowChange();
     }
     descriptionChange();
@@ -127,7 +127,6 @@ class _SettingEditPageState extends State<SettingEditPage> {
   @override
   void initState() {
     super.initState();
-
     /// 添加兼听 当TextFeild 中内容发生变化时 回调 焦点变动 也会触发
     /// onChanged 当TextFeild文本发生改变时才会回调
     textEditingController.addListener(() {
@@ -146,6 +145,11 @@ class _SettingEditPageState extends State<SettingEditPage> {
     });
   }
 
+  @override
+  void dispose() {
+    saveSetting();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
@@ -228,11 +232,10 @@ class _SettingEditPageState extends State<SettingEditPage> {
                                 callBack: (flagChapter) => {
                                   if (flagChapter.isNotEmpty)
                                   {
-                                    saveSetting(),
                                     setState(() {
+                                      saveSetting();
                                       currentFlagIndexChange(flagChapter, insertNewFlag: true);
                                     }),
-                                    saveSetting(),
                                   },
                                 },
                               ),

@@ -39,7 +39,7 @@ class Parser
     return const DeepCollectionEquality().equals(parserOne, parserTwo);
   }
 
-  /// Map<String, Set<String>> 深拷贝
+  /// Map<String, Set<String>> 对象深拷贝
   static Map<String, Set<String>> deepClone(Map<String, Set<String>> parser) {
     Map<String, Set<String>> newObj = {};
     parser.forEach((set, settings) {
