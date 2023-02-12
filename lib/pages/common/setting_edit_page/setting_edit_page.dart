@@ -85,8 +85,12 @@ class _SettingEditPageState extends State<SettingEditPage> {
   void chapterFlagShowChange() {
     chapterFlagsShow.clear();
     for (var index = 0; index < chapterFlags.length; ++index) {
-      String temp = "${chapterFlags[index]}~${chapterFlags[index+1 < chapterFlags.length-1 ? (index+1): chapterFlags.length-1]}";
-      chapterFlagsShow.add(temp);
+      String tmpStr = chapterFlags[index];
+      tmpStr += "~";
+      tmpStr += index+1 <= chapterFlags.length-1
+          ? (int.parse(chapterFlags[index+1])-1).toString()
+          : "";
+      chapterFlagsShow.add(tmpStr);
     }
   }
 

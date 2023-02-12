@@ -58,6 +58,7 @@ class _DropDownButtonState extends State<DropDownButton> {
           ),
         ),
         buttonPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+        dropdownMaxHeight: 400,
         value: selectedValue,
         items: widget.items
             .map(
