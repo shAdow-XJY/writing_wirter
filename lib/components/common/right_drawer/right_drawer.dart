@@ -5,14 +5,15 @@ import 'package:redux/redux.dart';
 import 'package:writing_writer/components/common/right_drawer/set_listview.dart';
 import 'package:writing_writer/state_machine/event_bus/events.dart';
 import '../../../service/file/IOBase.dart';
-import '../../../service/style/StyleBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../toast_dialog.dart';
 
 class RightDrawer extends StatefulWidget {
+  final double? widthFactor;
   const RightDrawer({
     Key? key,
+    this.widthFactor,
   }) : super(key: key);
 
   @override
@@ -25,9 +26,16 @@ class _RightDrawerState extends State<RightDrawer> {
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
 
+  /// 抽屉的宽度因子
+  double widthFactor = 0.9;
+
   @override
   void initState() {
     super.initState();
+    widthFactor = widget.widthFactor??widthFactor;
+    if (widthFactor < 0.0 || widthFactor > 1.0) {
+      widthFactor = 0.9;
+    }
   }
 
   @override
@@ -41,7 +49,7 @@ class _RightDrawerState extends State<RightDrawer> {
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
         return Drawer(
-            width: MediaQuery.of(context).size.width * 0.9,
+            width: MediaQuery.of(context).size.width * widthFactor,
             child: map['currentBookName'].toString().isEmpty
                 ? Scaffold(
                     appBar: AppBar(

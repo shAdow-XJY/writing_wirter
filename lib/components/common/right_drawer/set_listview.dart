@@ -151,6 +151,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                 height: height / 15.0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
                       flex: 3,
@@ -186,39 +187,49 @@ class _SetListViewItemState extends State<SetListViewItem> {
                       ),
                     ),
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          TransCheckBox(
-                            initBool: addTextParser,
-                            onChanged: (bool changedResult) {
-                              setState(() {
-                                addTextParser = changedResult;
-                                map["changeParserOfBookSetJson"](addTextParser);
-                              });
-                            },
+                          Expanded(
+                              flex: 1,
+                              child: TransCheckBox(
+                                initBool: addTextParser,
+                                onChanged: (bool changedResult) {
+                                  setState(() {
+                                    addTextParser = changedResult;
+                                    map["changeParserOfBookSetJson"](addTextParser);
+                                  });
+                                },
+                              ),
                           ),
-                          TransIconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => ToastDialog(
-                                  title: '新建设定',
-                                  callBack: (settingName) => {
-                                    if (settingName.isNotEmpty) {
-                                      map["createSetting"](settingName),
-                                      eventBus.fire(CreateNewSettingEvent()),
+                          Expanded(
+                            flex: 1,
+                            child: TransIconButton(
+                              icon: const Icon(Icons.add),
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => ToastDialog(
+                                    title: '新建设定',
+                                    callBack: (settingName) => {
+                                      if (settingName.isNotEmpty) {
+                                        map["createSetting"](settingName),
+                                        eventBus.fire(CreateNewSettingEvent()),
+                                      },
                                     },
-                                  },
-                                ),
-                              );
-                            },
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                          Icon(isExpanded
-                              ? Icons.arrow_drop_down
-                              : Icons.arrow_drop_up),
+                          Expanded(
+                            flex: 1,
+                            child: Icon(isExpanded
+                                ? Icons.arrow_drop_down
+                                : Icons.arrow_drop_up),
+                          ),
                         ],
                       ),
                     ),
