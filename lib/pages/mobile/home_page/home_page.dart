@@ -9,19 +9,19 @@ import '../../../components/common/toast_dialog.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/redux/action/text_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
-import '../chapter_edit_page/chapter_edit_page.dart';
-import '../setting_edit_page/setting_edit_page.dart';
+import '../../common/chapter_edit_page/chapter_edit_page.dart';
+import '../../common/setting_edit_page/setting_edit_page.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({
+class MobileHomePage extends StatefulWidget {
+  const MobileHomePage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MobileHomePage> createState() => _MobileHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MobileHomePageState extends State<MobileHomePage> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
 
@@ -30,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String currentChapter = "";
 
   /// 详情框打开状态
-  bool isDetailOpened = true;
+  bool isDetailOpened = false;
 
   /// 章节重命名
   void changeChapterName(String newChapterName) {

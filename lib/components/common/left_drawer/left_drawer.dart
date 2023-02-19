@@ -41,12 +41,11 @@ class _LeftDrawerState extends State<LeftDrawer> {
       converter: (Store store) {
         debugPrint("store in left_drawer");
         return {
-          'deviceType': store.state.styleModel.deviceScreenType,
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
         return Drawer(
-            width: MediaQuery.of(context).size.width * StyleBase.getDrawerWidthFactor(map['deviceType']),
+            width: MediaQuery.of(context).size.width * 0.9,
             child: Scaffold(
               appBar: AppBar(
                 centerTitle: true,

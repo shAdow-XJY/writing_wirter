@@ -25,7 +25,7 @@ class PcApp extends StatelessWidget {
               ),
               debugShowCheckedModeBanner: false,
               initialRoute: '/',
-              onGenerateRoute: onGenerateRoute
+              onGenerateRoute: pcGenerateRoute
           );
         },
       ),

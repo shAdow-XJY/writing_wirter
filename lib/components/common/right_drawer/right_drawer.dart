@@ -37,12 +37,11 @@ class _RightDrawerState extends State<RightDrawer> {
         debugPrint("store in right_drawer");
         return {
           'currentBookName': store.state.textModel.currentBook,
-          'deviceType': store.state.styleModel.deviceScreenType,
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
         return Drawer(
-            width: MediaQuery.of(context).size.width * StyleBase.getDrawerWidthFactor(map['deviceType']),
+            width: MediaQuery.of(context).size.width * 0.9,
             child: map['currentBookName'].toString().isEmpty
                 ? Scaffold(
                     appBar: AppBar(

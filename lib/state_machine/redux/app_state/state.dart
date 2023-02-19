@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 import '../action/parser_action.dart';
 import '../action/set_action.dart';
-import '../action/style_action.dart';
 import '../action/text_action.dart';
 import '../model/parser_model.dart';
 import '../model/set_model.dart';
-import '../model/style_model.dart';
 import '../model/text_model.dart';
 
 class AppState {
@@ -15,15 +12,12 @@ class AppState {
   late TextModel textModel;
   /// current set show info
   late SetModel setModel;
-  /// device style info
-  late StyleModel styleModel;
   /// all set obj
   late ParserModel parserModel;
 
   AppState({
     required this.textModel,
     required this.setModel,
-    required this.styleModel,
     required this.parserModel,
   });
 
@@ -34,7 +28,6 @@ class AppState {
   AppState.initialState() {
     textModel = TextModel(currentBook: "", currentChapter: "", currentChapterNumber: "1");
     setModel = SetModel(currentSet: "", currentSetting: "");
-    styleModel = StyleModel(deviceScreenType: DeviceScreenType.desktop);
     parserModel = ParserModel(parserObj: {});
   }
 
@@ -42,7 +35,6 @@ class AppState {
     return AppState(
       textModel: textModel ?? this.textModel,
       setModel: setModel ?? this.setModel,
-      styleModel: styleModel ?? this.styleModel,
       parserModel: this.textModel.currentBook.compareTo(textModel != null ? textModel!.currentBook : this.textModel.currentBook) == 0
           ? (parserModel ?? this.parserModel)
           : ParserModel(parserObj: {}),
@@ -60,9 +52,6 @@ AppState appReducer(AppState state, action) {
     }
     case SetSetDataAction: {
       return state.copyWith(setModel: setReducer(state.setModel, action));
-    }
-    case SetStyleDataAction: {
-      return state.copyWith(styleModel: styleReducer(state.styleModel, action));
     }
     case SetParserDataAction: {
       return state.copyWith(parserModel: parserReducer(state.parserModel, action));
