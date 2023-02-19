@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer/server/parser/Parser.dart';
-import '../../../server/file/IOBase.dart';
+import 'package:writing_writer/service/parser/Parser.dart';
+import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/action/text_action.dart';

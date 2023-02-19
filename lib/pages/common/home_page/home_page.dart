@@ -6,7 +6,7 @@ import '../../../components/common/float_button.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
 import '../../../components/common/toast_dialog.dart';
-import '../../../server/file/IOBase.dart';
+import '../../../service/file/IOBase.dart';
 import '../../../state_machine/redux/action/text_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../chapter_edit_page/chapter_edit_page.dart';

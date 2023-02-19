@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:event_bus/event_bus.dart';
-import '../../../server/file/IOBase.dart';
+import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../../../state_machine/event_bus/events.dart';

@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:writing_writer/server/file/IOBase.dart';
+import 'package:writing_writer/service/file/IOBase.dart';
 
 class Parser
 {

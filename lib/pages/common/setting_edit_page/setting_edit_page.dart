@@ -1,4 +1,5 @@
 import 'package:blur_glass/blur_glass.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -6,7 +7,7 @@ import 'package:writing_writer/components/common/transparent_icon_button.dart';
 import 'dart:convert' as convert;
 import '../../../components/common/drop_down_button.dart';
 import '../../../components/common/toast_dialog.dart';
-import '../../../server/file/IOBase.dart';
+import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
@@ -23,6 +24,8 @@ class SettingEditPage extends StatefulWidget {
 class _SettingEditPageState extends State<SettingEditPage> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt<EventBus>();
 
   /// status 状态变量
   String currentBook = "";
@@ -134,7 +137,6 @@ class _SettingEditPageState extends State<SettingEditPage> {
       currentDescription = textEditingController.text;
       debugPrint(" controller 监听设定内容 $currentDescription");
     });
-
     /// 焦点失焦先保存文章内容
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {

@@ -40,7 +40,7 @@ class _DropDownButtonState extends State<DropDownButton> {
 
   @override
   Widget build(BuildContext context) {
-    if (initIndex != widget.initIndex) {
+    if (initIndex != widget.initIndex || !widget.items.contains(selectedValue!)) {
       initIndex = widget.initIndex;
       selectedValue = widget.items[initIndex as int];
     }

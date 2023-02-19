@@ -1,10 +1,11 @@
 import 'package:blur_glass/blur_glass.dart';
 import 'package:click_text_field/click_text_field.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import '../../../server/file/IOBase.dart';
-import '../../../server/parser/Parser.dart';
+import '../../../service/file/IOBase.dart';
+import '../../../service/parser/Parser.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
@@ -107,11 +108,14 @@ class _ChapterEditPageState extends State<ChapterEditPage> {
         if (!Parser.compareParser(currentParserObj, store.state.parserModel.parserObj)) {
           currentParserObj = store.state.parserModel.parserObj;
         }
-        void clickHighLightText(String settingClick) {
-          store.dispatch(SetSetDataAction(currentSet: getSetName(settingClick), currentSetting: settingClick));
+        void clickHighLightSetting(String settingClick) {
+          String tempSet = getSetName(settingClick);
+          if (tempSet.compareTo(store.state.setModel.currentSet) != 0 || settingClick.compareTo(store.state.setModel.currentSetting) != 0) {
+            store.dispatch(SetSetDataAction(currentSet: getSetName(settingClick), currentSetting: settingClick));
+          }
         }
         return {
-          "clickHighLightText": clickHighLightText,
+          "clickHighLightSetting": clickHighLightSetting,
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
@@ -122,7 +126,7 @@ class _ChapterEditPageState extends State<ChapterEditPage> {
             controller: textEditingController,
             regExp: Parser.generateRegExp(currentParserObj),
             onTapText: (String clickText) {
-              map["clickHighLightText"](clickText);
+              map["clickHighLightSetting"](clickText);
             },
             decoration: const InputDecoration(
               /// 消除下边框
