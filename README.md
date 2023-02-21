@@ -32,6 +32,8 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 14. [Flutter 文件之间引用(路径，方法等不存在)报错但不影响编译运行问题](https://blog.csdn.net/jia635/article/details/117291927)
 15. [解析json的数据类型不一致导致](https://blog.csdn.net/codekxx/article/details/104557944)
 16. [Flutter Package - Get_it](https://blog.csdn.net/win7583362/article/details/106849312)
+17. [Custom AppBar](https://stackoverflow.com/questions/53294006/how-to-create-a-custom-appbar-widget)
+18. [PageView多页面切换组件](https://juejin.cn/post/6844904085741649928)
 
 ---
 
