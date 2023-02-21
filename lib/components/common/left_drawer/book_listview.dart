@@ -151,30 +151,36 @@ class _BookListViewItemState extends State<BookListViewItem> {
                         ),
                     ),
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          TransIconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => ToastDialog(
-                                  title: '新建章节',
-                                  callBack: (chapterName) => {
-                                    if (chapterName.isNotEmpty) {
-                                      ioBase.createChapter(widget.bookName, chapterName),
-                                      eventBus.fire(CreateNewChapterEvent(widget.bookName)),
-                                    },
-                                  },
-                                ),
-                              );
-                            },
+                          Expanded(
+                              flex: 1,
+                              child: TransIconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => ToastDialog(
+                                      title: '新建章节',
+                                      callBack: (chapterName) => {
+                                        if (chapterName.isNotEmpty) {
+                                          ioBase.createChapter(widget.bookName, chapterName),
+                                          eventBus.fire(CreateNewChapterEvent(widget.bookName)),
+                                        },
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
                           ),
-                          Icon(isExpanded
-                              ? Icons.arrow_drop_down
-                              : Icons.arrow_drop_up),
+                          Expanded(
+                            flex: 1,
+                            child: Icon(isExpanded
+                                ? Icons.arrow_drop_down
+                                : Icons.arrow_drop_up),
+                          ),
                         ],
                       ),
                     ),
