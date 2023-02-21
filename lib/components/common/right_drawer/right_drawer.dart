@@ -53,6 +53,7 @@ class _RightDrawerState extends State<RightDrawer> {
             child: map['currentBookName'].toString().isEmpty
                 ? Scaffold(
                     appBar: AppBar(
+                      automaticallyImplyLeading: false,
                       centerTitle: true,
                       title: const Text('no book selected'),
                     ),

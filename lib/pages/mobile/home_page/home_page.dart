@@ -19,6 +19,10 @@ class _MobileHomePageState extends State<MobileHomePage> {
   final PageController _pageController = PageController(initialPage: 0);
   final List<Widget> _bodyPages = [const ChapterEditPageBody(), const SettingEditPage(),];
 
+  /// 抽屉手势开关
+  bool enableLeft = true;
+  bool enableRight = false;
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -27,11 +31,19 @@ class _MobileHomePageState extends State<MobileHomePage> {
         drawerEdgeDragWidth: screenSize.width / 2.0,
         drawer: const LeftDrawer(widthFactor: 0.9,),
         endDrawer: const RightDrawer(widthFactor: 0.9,),
-        drawerEnableOpenDragGesture: false,
-        endDrawerEnableOpenDragGesture: false,
+        drawerEnableOpenDragGesture: enableLeft,
+        endDrawerEnableOpenDragGesture: enableRight,
         body: PageView.builder(
             onPageChanged: (int index){
-              //todo
+              setState(() {
+                if (index == 0) {
+                  enableLeft = true;
+                  enableRight = false;
+                } else {
+                  enableLeft = false;
+                  enableRight = true;
+                }
+              });
             },
             controller: _pageController,
             itemCount: _bodyPages.length,
