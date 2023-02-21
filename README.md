@@ -1,18 +1,18 @@
 # writing_writer
-A write desktop application developed and used myself with local storage.
+A write application (desktop and app) developed and used myself with local storage.
+
+
+---
+
+## git code lines
+v3.0.0:
+added lines: 28178, removed lines: 3654, total lines: 24524
 
 ---
 
 ## thinking
 emmmm.....
 In fact, it is an excuse for myself not to write novels, and after writing my own software, it is better to record and control the plot by writing my own novels.
-
----
-
-## skill quick refer
-1. git checkout -b v1.0.0
-2. git checkout v1.0.0
-3. git push --set-upstream origin v1.0.0
 
 ---
 
@@ -30,6 +30,11 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 11. [flutter text field overwrite](https://github.com/flutter/flutter/issues/30688)
 12. [flutter text field complete rich text](https://www.jianshu.com/p/83a6fd4e94a8)
 13. [Flutter 输入框获取焦点和失去焦点事件](https://www.jianshu.com/p/f9cd631bd267)
+14. [Flutter 文件之间引用(路径，方法等不存在)报错但不影响编译运行问题](https://blog.csdn.net/jia635/article/details/117291927)
+15. [解析json的数据类型不一致导致](https://blog.csdn.net/codekxx/article/details/104557944)
+16. [Flutter Package - Get_it](https://blog.csdn.net/win7583362/article/details/106849312)
+17. [Custom AppBar](https://stackoverflow.com/questions/53294006/how-to-create-a-custom-appbar-widget)
+18. [PageView多页面切换组件](https://juejin.cn/post/6844904085741649928)
 
 ---
 
@@ -41,4 +46,6 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 5. [redux](https://pub.dev/packages/redux)
 6. [responsive_builder](https://pub.dev/packages/responsive_builder)
 7. [lottie](https://pub.dev/packages/lottie)
-8. [detectable_text_field](https://pub.dev/packages/detectable_text_field/score)
+8. [click_text_field](https://pub.dev/packages/click_text_field)
+9. [event_bus](https://pub.dev/packages/event_bus)
+10. [get_it](https://pub.dev/packages/get_it/example)
