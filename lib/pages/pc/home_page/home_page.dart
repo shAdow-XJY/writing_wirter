@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../components/common/float_button.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
+import '../../../components/common/semicircle_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_page.dart';
 import '../../common/setting_edit_page/setting_edit_page.dart';
 
@@ -42,6 +43,9 @@ class _PCHomePageState extends State<PCHomePage> {
                   ],
                 ),
               ),
+            ),
+            SemicircleButton(
+              callback: () {  },
             ),
             isDetailOpened
                 ? const Expanded(flex: 1, child: SettingEditPage())
