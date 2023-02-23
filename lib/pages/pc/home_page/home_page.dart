@@ -15,10 +15,10 @@ class PCHomePage extends StatefulWidget {
   State<PCHomePage> createState() => _PCHomePageState();
 }
 
-class _PCHomePageState extends State<PCHomePage> {
+class _PCHomePageState extends State<PCHomePage> with TickerProviderStateMixin {
 
-  /// 详情框打开状态
-  bool isDetailOpened = false;
+  /// 侧边按钮
+  bool openSettingPage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +31,8 @@ class _PCHomePageState extends State<PCHomePage> {
         body: Row(
           children: [
             Expanded(
-              flex: 2,
+              flex: 20,
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                    vertical: screenSize.height / (isDetailOpened ? 36.0 : 12.0),
-                    horizontal: screenSize.width / (isDetailOpened ? 15.0 : 5.0)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: const <Widget>[
@@ -44,19 +41,24 @@ class _PCHomePageState extends State<PCHomePage> {
                 ),
               ),
             ),
-            SemicircleButton(
-              callback: () {  },
+            Expanded(
+              flex: 1,
+              child: SemicircleButton(
+                icon: openSettingPage ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+                callback: () {
+                  setState(() {
+                    openSettingPage = !openSettingPage;
+                  });
+                },
+              ),
             ),
-            isDetailOpened
-                ? const Expanded(flex: 1, child: SettingEditPage())
+            openSettingPage
+                ? const Expanded(flex: 9, child: SettingEditPage(),)
                 : const SizedBox()
           ],
         ),
         floatingActionButton: FloatButton(
           callback: () {
-            setState(() {
-              isDetailOpened = !isDetailOpened;
-            });
           },
         )
     );
