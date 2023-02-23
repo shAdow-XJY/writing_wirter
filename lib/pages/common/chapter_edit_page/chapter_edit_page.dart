@@ -62,6 +62,12 @@ class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
     },
     builder: (BuildContext context, Map<String, dynamic> map) {
       return AppBar(
+        leading: IconButton(
+            icon: const Icon(Icons.book),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+        ),
         centerTitle: true,
         title: InkWell(
           child: Text(map["currentChapter"] ?? ""),
@@ -83,13 +89,12 @@ class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
           },
         ),
         actions: [
-          Builder(builder: (BuildContext context) {
-            return IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
-                });
-          })
+          IconButton(
+            icon: const Icon(Icons.people),
+            onPressed: () {
+              Scaffold.of(context).openEndDrawer();
+            },
+          ),
         ],
       );
     });

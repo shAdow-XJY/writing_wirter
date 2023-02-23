@@ -50,6 +50,9 @@ class _DropDownButtonState extends State<DropDownButton> {
         buttonWidth: 140,
         itemHeight: 40,
         focusColor: Colors.transparent,
+        buttonDecoration: BoxDecoration(
+          color: Theme.of(context).focusColor
+        ),
         hint: Text(
           widget.hintText??'Select Item',
           style: TextStyle(
