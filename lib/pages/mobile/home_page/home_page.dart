@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
+import '../../../components/mobile/float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_page.dart';
 import '../../common/setting_edit_page/setting_edit_page.dart';
 
@@ -26,7 +27,8 @@ class _MobileHomePageState extends State<MobileHomePage> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    return Scaffold(
+    return MobileFloatButton(
+      mainPage: Scaffold(
         appBar: const ChapterEditPageAppBar(),
         drawerEdgeDragWidth: screenSize.width / 2.0,
         drawer: const LeftDrawer(widthFactor: 0.9,),
@@ -51,6 +53,7 @@ class _MobileHomePageState extends State<MobileHomePage> {
               return _bodyPages.elementAt(index);
             }
         ),
+      ),
     );
   }
 }
