@@ -70,7 +70,7 @@ class _PrePageState extends State<PrePage> with TickerProviderStateMixin {
                 // Lottie file and start the animation.
                 _controller.forward().whenComplete(
                       () => {
-                    Navigator.popAndPushNamed(context, '/homepage'),
+                    Navigator.popAndPushNamed(context, '/home'),
                   },
                 );
               },

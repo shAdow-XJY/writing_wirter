@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../pages/common/pre_page/pre_page.dart';
 import '../../pages/pc/home_page/home_page.dart';
+import '../../pages/pc/sockets_page/sockets_page.dart';
 
 /// 需要引入跳转页面地址
 
@@ -10,7 +11,8 @@ final routes = {
   /// 前面是自己的命名 后面是加载的方法
   /// 不用传参的写法
   '/': (context) => const PrePage(),
-  '/homepage': (context) => const PCHomePage(),
+  '/home': (context) => const PCHomePage(),
+  '/sockets': (context) => const PCSocketsPage(),
 };
 
 /// 固定写法，统一处理，无需更改

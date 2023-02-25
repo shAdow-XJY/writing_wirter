@@ -50,3 +50,4 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 9. [event_bus](https://pub.dev/packages/event_bus)
 10. [get_it](https://pub.dev/packages/get_it/example)
 11. [circular_menu](https://pub.dev/packages/circular_menu/example)
+12. [animated_stack](https://pub.dev/packages/animated_stack)

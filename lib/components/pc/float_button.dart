@@ -34,10 +34,12 @@ class _PCFloatButtonState extends State<PCFloatButton> {
         CircularMenuItem(
           icon: Icons.phone_android,
           color: Colors.purple,
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, '/sockets');
+          },
         ),
         CircularMenuItem(
-          icon: Icons.notifications,
+          icon: Icons.remove_red_eye,
           color: Colors.brown,
           onTap: () {},
         )

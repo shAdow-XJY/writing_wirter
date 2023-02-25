@@ -15,7 +15,7 @@ class PCHomePage extends StatefulWidget {
   State<PCHomePage> createState() => _PCHomePageState();
 }
 
-class _PCHomePageState extends State<PCHomePage> with TickerProviderStateMixin {
+class _PCHomePageState extends State<PCHomePage>{
 
   /// 侧边按钮
   bool openSettingPage = false;

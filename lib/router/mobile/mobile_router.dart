@@ -9,7 +9,7 @@ final routes = {
   /// 前面是自己的命名 后面是加载的方法
   /// 不用传参的写法
   '/': (context) => const PrePage(),
-  '/homepage': (context) => const MobileHomePage(),
+  '/home': (context) => const MobileHomePage(),
 };
 
 /// 固定写法，统一处理，无需更改
