@@ -10,8 +10,8 @@ import '../../pages/pc/sockets_page/sockets_page.dart';
 final routes = {
   /// 前面是自己的命名 后面是加载的方法
   /// 不用传参的写法
-  '/': (context) => const PrePage(),
-  '/home': (context) => const PCHomePage(),
+  '/': (context) => const PCSocketsPage(),
+  '/home': (context) => const PCSocketsPage(),
   '/sockets': (context) => const PCSocketsPage(),
 };
 

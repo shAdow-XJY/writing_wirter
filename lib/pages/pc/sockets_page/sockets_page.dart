@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../service/websocket/websocket_server.dart';
+
+import '../../../service/websocket/websocket_client.dart';
 
 class PCSocketsPage extends StatefulWidget {
   const PCSocketsPage({
@@ -11,15 +12,15 @@ class PCSocketsPage extends StatefulWidget {
 }
 
 class _PCSocketsPageState extends State<PCSocketsPage> {
-  
-  TextEditingController contentTextController = TextEditingController();
+
   TextEditingController ipTextController = TextEditingController();
 
-  WebSocketServer webSocketServer = WebSocketServer();
+  late WebSocketClient webSocketClient;
 
   @override
   void initState() {
     super.initState();
+    webSocketClient = WebSocketClient();
   }
 
   @override
@@ -42,6 +43,7 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
                 TextButton(
                   child: const Text("确定"),
                   onPressed: () {
+                    webSocketClient.clientConnect(ipTextController.text);
                   },
                 ),
                 TextButton(
@@ -50,7 +52,6 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
                     Navigator.pop(context);
                   },
                 ),
-                Text(webSocketServer.serverIP),
               ],
             ),
     );
