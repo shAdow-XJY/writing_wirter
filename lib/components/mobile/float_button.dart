@@ -1,6 +1,8 @@
 import 'package:animated_stack/animated_stack.dart';
 import 'package:flutter/material.dart';
 
+import '../../pages/mobile/sockets_page/sockets_page.dart';
+
 class MobileFloatButton extends StatefulWidget {
   final Widget mainPage;
   const MobileFloatButton({
@@ -34,7 +36,12 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
           ),
           IconButton(
             icon: const Icon(Icons.desktop_windows,),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => const MobileSocketsPage(),
+              );
+            },
           ),
         ],
       ),
