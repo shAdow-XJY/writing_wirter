@@ -35,6 +35,7 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 16. [Flutter Package - Get_it](https://blog.csdn.net/win7583362/article/details/106849312)
 17. [Custom AppBar](https://stackoverflow.com/questions/53294006/how-to-create-a-custom-appbar-widget)
 18. [PageView多页面切换组件](https://juejin.cn/post/6844904085741649928)
+19. [event bus cancel](https://www.cnblogs.com/qqcc1388/p/14060784.html)
 
 ---
 

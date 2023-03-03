@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import '../../../service/websocket/websocket_server.dart';
@@ -16,6 +18,8 @@ class MobileSocketsPage extends StatefulWidget {
 class _PCSocketsPageState extends State<MobileSocketsPage> {
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
+  late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
 
   late WebSocketServer webSocketServer;
 
@@ -38,16 +42,22 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
     webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
     serverIP = webSocketServer.serverIP;
 
-    eventBus.on<GetServerIPEvent>().listen((event) {
+    subscription_1 = eventBus.on<GetServerIPEvent>().listen((event) {
       webSocketServer.serverInit();
       setState(() {
         serverIP = webSocketServer.serverIP;
       });
     });
-
-    eventBus.on<StartWebSocketEvent>().listen((event) {
+    subscription_2 = eventBus.on<StartWebSocketEvent>().listen((event) {
       Navigator.pop(context);
     });
+  }
+
+  @override
+  void dispose() {
+    subscription_1.cancel();
+    subscription_2.cancel();
+    super.dispose();
   }
 
   @override

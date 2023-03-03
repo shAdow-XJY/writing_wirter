@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +19,7 @@ class PCSocketsPage extends StatefulWidget {
 class _PCSocketsPageState extends State<PCSocketsPage> {
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
+  late StreamSubscription subscription_1;
 
   TextEditingController ipTextController = TextEditingController();
 
@@ -32,9 +35,15 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
 
     ipTextController.text = webSocketClient.inputIp;
 
-    eventBus.on<ConnectServerSuccessEvent>().listen((event) {
+    subscription_1 = eventBus.on<ConnectServerSuccessEvent>().listen((event) {
       Navigator.popAndPushNamed(context, '/space');
     });
+  }
+
+  @override
+  void dispose() {
+    subscription_1.cancel();
+    super.dispose();
   }
 
   @override
