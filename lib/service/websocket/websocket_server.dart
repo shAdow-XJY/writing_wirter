@@ -38,14 +38,14 @@ class WebSocketServer {
         await WebSocketTransformer.upgrade(req).then((webSocket) {
           webSocket.listen(handleMsg);
           serverSocket = webSocket;
-          _eventBus.fire(GetServerWebSocketEvent());
+          _eventBus.fire(StartWebSocketEvent());
         });
       }
     });
   }
 
   /// 服务端关闭
-  void serverClose(){
+  void serverClose() {
     try {
       serverSocket.close();
       debugPrint('webSocket 连接断开');
@@ -61,7 +61,7 @@ class WebSocketServer {
   }
 
   /// 服务端 webSocket 监听函数
-  void handleMsg(dynamic msg){
+  void handleMsg(dynamic msg) {
     debugPrint('收到客户端消息：${msg.toString()}');
     serverReceived(msg);
   }

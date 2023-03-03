@@ -1,11 +1,11 @@
 class WebSocketMsg {
-  late final String msgCode;
-  late final String msgContent;
+  final String msgCode;
+  final String msgContent;
 
-  WebSocketMsg (
-      this.msgCode,
-      this.msgContent,
-  );
+  WebSocketMsg({
+    required this.msgCode,
+    required this.msgContent,
+  });
 }
 /**
  * msgCode : 0

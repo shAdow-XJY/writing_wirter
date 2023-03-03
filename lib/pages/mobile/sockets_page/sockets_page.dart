@@ -37,11 +37,16 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
     }
     webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
     serverIP = webSocketServer.serverIP;
+
     eventBus.on<GetServerIPEvent>().listen((event) {
       webSocketServer.serverInit();
       setState(() {
         serverIP = webSocketServer.serverIP;
       });
+    });
+
+    eventBus.on<StartWebSocketEvent>().listen((event) {
+      Navigator.pop(context);
     });
   }
 

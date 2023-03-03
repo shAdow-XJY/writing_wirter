@@ -4,5 +4,8 @@
 /// GetServerIP
 class GetServerIPEvent {}
 
-/// GetServerWebSocketEvent
-class GetServerWebSocketEvent {}
+/// StartWebSocketEvent
+class StartWebSocketEvent {}
+
+/// CloseServerEvent
+class CloseServerEvent {}
