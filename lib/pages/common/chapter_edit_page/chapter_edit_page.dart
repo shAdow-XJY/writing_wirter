@@ -11,7 +11,8 @@ import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/action/text_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
-class ChapterEditPageAppBar extends StatefulWidget implements PreferredSizeWidget {
+class ChapterEditPageAppBar extends StatefulWidget
+    implements PreferredSizeWidget {
   const ChapterEditPageAppBar({
     super.key,
   });
@@ -47,26 +48,27 @@ class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
-    converter: (Store store) {
+        converter: (Store store) {
       debugPrint('store in home_page');
       currentBook = store.state.textModel.currentBook;
       currentChapter = store.state.textModel.currentChapter;
       void renameChapter() {
-        store.dispatch(SetTextDataAction(currentBook: currentBook, currentChapter: currentChapter));
+        store.dispatch(SetTextDataAction(
+            currentBook: currentBook, currentChapter: currentChapter));
       }
+
       return {
         "currentBook": currentBook,
         "currentChapter": currentChapter,
         "renameChapter": renameChapter,
       };
-    },
-    builder: (BuildContext context, Map<String, dynamic> map) {
+    }, builder: (BuildContext context, Map<String, dynamic> map) {
       return AppBar(
         leading: IconButton(
-            icon: const Icon(Icons.book),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
+          icon: const Icon(Icons.book),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
         ),
         centerTitle: true,
         title: InkWell(
@@ -220,23 +222,24 @@ class _ChapterEditPageBodyState extends State<ChapterEditPageBody> {
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
-        /// 毛玻璃组件做写字板背景
-        return BlurGlass(
-          child: ClickTextField(
-            focusNode: focusNode,
-            controller: textEditingController,
-            regExp: Parser.generateRegExp(currentParserObj),
-            onTapText: (String clickText) {
-              map["clickHighLightSetting"](clickText);
-            },
-            decoration: const InputDecoration(
-              /// 消除下边框
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-        );
+        return currentChapter.isEmpty
+            ? const SizedBox()
+            : BlurGlass(
+                child: ClickTextField(
+                  focusNode: focusNode,
+                  controller: textEditingController,
+                  regExp: Parser.generateRegExp(currentParserObj),
+                  onTapText: (String clickText) {
+                    map["clickHighLightSetting"](clickText);
+                  },
+                  decoration: const InputDecoration(
+                    /// 消除下边框
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              );
       },
     );
   }

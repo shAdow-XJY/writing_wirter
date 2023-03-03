@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:writing_writer/pages/pc/space_edit_page/space_edit_page.dart';
 
 import '../../pages/common/pre_page/pre_page.dart';
 import '../../pages/pc/home_page/home_page.dart';
@@ -13,6 +14,7 @@ final routes = {
   '/': (context) => const PCSocketsPage(),
   '/home': (context) => const PCSocketsPage(),
   '/sockets': (context) => const PCSocketsPage(),
+  '/space': (context) => const SpaceEditPage(),
 };
 
 /// 固定写法，统一处理，无需更改

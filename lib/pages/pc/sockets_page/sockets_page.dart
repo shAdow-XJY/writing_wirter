@@ -1,6 +1,9 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 
 import '../../../service/websocket/websocket_client.dart';
+import '../../../state_machine/event_bus/pc_events.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
 
 class PCSocketsPage extends StatefulWidget {
   const PCSocketsPage({
@@ -12,6 +15,8 @@ class PCSocketsPage extends StatefulWidget {
 }
 
 class _PCSocketsPageState extends State<PCSocketsPage> {
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt<EventBus>();
 
   TextEditingController ipTextController = TextEditingController();
 
@@ -20,7 +25,16 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
   @override
   void initState() {
     super.initState();
-    webSocketClient = WebSocketClient();
+    if (!appGetIt.isRegistered<WebSocketClient>(instanceName: "WebSocketClient")) {
+      appGetIt.registerSingleton<WebSocketClient>(WebSocketClient(eventBus), instanceName: "WebSocketClient");
+    }
+    webSocketClient = appGetIt.get(instanceName: "WebSocketClient");
+
+    ipTextController.text = webSocketClient.inputIp;
+
+    eventBus.on<ConnectServerSuccessEvent>().listen((event) {
+      Navigator.popAndPushNamed(context, '/space');
+    });
   }
 
   @override
