@@ -21,7 +21,8 @@ class MobileChapterEditPageBody extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<MobileChapterEditPageBody> createState() => _MobileChapterEditPageBodyState();
+  State<MobileChapterEditPageBody> createState() =>
+      _MobileChapterEditPageBodyState();
 }
 
 class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
@@ -29,11 +30,17 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   final IOBase ioBase = appGetIt<IOBase>();
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
+  /// 全局单例-客户端webSocket
   late WebSocketServer webSocketServer;
   late StreamSubscription subscription_1;
+  /// webSocket 传输的数据
+  Map<String, dynamic> msgMap = {};
+  /// 是否 webSocket 传过来导致的编辑内容改变
+  bool isWebSocketReceive = false;
 
   /// 章节内容输入框控制器
-  final ClickTextEditingController textEditingController = ClickTextEditingController();
+  final ClickTextEditingController textEditingController =
+      ClickTextEditingController();
 
   /// 输入框的内容
   String currentText = "";
@@ -81,16 +88,24 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
     subscription_1 = eventBus.on<StartWebSocketEvent>().listen((event) {
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
       textEditingController.addListener(() {
-        webSocketServer.serverSendMsg(WebSocketMsg(msgCode: '1', msgContent: textEditingController.text));
+        if (!isWebSocketReceive) {
+          webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 1, msgContent: textEditingController.text));
+        } else {
+          isWebSocketReceive = false;
+        }
       });
-      webSocketServer.serverReceived((msg) => {
+
+      webSocketServer.serverReceivedMsg((msg) => {
+        isWebSocketReceive = true,
+        msgMap = WebSocketMsg.msgStringToMap(msg),
         textEditingController.value = TextEditingValue(
-            text: msg["msgContent"],
-            selection: TextSelection.fromPosition(
-              TextPosition(
-                  affinity: TextAffinity.downstream, offset: msg["msgContent"].length,
-              ),
+          text: msgMap["msgContent"],
+          selection: TextSelection.fromPosition(
+            TextPosition(
+              affinity: TextAffinity.downstream,
+              offset: msgMap["msgContent"].length,
             ),
+          ),
         ),
       });
     });
