@@ -21,19 +21,23 @@ class MobileChapterEditPageBody extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<MobileChapterEditPageBody> createState() => _MobileChapterEditPageBodyState();
+  State<MobileChapterEditPageBody> createState() =>
+      _MobileChapterEditPageBodyState();
 }
 
 class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
+
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
   late WebSocketServer webSocketServer;
   late StreamSubscription subscription_1;
+  Map<String, dynamic> msgMap = {};
 
   /// 章节内容输入框控制器
-  final ClickTextEditingController textEditingController = ClickTextEditingController();
+  final ClickTextEditingController textEditingController =
+  ClickTextEditingController();
 
   /// 输入框的内容
   String currentText = "";
@@ -79,18 +83,23 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   void initState() {
     super.initState();
     subscription_1 = eventBus.on<StartWebSocketEvent>().listen((event) {
+      debugPrint('StartWebSocketEvent');
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
       textEditingController.addListener(() {
-        webSocketServer.serverSendMsg(WebSocketMsg(msgCode: '1', msgContent: textEditingController.text));
+        webSocketServer.serverSendMsg(WebSocketMsg.msgString(
+            msgCode: 1, msgContent: textEditingController.text));
       });
-      webSocketServer.serverReceived((msg) => {
+
+      webSocketServer.serverReceivedMsg((msg) => {
+        msgMap = WebSocketMsg.msgStringToMap(msg),
         textEditingController.value = TextEditingValue(
-            text: msg["msgContent"],
-            selection: TextSelection.fromPosition(
-              TextPosition(
-                  affinity: TextAffinity.downstream, offset: msg["msgContent"].length,
-              ),
+          text: msgMap["msgContent"],
+          selection: TextSelection.fromPosition(
+            TextPosition(
+              affinity: TextAffinity.downstream,
+              offset: msgMap["msgContent"].length,
             ),
+          ),
         ),
       });
     });
@@ -156,21 +165,21 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
         return currentChapter.isEmpty
             ? const SizedBox()
             : BlurGlass(
-                child: ClickTextField(
-                  focusNode: focusNode,
-                  controller: textEditingController,
-                  regExp: Parser.generateRegExp(currentParserObj),
-                  onTapText: (String clickText) {
-                    map["clickHighLightSetting"](clickText);
-                  },
-                  decoration: const InputDecoration(
-                    /// 消除下边框
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              );
+          child: ClickTextField(
+            focusNode: focusNode,
+            controller: textEditingController,
+            regExp: Parser.generateRegExp(currentParserObj),
+            onTapText: (String clickText) {
+              map["clickHighLightSetting"](clickText);
+            },
+            decoration: const InputDecoration(
+              /// 消除下边框
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+        );
       },
     );
   }
