@@ -7,5 +7,8 @@ class GetServerIPEvent {}
 /// StartWebSocketEvent
 class StartWebSocketEvent {}
 
+/// BuildServerEvent
+class BuildServerEvent {}
+
 /// CloseServerEvent
 class CloseServerEvent {}

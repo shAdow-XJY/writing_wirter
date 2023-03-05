@@ -19,8 +19,9 @@ class WebSocketMsg {
  * msgCode ： 传输的code
  * 0 : server -> client
  * 1 : client -> server
+ * 2 : server 断开
  *
  * msgContent : 传输的字符串数据
  *
- *
+ * msgOffset : 字符串选择偏移
  * */

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import '../../../service/websocket/websocket_msg_type.dart';
 import '../../../service/websocket/websocket_server.dart';
 import '../../../state_machine/event_bus/mobile_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
@@ -21,6 +22,8 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
   final EventBus eventBus = appGetIt<EventBus>();
   /// webSocket 服务端
   late WebSocketServer webSocketServer;
+  /// webSocket 服务端是否开启
+  bool serverStatus = false;
   /// 当前显示的ip
   String serverIP = "";
   /// 定时查找是否网络IP更换
@@ -28,11 +31,21 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
   /// 事件订阅器
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
+  late StreamSubscription subscription_3;
+  late StreamSubscription subscription_4;
 
-  /// 重新建立服务器
-  Future<void> refreshIP() async {
+  /// 销毁服务器
+  Future<void> closeServer() async {
+    if (!appGetIt.isRegistered<WebSocketServer>(instanceName: "WebSocketServer")) {
+      return;
+    }
+    webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 2, msgContent: "", msgOffset: 0));
     webSocketServer.serverClose();
     await appGetIt.unregister<WebSocketServer>(instanceName: "WebSocketServer");
+  }
+
+  /// 重新建立服务器
+  void rebuildServer() {
     appGetIt.registerSingleton<WebSocketServer>(WebSocketServer(eventBus), instanceName: "WebSocketServer");
     webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
   }
@@ -44,6 +57,7 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
       appGetIt.registerSingleton<WebSocketServer>(WebSocketServer(eventBus), instanceName: "WebSocketServer");
     }
     webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
+    serverStatus = webSocketServer.serverStatus;
     serverIP = webSocketServer.serverIP;
 
     subscription_1 = eventBus.on<GetServerIPEvent>().listen((event) {
@@ -55,11 +69,22 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
     subscription_2 = eventBus.on<StartWebSocketEvent>().listen((event) {
       Navigator.pop(context);
     });
+    subscription_3 = eventBus.on<BuildServerEvent>().listen((event) {
+      setState(() {
+        serverStatus = webSocketServer.serverStatus;
+      });
+    });
+    subscription_4 = eventBus.on<CloseServerEvent>().listen((event) {
+      setState(() {
+        serverStatus = webSocketServer.serverStatus;
+      });
+    });
 
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       NetworkInterface.list(type: InternetAddressType.IPv4).then((value) => {
         if(value.first.addresses.first.address.toString().compareTo(serverIP) != 0) {
-          refreshIP(),
+          closeServer(),
+          rebuildServer(),
         }
       });
     });
@@ -71,6 +96,8 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
     _timer.cancel();
     subscription_1.cancel();
     subscription_2.cancel();
+    subscription_3.cancel();
+    subscription_4.cancel();
     super.dispose();
   }
 
@@ -84,10 +111,20 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
           children: [
             const Text("点击手机端的同步写作，将显示的ip地址输入在下方："),
             Text(serverIP),
+            Text(
+              serverStatus ? "已启动" : "已断开"
+            ),
             TextButton(
               child: const Text("refresh"),
               onPressed: () {
-                refreshIP();
+                closeServer();
+                rebuildServer();
+              },
+            ),
+            TextButton(
+              child: const Text("close server"),
+              onPressed: () {
+                closeServer();
               },
             )
           ],

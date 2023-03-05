@@ -13,10 +13,13 @@ class WebSocketServer {
   Function(dynamic msg) _serverReceived = (dynamic msg) {
     debugPrint(msg.toString());
   };
-
+  /// 传入的事件总线
   late EventBus _eventBus;
+  /// 建立服务器的ip
   String serverIP = "";
   int serverPort = 8090;
+  /// 服务器启动状态
+  bool serverStatus = false;
 
   WebSocketServer(EventBus eventBus) {
     NetworkInterface.list(type: InternetAddressType.IPv4).then((value) => {
@@ -32,6 +35,8 @@ class WebSocketServer {
     debugPrint('服务器绑定IP $serverIP : $serverPort');
     _server = await HttpServer.bind(serverIP, serverPort);
     debugPrint('-------------移动端建立服务器成功-------------');
+    serverStatus = true;
+    _eventBus.fire(BuildServerEvent());
 
     _server.listen((HttpRequest req) async {
       /// 监听"msg"数据
@@ -48,6 +53,8 @@ class WebSocketServer {
 
   /// 服务端关闭
   void serverClose() {
+    serverStatus = false;
+    _eventBus.fire(CloseServerEvent());
     try {
       _serverSocket.close();
       debugPrint('webSocket 连接断开');
@@ -70,7 +77,11 @@ class WebSocketServer {
 
   /// 服务端发送消息
   void serverSendMsg(dynamic msg) {
-    _serverSocket.add(msg);
+    try {
+      _serverSocket.add(msg);
+    } catch (e,s) {
+      debugPrint('webSocket 不存在');
+    }
   }
 
   /// 调用处自定义接收到消息后的操作
