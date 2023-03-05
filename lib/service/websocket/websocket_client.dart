@@ -45,7 +45,7 @@ class WebSocketClient {
   }
 
   /// 客户端关闭
-  void serverClose(){
+  void clientClose(){
     _clientSocketChannel.sink.close();
   }
 

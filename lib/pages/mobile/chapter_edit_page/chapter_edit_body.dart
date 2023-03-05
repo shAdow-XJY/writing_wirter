@@ -89,7 +89,7 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
       textEditingController.addListener(() {
         if (!isWebSocketReceive) {
-          webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 1, msgContent: textEditingController.text));
+          webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 1, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset));
         } else {
           isWebSocketReceive = false;
         }
@@ -103,7 +103,7 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
           selection: TextSelection.fromPosition(
             TextPosition(
               affinity: TextAffinity.downstream,
-              offset: msgMap["msgContent"].length,
+              offset: msgMap["msgOffset"],
             ),
           ),
         ),
