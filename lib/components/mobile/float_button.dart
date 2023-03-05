@@ -18,7 +18,7 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
   Widget build(BuildContext context) {
     return AnimatedStack(
       foregroundWidget: widget.mainPage,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
       fabBackgroundColor: Theme.of(context).highlightColor,
       columnWidget: Column(
         children: [

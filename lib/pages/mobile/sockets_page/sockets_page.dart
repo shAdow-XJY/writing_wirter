@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +19,15 @@ class MobileSocketsPage extends StatefulWidget {
 class _PCSocketsPageState extends State<MobileSocketsPage> {
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
+  /// webSocket 服务端
+  late WebSocketServer webSocketServer;
+  /// 当前显示的ip
+  String serverIP = "";
+  /// 定时查找是否网络IP更换
+  late Timer _timer;
+  /// 事件订阅器
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
-
-  late WebSocketServer webSocketServer;
-
-  String serverIP = "";
 
   /// 重新建立服务器
   Future<void> refreshIP() async {
@@ -51,10 +55,20 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
     subscription_2 = eventBus.on<StartWebSocketEvent>().listen((event) {
       Navigator.pop(context);
     });
+
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      NetworkInterface.list(type: InternetAddressType.IPv4).then((value) => {
+        if(value.first.addresses.first.address.toString().compareTo(serverIP) != 0) {
+          refreshIP(),
+        }
+      });
+    });
+
   }
 
   @override
   void dispose() {
+    _timer.cancel();
     subscription_1.cancel();
     subscription_2.cancel();
     super.dispose();

@@ -40,7 +40,7 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
 
   /// 章节内容输入框控制器
   final ClickTextEditingController textEditingController =
-      ClickTextEditingController();
+  ClickTextEditingController();
 
   /// 输入框的内容
   String currentText = "";
@@ -89,7 +89,7 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
       textEditingController.addListener(() {
         if (!isWebSocketReceive) {
-          webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 1, msgContent: textEditingController.text));
+          webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 1, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset));
         } else {
           isWebSocketReceive = false;
         }
@@ -103,7 +103,7 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
           selection: TextSelection.fromPosition(
             TextPosition(
               affinity: TextAffinity.downstream,
-              offset: msgMap["msgContent"].length,
+              offset: msgMap["msgOffset"],
             ),
           ),
         ),
@@ -171,21 +171,21 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
         return currentChapter.isEmpty
             ? const SizedBox()
             : BlurGlass(
-                child: ClickTextField(
-                  focusNode: focusNode,
-                  controller: textEditingController,
-                  regExp: Parser.generateRegExp(currentParserObj),
-                  onTapText: (String clickText) {
-                    map["clickHighLightSetting"](clickText);
-                  },
-                  decoration: const InputDecoration(
-                    /// 消除下边框
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              );
+          child: ClickTextField(
+            focusNode: focusNode,
+            controller: textEditingController,
+            regExp: Parser.generateRegExp(currentParserObj),
+            onTapText: (String clickText) {
+              map["clickHighLightSetting"](clickText);
+            },
+            decoration: const InputDecoration(
+              /// 消除下边框
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+        );
       },
     );
   }
