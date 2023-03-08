@@ -12,7 +12,7 @@ added lines: 28178, removed lines: 3654, total lines: 24524
 
 ## thinking
 emmmm.....
-In fact, it is an excuse for myself not to write novels, and after writing my own software, it is better to record and control the plot by writing my own novels.
+Hypnotized myself as an excuse for not being too lazy to write a novel, but later used it for a graduation project
 
 ---
 

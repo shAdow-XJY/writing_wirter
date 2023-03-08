@@ -35,7 +35,7 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
 
     ipTextController.text = webSocketClient.inputIp;
 
-    subscription_1 = eventBus.on<ConnectServerSuccessEvent>().listen((event) {
+    subscription_1 = eventBus.on<PCConnectServerSuccessEvent>().listen((event) {
       Navigator.pushNamed(context, '/space');
     });
   }

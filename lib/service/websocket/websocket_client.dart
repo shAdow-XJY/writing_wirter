@@ -30,17 +30,17 @@ class WebSocketClient {
 
       Timer(const Duration(seconds: 3), () {
         if (_clientSocketChannel.innerWebSocket == null) {
-          _eventBus.fire(ConnectServerErrorEvent());
+          _eventBus.fire(PCConnectServerErrorEvent());
         }
         else {
-          _eventBus.fire(ConnectServerSuccessEvent());
+          _eventBus.fire(PCConnectServerSuccessEvent());
           _clientSocketChannel.stream.listen((msg){
             _handleMsg(msg);
           });
         }
       });
     } catch (e,s) {
-      _eventBus.fire(ConnectServerErrorEvent());
+      _eventBus.fire(PCConnectServerErrorEvent());
     }
   }
 

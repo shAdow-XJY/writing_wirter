@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
 import '../../../components/common/semicircle_button.dart';
-import '../../../components/pc/float_button.dart';
+import '../../../components/pc/pc_float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_app_bar.dart';
-import '../../common/chapter_edit_page/chapter_edit_body.dart';
-import '../../common/setting_edit_page/setting_edit_page.dart';
+import '../chapter_edit_page/pc_chapter_edit_body.dart';
+import '../setting_edit_page/pc_setting_edit_page.dart';
 
 class PCHomePage extends StatefulWidget {
   const PCHomePage({
@@ -37,7 +37,7 @@ class _PCHomePageState extends State<PCHomePage>{
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: const <Widget>[
-                    ChapterEditPageBody(),
+                    PCChapterEditPageBody(),
                   ],
                 ),
               ),
@@ -54,7 +54,7 @@ class _PCHomePageState extends State<PCHomePage>{
               ),
             ),
             openSettingPage
-                ? const Expanded(flex: 9, child: SettingEditPage(),)
+                ? const Expanded(flex: 9, child: PCSettingEditPage(),)
                 : const SizedBox()
           ],
         ),

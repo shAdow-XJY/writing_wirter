@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
-import '../../../components/mobile/float_button.dart';
+import '../../../components/mobile/mobile_float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_app_bar.dart';
-import '../chapter_edit_page/chapter_edit_body.dart';
-import '../setting_edit_page/setting_edit_page.dart';
+import '../chapter_edit_page/mobile_chapter_edit_body.dart';
+import '../setting_edit_page/mobile_setting_edit_page.dart';
 
 class MobileHomePage extends StatefulWidget {
   const MobileHomePage({

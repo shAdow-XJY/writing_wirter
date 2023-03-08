@@ -1,42 +1,26 @@
-import 'dart:async';
-
 import 'package:blur_glass/blur_glass.dart';
 import 'package:click_text_field/click_text_field.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../service/parser/Parser.dart';
-import '../../../service/websocket/websocket_msg_type.dart';
-import '../../../service/websocket/websocket_server.dart';
-import '../../../state_machine/event_bus/mobile_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
-class MobileChapterEditPageBody extends StatefulWidget {
-  const MobileChapterEditPageBody({
+class PCChapterEditPageBody extends StatefulWidget {
+  const PCChapterEditPageBody({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<MobileChapterEditPageBody> createState() =>
-      _MobileChapterEditPageBodyState();
+  State<PCChapterEditPageBody> createState() => _ChapterEditPageBodyState();
 }
 
-class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
+class _ChapterEditPageBodyState extends State<PCChapterEditPageBody> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
-  /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
-  /// 全局单例-客户端webSocket
-  late WebSocketServer webSocketServer;
-  late StreamSubscription subscription_1;
-  /// webSocket 传输的数据
-  Map<String, dynamic> msgMap = {};
-  /// 是否 webSocket 传过来导致的编辑内容改变
-  bool isWebSocketReceive = false;
 
   /// 章节内容输入框控制器
   final ClickTextEditingController textEditingController =
@@ -85,36 +69,13 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   @override
   void initState() {
     super.initState();
-    subscription_1 = eventBus.on<StartWebSocketEvent>().listen((event) {
-      webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
-      textEditingController.addListener(() {
-        if (!isWebSocketReceive) {
-          webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 1, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset));
-        } else {
-          isWebSocketReceive = false;
-        }
-      });
-
-      webSocketServer.serverReceivedMsg((msg) => {
-        isWebSocketReceive = true,
-        msgMap = WebSocketMsg.msgStringToMap(msg),
-        textEditingController.value = TextEditingValue(
-          text: msgMap["msgContent"],
-          selection: TextSelection.fromPosition(
-            TextPosition(
-              affinity: TextAffinity.downstream,
-              offset: msgMap["msgOffset"],
-            ),
-          ),
-        ),
-      });
-    });
 
     /// 添加兼听 当TextField 中内容发生变化时 回调 焦点变动 也会触发
     /// onChanged 当TextField文本发生改变时才会回调
     textEditingController.addListener(() {
       ///获取输入的内容
       currentText = textEditingController.text;
+      // debugPrint("controller 兼听章节内容 $currentText");
     });
 
     /// 焦点失焦先保存文章内容
@@ -129,7 +90,6 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
 
   @override
   void dispose() {
-    subscription_1.cancel();
     saveText();
     super.dispose();
   }

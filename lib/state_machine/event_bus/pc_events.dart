@@ -1,8 +1,8 @@
 // All events defined here
 
 /// <!-- WebSocket Client -->
-/// ConnectServerSuccessEvent
-class ConnectServerSuccessEvent {}
+/// PCConnectServerSuccessEvent
+class PCConnectServerSuccessEvent {}
 
-/// ConnectServerErrorEvent
-class ConnectServerErrorEvent {}
+/// PCConnectServerErrorEvent
+class PCConnectServerErrorEvent {}

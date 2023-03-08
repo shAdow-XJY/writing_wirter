@@ -1,14 +1,14 @@
 // All events defined here
 
 /// <!-- WebSocket Server -->
-/// GetServerIP
-class GetServerIPEvent {}
+/// MobileGetServerIPEvent
+class MobileGetServerIPEvent {}
 
-/// StartWebSocketEvent
-class StartWebSocketEvent {}
+/// MobileStartWebSocketEvent
+class MobileStartWebSocketEvent {}
 
-/// BuildServerEvent
-class BuildServerEvent {}
+/// MobileBuildServerEvent
+class MobileBuildServerEvent {}
 
-/// CloseServerEvent
-class CloseServerEvent {}
+/// MobileCloseServerEvent
+class MobileCloseServerEvent {}

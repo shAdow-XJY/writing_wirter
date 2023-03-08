@@ -60,21 +60,21 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
     serverStatus = webSocketServer.serverStatus;
     serverIP = webSocketServer.serverIP;
 
-    subscription_1 = eventBus.on<GetServerIPEvent>().listen((event) {
+    subscription_1 = eventBus.on<MobileGetServerIPEvent>().listen((event) {
       webSocketServer.serverInit();
       setState(() {
         serverIP = webSocketServer.serverIP;
       });
     });
-    subscription_2 = eventBus.on<StartWebSocketEvent>().listen((event) {
+    subscription_2 = eventBus.on<MobileStartWebSocketEvent>().listen((event) {
       Navigator.pop(context);
     });
-    subscription_3 = eventBus.on<BuildServerEvent>().listen((event) {
+    subscription_3 = eventBus.on<MobileBuildServerEvent>().listen((event) {
       setState(() {
         serverStatus = webSocketServer.serverStatus;
       });
     });
-    subscription_4 = eventBus.on<CloseServerEvent>().listen((event) {
+    subscription_4 = eventBus.on<MobileCloseServerEvent>().listen((event) {
       setState(() {
         serverStatus = webSocketServer.serverStatus;
       });

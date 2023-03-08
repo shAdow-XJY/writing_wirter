@@ -25,7 +25,7 @@ class WebSocketServer {
     NetworkInterface.list(type: InternetAddressType.IPv4).then((value) => {
       serverIP = value.first.addresses.first.address.toString(),
       _eventBus = eventBus,
-      _eventBus.fire(GetServerIPEvent()),
+      _eventBus.fire(MobileGetServerIPEvent()),
     });
   }
 
@@ -36,7 +36,7 @@ class WebSocketServer {
     _server = await HttpServer.bind(serverIP, serverPort);
     debugPrint('-------------移动端建立服务器成功-------------');
     serverStatus = true;
-    _eventBus.fire(BuildServerEvent());
+    _eventBus.fire(MobileBuildServerEvent());
 
     _server.listen((HttpRequest req) async {
       /// 监听"msg"数据
@@ -45,7 +45,7 @@ class WebSocketServer {
         await WebSocketTransformer.upgrade(req).then((webSocket) {
           webSocket.listen(_handleMsg);
           _serverSocket = webSocket;
-          _eventBus.fire(StartWebSocketEvent());
+          _eventBus.fire(MobileStartWebSocketEvent());
         });
       }
     });
@@ -54,7 +54,7 @@ class WebSocketServer {
   /// 服务端关闭
   void serverClose() {
     serverStatus = false;
-    _eventBus.fire(CloseServerEvent());
+    _eventBus.fire(MobileCloseServerEvent());
     try {
       _serverSocket.close();
       debugPrint('webSocket 连接断开');
