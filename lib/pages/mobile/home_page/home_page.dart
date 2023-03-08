@@ -3,8 +3,8 @@ import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
 import '../../../components/mobile/float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_app_bar.dart';
-import '../../common/setting_edit_page/setting_edit_page.dart';
 import '../chapter_edit_page/chapter_edit_body.dart';
+import '../setting_edit_page/setting_edit_page.dart';
 
 class MobileHomePage extends StatefulWidget {
   const MobileHomePage({
@@ -19,7 +19,7 @@ class _MobileHomePageState extends State<MobileHomePage> {
 
   /// 页面切换初始化
   final PageController _pageController = PageController(initialPage: 0);
-  final List<Widget> _bodyPages = [const MobileChapterEditPageBody(), const SettingEditPage(),];
+  final List<Widget> _bodyPages = [const MobileChapterEditPageBody(), const MobileSettingEditPage(),];
 
   /// 抽屉手势开关
   bool enableLeft = true;

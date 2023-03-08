@@ -32,6 +32,9 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   final EventBus eventBus = appGetIt<EventBus>();
   /// 全局单例-客户端webSocket
   late WebSocketServer webSocketServer;
+  /// 是否 textEditingController 的监听函数已完成设置
+  bool isAddWebSocketToListener = false;
+  /// 事件订阅器
   late StreamSubscription subscription_1;
   /// webSocket 传输的数据
   Map<String, dynamic> msgMap = {};
@@ -82,34 +85,46 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
     ioBase.saveChapter(currentBook, currentChapter, currentText);
   }
 
+  /// textEditingController 的webSocket监听函数已完成设置
+  void addWebSocketToListener() {
+    if (isAddWebSocketToListener) {
+      return;
+    }
+    textEditingController.addListener(() {
+      if (!isWebSocketReceive) {
+        webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 1, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset));
+      } else {
+        isWebSocketReceive = false;
+      }
+    });
+
+    webSocketServer.serverReceivedMsg((msg) => {
+      isWebSocketReceive = true,
+      msgMap = WebSocketMsg.msgStringToMap(msg),
+      textEditingController.value = TextEditingValue(
+        text: msgMap["msgContent"],
+        selection: TextSelection.fromPosition(
+          TextPosition(
+            affinity: TextAffinity.downstream,
+            offset: msgMap["msgOffset"],
+          ),
+        ),
+      ),
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    if (appGetIt.isRegistered<WebSocketServer>(instanceName: "WebSocketServer")) {
+      webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
+      addWebSocketToListener();
+      isAddWebSocketToListener = true;
+    }
     subscription_1 = eventBus.on<StartWebSocketEvent>().listen((event) {
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
-      textEditingController.addListener(() {
-        if (!isWebSocketReceive) {
-          webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 1, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset));
-        } else {
-          isWebSocketReceive = false;
-        }
-      });
-
-      webSocketServer.serverReceivedMsg((msg) => {
-        isWebSocketReceive = true,
-        msgMap = WebSocketMsg.msgStringToMap(msg),
-        textEditingController.value = TextEditingValue(
-          text: msgMap["msgContent"],
-          selection: TextSelection.fromPosition(
-            TextPosition(
-              affinity: TextAffinity.downstream,
-              offset: msgMap["msgOffset"],
-            ),
-          ),
-        ),
-      });
+      addWebSocketToListener();
     });
-
     /// 添加兼听 当TextField 中内容发生变化时 回调 焦点变动 也会触发
     /// onChanged 当TextField文本发生改变时才会回调
     textEditingController.addListener(() {
@@ -155,11 +170,13 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
         void clickHighLightSetting(String settingClick) {
           String tempSet = getSetName(settingClick);
           if (tempSet.compareTo(store.state.setModel.currentSet) != 0 ||
-              settingClick.compareTo(store.state.setModel.currentSetting) !=
-                  0) {
-            store.dispatch(SetSetDataAction(
+              settingClick.compareTo(store.state.setModel.currentSetting) != 0) {
+            store.dispatch(
+              SetSetDataAction(
                 currentSet: getSetName(settingClick),
-                currentSetting: settingClick));
+                currentSetting: settingClick,
+              ),
+            );
           }
         }
 
@@ -171,6 +188,7 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
         return currentChapter.isEmpty
             ? const SizedBox()
             : BlurGlass(
+          outBorderRadius: 0.0,
           child: ClickTextField(
             focusNode: focusNode,
             controller: textEditingController,
