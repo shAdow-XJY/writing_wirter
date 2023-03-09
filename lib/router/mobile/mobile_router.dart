@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../pages/common/pre_page/pre_page.dart';
-import '../../pages/mobile/home_page/home_page.dart';
+import '../../pages/mobile/home_page/mobile_home_page.dart';
 /// 需要引入跳转页面地址
 
 /// 配置路由
@@ -9,7 +9,7 @@ final routes = {
   /// 前面是自己的命名 后面是加载的方法
   /// 不用传参的写法
   '/': (context) => const PrePage(),
-  '/homepage': (context) => const MobileHomePage(),
+  '/home': (context) => const MobileHomePage(),
 };
 
 /// 固定写法，统一处理，无需更改

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -24,6 +26,7 @@ class _BookListViewState extends State<BookListView> {
   final IOBase ioBase = appGetIt<IOBase>();
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
+  late StreamSubscription subscription_1;
 
   List<String> bookNameList = [];
 
@@ -31,13 +34,18 @@ class _BookListViewState extends State<BookListView> {
   void initState() {
     super.initState();
     bookNameList = ioBase.getAllBooks();
-    eventBus.on<CreateNewBookEvent>().listen((event) {
+    subscription_1 = eventBus.on<CreateNewBookEvent>().listen((event) {
       setState(() {
         bookNameList = ioBase.getAllBooks();
       });
     });
   }
 
+  @override
+  void dispose() {
+    subscription_1.cancel();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
@@ -72,6 +80,8 @@ class _BookListViewItemState extends State<BookListViewItem> {
   final IOBase ioBase = appGetIt<IOBase>();
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
+  late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
 
   /// 列表是否展开
   bool isExpanded = false;
@@ -80,12 +90,12 @@ class _BookListViewItemState extends State<BookListViewItem> {
   void initState() {
     super.initState();
     /// bus总线：修改后实时更新
-    eventBus.on<RenameBookNameEvent>().listen((event) {
+    subscription_1 = eventBus.on<RenameBookNameEvent>().listen((event) {
       setState(() {
         widget.bookName;
       });
     });
-    eventBus.on<CreateNewChapterEvent>().listen((event) {
+    subscription_2 = eventBus.on<CreateNewChapterEvent>().listen((event) {
       if (event.bookName.compareTo(widget.bookName) == 0) {
         setState(() {
           widget.bookName;
@@ -96,6 +106,8 @@ class _BookListViewItemState extends State<BookListViewItem> {
 
   @override
   void dispose() {
+    subscription_1.cancel();
+    subscription_2.cancel();
     super.dispose();
   }
 

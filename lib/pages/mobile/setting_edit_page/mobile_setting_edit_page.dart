@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:blur_glass/blur_glass.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
@@ -8,24 +10,37 @@ import 'dart:convert' as convert;
 import '../../../components/common/drop_down_button.dart';
 import '../../../components/common/toast_dialog.dart';
 import '../../../service/file/IOBase.dart';
+import '../../../service/websocket/websocket_msg_type.dart';
+import '../../../service/websocket/websocket_server.dart';
+import '../../../state_machine/event_bus/mobile_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
-class SettingEditPage extends StatefulWidget {
-  const SettingEditPage({
+class MobileSettingEditPage extends StatefulWidget {
+  const MobileSettingEditPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<SettingEditPage> createState() => _SettingEditPageState();
+  State<MobileSettingEditPage> createState() => _SettingEditPageState();
 }
 
-class _SettingEditPageState extends State<SettingEditPage> {
+class _SettingEditPageState extends State<MobileSettingEditPage> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt<IOBase>();
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
+  /// 全局单例-客户端webSocket
+  late WebSocketServer webSocketServer;
+  /// 是否 textEditingController 的监听函数已完成设置
+  bool isAddWebSocketToListener = false;
+  /// 事件订阅器
+  late StreamSubscription subscription_1;
+  /// webSocket 传输的数据
+  Map<String, dynamic> msgMap = {};
+  /// 是否 webSocket 传过来导致的编辑内容改变
+  bool isWebSocketReceive = false;
 
   /// status 状态变量
   String currentBook = "";
@@ -126,10 +141,47 @@ class _SettingEditPageState extends State<SettingEditPage> {
     textEditingController.text = currentMap["information"][currentFlagIndex]["description"];
     currentDescription = textEditingController.text;
   }
-  
+
+  /// textEditingController 的webSocket监听函数已完成设置
+  void addWebSocketToListener() {
+    if (isAddWebSocketToListener) {
+      return;
+    }
+    textEditingController.addListener(() {
+      if (!isWebSocketReceive) {
+        webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 1, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset));
+      } else {
+        isWebSocketReceive = false;
+      }
+    });
+
+    webSocketServer.serverReceivedMsg((msg) => {
+      isWebSocketReceive = true,
+      msgMap = WebSocketMsg.msgStringToMap(msg),
+      textEditingController.value = TextEditingValue(
+        text: msgMap["msgContent"],
+        selection: TextSelection.fromPosition(
+          TextPosition(
+            affinity: TextAffinity.downstream,
+            offset: msgMap["msgOffset"],
+          ),
+        ),
+      ),
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    if (appGetIt.isRegistered<WebSocketServer>(instanceName: "WebSocketServer")) {
+      webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
+      addWebSocketToListener();
+      isAddWebSocketToListener = true;
+    }
+    subscription_1 = eventBus.on<MobileStartWebSocketEvent>().listen((event) {
+      webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
+      addWebSocketToListener();
+    });
     /// 添加兼听 当TextFeild 中内容发生变化时 回调 焦点变动 也会触发
     /// onChanged 当TextFeild文本发生改变时才会回调
     textEditingController.addListener(() {
@@ -149,14 +201,16 @@ class _SettingEditPageState extends State<SettingEditPage> {
 
   @override
   void dispose() {
+    subscription_1.cancel();
     saveSetting();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        debugPrint("store in setting_edit_page");
+        debugPrint("store in mobile_setting_edit_page");
         saveSetting();
         currentBook = store.state.textModel.currentBook;
         currentSet = store.state.setModel.currentSet;

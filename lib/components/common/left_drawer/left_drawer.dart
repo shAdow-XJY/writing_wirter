@@ -36,11 +36,6 @@ class _LeftDrawerState extends State<LeftDrawer> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Drawer(
         width: MediaQuery.of(context).size.width * widthFactor,

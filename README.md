@@ -5,14 +5,18 @@ A write application (desktop and app) developed and used myself with local stora
 ---
 
 ## git code lines
+v2.0.0:
+added lines: 12752, removed lines: 1595, total lines: 11157
 v3.0.0:
 added lines: 28178, removed lines: 3654, total lines: 24524
+v4.0.0:
+added lines: 30282, removed lines: 4403, total lines: 25879
 
 ---
 
 ## thinking
 emmmm.....
-In fact, it is an excuse for myself not to write novels, and after writing my own software, it is better to record and control the plot by writing my own novels.
+Hypnotized myself as an excuse for not being too lazy to write a novel, but later used it for a graduation project
 
 ---
 
@@ -35,6 +39,10 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 16. [Flutter Package - Get_it](https://blog.csdn.net/win7583362/article/details/106849312)
 17. [Custom AppBar](https://stackoverflow.com/questions/53294006/how-to-create-a-custom-appbar-widget)
 18. [PageView多页面切换组件](https://juejin.cn/post/6844904085741649928)
+19. [event bus cancel](https://www.cnblogs.com/qqcc1388/p/14060784.html)
+20. [flutter windows SingleChildScrollView隐藏进度条](https://blog.csdn.net/wan903531306/article/details/129378305)
+21. [Flutter踩坑系列：滑动手势监听不到](https://www.jianshu.com/p/1d89c97c5bdc)
+22. [Scaffold.of() called with a context that does not contain a Scaffold](https://www.fluttercampus.com/guide/329/scaffold-of-called-with-a-context-that-does-not-contain-a-scaffold/)
 
 ---
 
@@ -44,8 +52,10 @@ In fact, it is an excuse for myself not to write novels, and after writing my ow
 3. [path_provider](https://pub.dev/packages/path_provider/score)
 4. [flutter_redux](https://pub.dev/packages/flutter_redux)
 5. [redux](https://pub.dev/packages/redux)
-6. [responsive_builder](https://pub.dev/packages/responsive_builder)
+6. [web_socket_channel](https://pub.dev/packages/web_socket_channel)
 7. [lottie](https://pub.dev/packages/lottie)
 8. [click_text_field](https://pub.dev/packages/click_text_field)
 9. [event_bus](https://pub.dev/packages/event_bus)
 10. [get_it](https://pub.dev/packages/get_it/example)
+11. [circular_menu](https://pub.dev/packages/circular_menu/example)
+12. [animated_stack](https://pub.dev/packages/animated_stack)

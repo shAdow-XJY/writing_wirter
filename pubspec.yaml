@@ -12,10 +12,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  ## own pack
+  ## own pack ##
   blur_glass: ^0.0.1
   click_text_field: ^0.0.5
-  ## own pack
+  ## own pack ##
   # 系统/文件路径
   path_provider: ^2.0.12
   url_launcher: ^6.1.8
@@ -26,8 +26,6 @@ dependencies:
   get_it: ^7.2.0
   # 事件总线
   event_bus: ^2.0.0
-  # 不同设备屏幕
-  responsive_builder: ^0.5.0+1
   # 动画
   lottie: ^2.2.0
   # String扫描匹配
@@ -36,6 +34,16 @@ dependencies:
   collection: ^1.17.0
   # 下拉选项框组件
   dropdown_button2: ^1.9.2
+  # websockets
+  web_socket_channel: ^2.3.0
+
+  ## pc pack use ##
+  circular_menu: ^2.0.1
+  ## pc pack use ##
+
+  ## mobile pack use ##
+  animated_stack: ^0.2.0
+  ## mobile pack use ##
 
 dev_dependencies:
   flutter_test:

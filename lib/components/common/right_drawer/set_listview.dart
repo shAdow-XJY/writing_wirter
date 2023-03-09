@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -27,15 +29,21 @@ class _SetListViewState extends State<SetListView> {
   final IOBase ioBase = appGetIt<IOBase>();
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
+  late StreamSubscription subscription_1;
 
   @override
   void initState() {
     super.initState();
-    eventBus.on<CreateNewSetEvent>().listen((event) {
+    subscription_1 = eventBus.on<CreateNewSetEvent>().listen((event) {
       setState(() {});
     });
   }
 
+  @override
+  void dispose() {
+    subscription_1.cancel();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<dynamic>>(
@@ -80,6 +88,8 @@ class _SetListViewItemState extends State<SetListViewItem> {
   final IOBase ioBase = appGetIt<IOBase>();
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt<EventBus>();
+  late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
 
   /// 设定集是否加入文本解析
   bool addTextParser = false;
@@ -90,12 +100,12 @@ class _SetListViewItemState extends State<SetListViewItem> {
   void initState() {
     super.initState();
     addTextParser = widget.addToParser;
-    eventBus.on<RenameSetEvent>().listen((event) {
+    subscription_1 = eventBus.on<RenameSetEvent>().listen((event) {
       setState(() {
         widget.setName;
       });
     });
-    eventBus.on<CreateNewSettingEvent>().listen((event) {
+    subscription_2 = eventBus.on<CreateNewSettingEvent>().listen((event) {
       setState(() {
         widget.setName;
       });
@@ -104,6 +114,8 @@ class _SetListViewItemState extends State<SetListViewItem> {
 
   @override
   void dispose() {
+    subscription_1.cancel();
+    subscription_2.cancel();
     super.dispose();
   }
 
