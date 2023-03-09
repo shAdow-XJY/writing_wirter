@@ -9,5 +9,12 @@
 ---
 
 ## Windows exe
+1. cmd: flutter build windows
+2. √  Built build\windows\runner\Release\writing_writer.exe.
+
+```
+to old this way
+## Windows exe
 1. cmd: hover run
 2. √  Built go/build/outputs/windows-debug_unopt/writing_writer.exe
+```
