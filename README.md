@@ -45,6 +45,7 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 20. [flutter windows SingleChildScrollView隐藏进度条](https://blog.csdn.net/wan903531306/article/details/129378305)
 21. [Flutter踩坑系列：滑动手势监听不到](https://www.jianshu.com/p/1d89c97c5bdc)
 22. [Scaffold.of() called with a context that does not contain a Scaffold](https://www.fluttercampus.com/guide/329/scaffold-of-called-with-a-context-that-does-not-contain-a-scaffold/)
+23. [Build exe file for Flutter Windows Application](https://www.youtube.com/watch?v=1J6P6L-vH9s)
 
 ---
 
