@@ -36,6 +36,7 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 17. [Custom AppBar](https://stackoverflow.com/questions/53294006/how-to-create-a-custom-appbar-widget)
 18. [PageView多页面切换组件](https://juejin.cn/post/6844904085741649928)
 19. [event bus cancel](https://www.cnblogs.com/qqcc1388/p/14060784.html)
+20. [flutter windows SingleChildScrollView隐藏进度条](https://blog.csdn.net/wan903531306/article/details/129378305)
 
 ---
 
