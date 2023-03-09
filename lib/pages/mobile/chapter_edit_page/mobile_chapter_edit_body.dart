@@ -138,7 +138,7 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        debugPrint('store in edit_sub_page');
+        debugPrint('store in mobile_chapter_edit_page');
         // 文本编辑
         saveText();
         currentBook = store.state.textModel.currentBook;

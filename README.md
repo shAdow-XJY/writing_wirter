@@ -5,8 +5,12 @@ A write application (desktop and app) developed and used myself with local stora
 ---
 
 ## git code lines
+v2.0.0:
+added lines: 12752, removed lines: 1595, total lines: 11157
 v3.0.0:
 added lines: 28178, removed lines: 3654, total lines: 24524
+v4.0.0:
+added lines: 30282, removed lines: 4403, total lines: 25879
 
 ---
 
@@ -37,6 +41,8 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 18. [PageView多页面切换组件](https://juejin.cn/post/6844904085741649928)
 19. [event bus cancel](https://www.cnblogs.com/qqcc1388/p/14060784.html)
 20. [flutter windows SingleChildScrollView隐藏进度条](https://blog.csdn.net/wan903531306/article/details/129378305)
+21. [Flutter踩坑系列：滑动手势监听不到](https://www.jianshu.com/p/1d89c97c5bdc)
+22. [Scaffold.of() called with a context that does not contain a Scaffold](https://www.fluttercampus.com/guide/329/scaffold-of-called-with-a-context-that-does-not-contain-a-scaffold/)
 
 ---
 

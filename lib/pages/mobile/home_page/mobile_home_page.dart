@@ -16,43 +16,75 @@ class MobileHomePage extends StatefulWidget {
 }
 
 class _MobileHomePageState extends State<MobileHomePage> {
-
   /// 页面切换初始化
-  final PageController _pageController = PageController(initialPage: 0);
-  final List<Widget> _bodyPages = [const MobileChapterEditPageBody(), const MobileSettingEditPage(),];
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final List<Widget> _widgetList = [
+    const MobileChapterEditPageBody(
+      key: ValueKey("MobileChapterEditPageBody"),
+    ),
+    const MobileSettingEditPage(
+      key: ValueKey("MobileSettingEditPage"),
+    ),
+  ];
 
-  /// 抽屉手势开关
-  bool enableLeft = true;
-  bool enableRight = false;
+  late int _currentIndex;
+  late Widget _currentWidget;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = 0;
+    _currentWidget = _widgetList[_currentIndex];
+  }
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     return MobileFloatButton(
-      mainPage: Scaffold(
-        appBar: const ChapterEditPageAppBar(),
-        drawerEdgeDragWidth: screenSize.width / 2.0,
-        drawer: const LeftDrawer(widthFactor: 0.9,),
-        endDrawer: const RightDrawer(widthFactor: 0.9,),
-        drawerEnableOpenDragGesture: enableLeft,
-        endDrawerEnableOpenDragGesture: enableRight,
-        body: PageView.builder(
-            onPageChanged: (int index){
+      mainPage: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if ((details.primaryVelocity ?? 0.0) > 0.0) {
+            // 手势向左滑动
+            if (scaffoldKey.currentState!.isEndDrawerOpen) {
+              scaffoldKey.currentState!.closeEndDrawer();
+            } else if (_currentIndex == 1) {
               setState(() {
-                if (index == 0) {
-                  enableLeft = true;
-                  enableRight = false;
-                } else {
-                  enableLeft = false;
-                  enableRight = true;
-                }
+                _currentIndex = 0;
+                _currentWidget = _widgetList[_currentIndex];
               });
-            },
-            controller: _pageController,
-            itemCount: _bodyPages.length,
-            itemBuilder: (BuildContext context, int index){
-              return _bodyPages.elementAt(index);
+            } else if (!scaffoldKey.currentState!.isDrawerOpen) {
+              scaffoldKey.currentState!.openDrawer();
             }
+          } else if ((details.primaryVelocity ?? 0.0) < 0.0) {
+            // 手势向右滑动
+            if (scaffoldKey.currentState!.isDrawerOpen) {
+              scaffoldKey.currentState!.closeDrawer();
+            } else if (_currentIndex == 0) {
+              setState(() {
+                _currentIndex = 1;
+                _currentWidget = _widgetList[_currentIndex];
+              });
+            } else if (!scaffoldKey.currentState!.isEndDrawerOpen) {
+              scaffoldKey.currentState!.openEndDrawer();
+            }
+          }
+        },
+        child: Scaffold(
+          key: scaffoldKey,
+          appBar: const ChapterEditPageAppBar(),
+          drawer: const LeftDrawer(widthFactor: 0.9),
+          endDrawer: const RightDrawer(widthFactor: 0.9),
+          drawerEnableOpenDragGesture: false,
+          endDrawerEnableOpenDragGesture: false,
+          body: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 1000),
+            child: _currentWidget,
+            transitionBuilder: (child, animation) {
+              return SizeTransition(
+                sizeFactor: animation,
+                child: child,
+              );
+            },
+          ),
         ),
       ),
     );

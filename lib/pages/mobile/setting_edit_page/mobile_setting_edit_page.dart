@@ -210,7 +210,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        debugPrint("store in setting_edit_page");
+        debugPrint("store in mobile_setting_edit_page");
         saveSetting();
         currentBook = store.state.textModel.currentBook;
         currentSet = store.state.setModel.currentSet;
