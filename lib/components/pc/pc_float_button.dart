@@ -1,6 +1,8 @@
 import 'package:circular_menu/circular_menu.dart';
 import 'package:flutter/material.dart';
 
+import '../../pages/pc/sockets_page/pc_sockets_page.dart';
+
 class PCFloatButton extends StatefulWidget {
   const PCFloatButton({
     Key? key,
@@ -35,7 +37,10 @@ class _PCFloatButtonState extends State<PCFloatButton> {
           icon: Icons.phone_android,
           color: Colors.purple,
           onTap: () {
-            Navigator.pushNamed(context, '/sockets');
+            showDialog(
+              context: context,
+              builder: (context) => const PCSocketsPage(),
+            );
           },
         ),
         CircularMenuItem(

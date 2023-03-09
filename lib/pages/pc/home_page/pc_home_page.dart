@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
 import '../../../components/common/semicircle_button.dart';
+import '../../../components/common/transparent_bar_scroll_view.dart';
 import '../../../components/pc/pc_float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_app_bar.dart';
 import '../chapter_edit_page/pc_chapter_edit_body.dart';
@@ -33,7 +34,7 @@ class _PCHomePageState extends State<PCHomePage>{
           children: [
             Expanded(
               flex: 20,
-              child: SingleChildScrollView(
+              child: TransBarScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: const <Widget>[

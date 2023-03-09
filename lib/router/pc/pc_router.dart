@@ -3,7 +3,6 @@ import 'package:writing_writer/pages/pc/space_edit_page/pc_space_edit_page.dart'
 
 import '../../pages/common/pre_page/pre_page.dart';
 import '../../pages/pc/home_page/pc_home_page.dart';
-import '../../pages/pc/sockets_page/pc_sockets_page.dart';
 
 /// 需要引入跳转页面地址
 
@@ -13,7 +12,6 @@ final routes = {
   /// 不用传参的写法
   '/': (context) => const PrePage(),
   '/home': (context) => const PCHomePage(),
-  '/sockets': (context) => const PCSocketsPage(),
   '/space': (context) => const SpaceEditPage(),
 };
 

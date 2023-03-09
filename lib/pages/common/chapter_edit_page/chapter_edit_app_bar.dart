@@ -53,7 +53,6 @@ class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
       }
 
       return {
-        "currentBook": currentBook,
         "currentChapter": currentChapter,
         "renameChapter": renameChapter,
       };
@@ -67,7 +66,7 @@ class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
         ),
         centerTitle: true,
         title: InkWell(
-          child: Text(map["currentChapter"] ?? ""),
+          child: Text(map["currentChapter"]),
           onTap: () {
             showDialog(
               context: context,

@@ -28,8 +28,10 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
   @override
   void initState() {
     super.initState();
-    if (!appGetIt.isRegistered<WebSocketClient>(instanceName: "WebSocketClient")) {
-      appGetIt.registerSingleton<WebSocketClient>(WebSocketClient(eventBus), instanceName: "WebSocketClient");
+    if (!appGetIt.isRegistered<WebSocketClient>(
+        instanceName: "WebSocketClient")) {
+      appGetIt.registerSingleton<WebSocketClient>(WebSocketClient(eventBus),
+          instanceName: "WebSocketClient");
     }
     webSocketClient = appGetIt.get(instanceName: "WebSocketClient");
 
@@ -48,35 +50,31 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(vertical: 150.0, horizontal: 220.0),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("点击手机端的同步写作，将显示的ip地址输入在下方："),
+            TextField(
+              controller: ipTextController,
+              textAlign: TextAlign.center,
+            ),
+            TextButton(
+              child: const Text("确定"),
+              onPressed: () {
+                webSocketClient.clientConnect(ipTextController.text);
+              },
+            ),
+            TextButton(
+              child: const Text("取消"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
         ),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text("点击手机端的同步写作，将显示的ip地址输入在下方："),
-          TextField(
-            controller: ipTextController,
-          ),
-          TextButton(
-            child: const Text("确定"),
-            onPressed: () {
-              webSocketClient.clientConnect(ipTextController.text);
-            },
-          ),
-          TextButton(
-            child: const Text("取消"),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
       ),
     );
   }

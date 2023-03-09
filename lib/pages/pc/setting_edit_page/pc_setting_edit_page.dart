@@ -7,6 +7,7 @@ import 'package:writing_writer/components/common/transparent_icon_button.dart';
 import 'dart:convert' as convert;
 import '../../../components/common/drop_down_button.dart';
 import '../../../components/common/toast_dialog.dart';
+import '../../../components/common/transparent_bar_scroll_view.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
@@ -248,7 +249,7 @@ class _SettingEditPageState extends State<PCSettingEditPage> {
                     )
                   ],
                 ),
-                body: SingleChildScrollView(
+                body: TransBarScrollView(
                   child: BlurGlass(
                     marginValue: 0.0,
                     paddingValue: 0.0,
