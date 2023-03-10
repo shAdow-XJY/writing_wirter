@@ -46,6 +46,8 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 21. [Flutter踩坑系列：滑动手势监听不到](https://www.jianshu.com/p/1d89c97c5bdc)
 22. [Scaffold.of() called with a context that does not contain a Scaffold](https://www.fluttercampus.com/guide/329/scaffold-of-called-with-a-context-that-does-not-contain-a-scaffold/)
 23. [Build exe file for Flutter Windows Application](https://www.youtube.com/watch?v=1J6P6L-vH9s)
+24. [flutter 打包与apk网络问题处理](https://blog.csdn.net/qq_36723759/article/details/117379990)
+25. [动画切换组件（AnimatedSwitcher）](https://book.flutterchina.club/chapter9/animated_switcher.html#_9-6-3-slidetransitionx)
 
 ---
 
