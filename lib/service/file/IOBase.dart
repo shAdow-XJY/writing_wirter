@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:writing_writer/service/file/file_configure.dart';
 import 'dart:convert' as convert;
 import '../config/BookConfig.dart';
 
@@ -11,10 +12,19 @@ class IOBase
   late final Directory _appDocDir;
   late final String _appDocPath;
 
-  /// writing writer 根目录路径
+  /// writing writer 根文件夹
   late final Directory _rootDir;
+  /// writing writer 根路径
   late final String _rootPath;
-  final String _rootName = "wWriter";
+  /// writing writer 根文件夹名称
+  final String _rootName = FileConfig.rootName;
+
+  /// writing writer 写作内容文件夹
+  late final Directory _writeRootDir;
+  /// writing writer 写作内容文件夹路径
+  late final String _writeRootPath;
+  /// writing writer 写作内容文件夹名称
+  final String _writeRootName = FileConfig.writeRootName;
 
   IOBase() {
     getApplicationDocumentsDirectory().then((appDocDir) => {
@@ -30,18 +40,25 @@ class IOBase
 
   /// 构造函数内部使用：初始化函数
   void _init() {
+    /// 创建应用文件夹
     _rootDir = Directory(_appDocPath + Platform.pathSeparator + _rootName);
     if (!_rootDir.existsSync()){
-      /// 创建应用文件夹
       _rootDir.createSync(recursive: true);
       // debugPrint(_rootDir.path);
     }
     _rootPath = _rootDir.path;
+
+    /// 创建应用子文件夹：写作文件夹
+    _writeRootDir = Directory(_rootPath + Platform.pathSeparator + _writeRootName);
+    if (!_writeRootDir.existsSync()){
+      _writeRootDir.createSync(recursive: true);
+    }
+    _writeRootPath = _writeRootDir.path;
   }
 
   /// 目录路径统一生成函数
   String _dirPath({String bookName = "", bool isSet = false, String setName = ""}) {
-    String path = _rootPath;
+    String path = _writeRootPath;
     if (bookName.isNotEmpty) {
       path += "${Platform.pathSeparator}$bookName";
       if (isSet) {
@@ -56,7 +73,7 @@ class IOBase
 
   /// 文件路径统一生成函数
   String _filePath({String bookName = "", String chapterName = ""}) {
-    String path = _rootPath;
+    String path = _writeRootPath;
     if (bookName.isNotEmpty) {
       path += "${Platform.pathSeparator}$bookName";
       if (chapterName.isNotEmpty) {
@@ -68,7 +85,7 @@ class IOBase
 
   /// json文件路径统一生成函数
   String _jsonFilePath({String bookName = "", bool isBookChapterJson = false, bool isBookSetJson = false, bool isSetSettingJson = false, String setName = "", String settingName = ""}) {
-    String path = _rootPath;
+    String path = _writeRootPath;
     if (bookName.isNotEmpty) {
       path += "${Platform.pathSeparator}$bookName";
       /// {$bookName}Chapter.json
@@ -86,6 +103,19 @@ class IOBase
         path += "${Platform.pathSeparator}$setName";
         path += "${Platform.pathSeparator}$settingName.json";
       }
+    }
+    return path;
+  }
+
+  /// 新旧书名重命名中间路径生成函数
+  String _tempPath({String newBookName = "", String oldBookName = "", bool isRenameBookNameSetDir = false, bool isRenameBookChapterJson = false, bool isRenameBookSetJson = false,}) {
+    String path = "";
+    if (isRenameBookNameSetDir) {
+      path = "$_writeRootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${oldBookName}Set";
+    } else if (isRenameBookChapterJson) {
+      path = "$_writeRootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${oldBookName}Chapter.json";
+    } else if (isRenameBookSetJson) {
+      path = "$_writeRootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${newBookName}Set${Platform.pathSeparator}${oldBookName}Set.json";
     }
     return path;
   }
@@ -248,7 +278,8 @@ class IOBase
 
   /// 重命名书对应{$bookName}Set：文件夹
   void renameBookNameSetDir(String oldBookName, String newBookName) {
-    Directory dir2 = Directory("$_rootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${oldBookName}Set");
+    // Directory dir2 = Directory("$_writeRootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${oldBookName}Set");
+    Directory dir2 = Directory(_tempPath(newBookName: newBookName, oldBookName: oldBookName, isRenameBookNameSetDir: true));
     if (dir2.existsSync()) {
       dir2.renameSync(_dirPath(bookName: newBookName, isSet: true));
     }
@@ -377,7 +408,8 @@ class IOBase
 
   /// 重命名该书对应{$bookName}Chapter.json：json文件
   void renameBookChapterJson(String oldBookName, String newBookName) {
-    File file2 = File("$_rootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${oldBookName}Chapter.json");
+    // File file2 = File("$_writeRootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${oldBookName}Chapter.json");
+    File file2 = File(_tempPath(newBookName: newBookName, oldBookName: oldBookName, isRenameBookChapterJson: true));
     if (file2.existsSync()) {
       file2.renameSync(_jsonFilePath(bookName: newBookName, isBookChapterJson: true));
     }
@@ -427,7 +459,8 @@ class IOBase
 
   /// 重命名该书对应{$bookName}Set.json：json文件
   void renameBookSetJson(String oldBookName, String newBookName) {
-    File file2 = File("$_rootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${newBookName}Set${Platform.pathSeparator}${oldBookName}Set.json");
+    // File file2 = File("$_writeRootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${newBookName}Set${Platform.pathSeparator}${oldBookName}Set.json");
+    File file2 = File(_tempPath(newBookName: newBookName, oldBookName: oldBookName, isRenameBookSetJson: true));
     if (file2.existsSync()) {
       file2.renameSync(_jsonFilePath(bookName: newBookName, isBookSetJson: true));
     }

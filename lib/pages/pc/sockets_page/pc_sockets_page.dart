@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 
-import '../../../service/websocket/websocket_client.dart';
+import '../../../service/web_socket/web_socket_client.dart';
 import '../../../state_machine/event_bus/pc_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 

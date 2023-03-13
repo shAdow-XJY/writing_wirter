@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import '../../../service/websocket/websocket_msg_type.dart';
-import '../../../service/websocket/websocket_server.dart';
+import '../../../service/web_socket/web_socket_msg_type.dart';
+import '../../../service/web_socket/web_socket_server.dart';
 import '../../../state_machine/event_bus/mobile_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
