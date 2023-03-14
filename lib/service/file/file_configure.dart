@@ -1,8 +1,8 @@
 class FileConfig {
-  /// writing writer ¸ùÎÄ¼ş¼ĞÃû³Æ
+  /// writing writer æ ¹æ–‡ä»¶å¤¹åç§°
   static String rootName = "wWriter";
-  /// writing writer Ğ´×÷ÄÚÈİÎÄ¼ş¼ĞÃû³Æ
+  /// writing writer å†™ä½œå†…å®¹æ–‡ä»¶å¤¹åç§°
   static String writeRootName = "write";
-  /// writing writer µ¼³öÄÚÈİÎÄ¼ş¼ĞÃû³Æ
+  /// writing writer å¯¼å‡ºå†…å®¹æ–‡ä»¶å¤¹åç§°
   static String exportRootName = "export";
 }

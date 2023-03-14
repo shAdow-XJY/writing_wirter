@@ -161,7 +161,7 @@ class IOBase
   List<String> getAllBooks() {
     List<String> bookNames = [];
     try {
-      _rootDir.listSync().forEach((fileSystemEntity) {
+      _writeRootDir.listSync().forEach((fileSystemEntity) {
         if (_isDir(fileSystemEntity)) {
           bookNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last);
           // debugPrint(fileSystemEntity.path.split(Platform.pathSeparator).last);
