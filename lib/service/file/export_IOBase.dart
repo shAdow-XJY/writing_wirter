@@ -26,7 +26,11 @@ class ExportIOBase
   late final String _exportRootPath;
   /// writing writer 导出内容文件夹名称
   final String _exportRootName = FileConfig.exportRootName;
-
+  /// writing writer 导出内容子文件夹名称
+  final String _exportChapterDirName = FileConfig.exportChapterDirName;
+  final String _exportBookDirName = FileConfig.exportBookDirName;
+  final String _exportZipDirName = FileConfig.exportZipDirName;
+  
   /// IOBase
   late final IOBase _ioBase;
 
@@ -63,30 +67,53 @@ class ExportIOBase
 
   /// 目录路径统一生成函数
   String _inputDirPath({String bookName = ""}) {
-    String path = "";
-    if (bookName.isNotEmpty) {
-      path += "$_rootPath${Platform.pathSeparator}$_writeRootName${Platform.pathSeparator}$bookName";
-    }
+    String path = "$_rootPath${Platform.pathSeparator}$_writeRootName${Platform.pathSeparator}$bookName";
     return path;
   }
 
-  String _outputDirPath({String bookName = ""}) {
-    String path = "";
-    if (bookName.isNotEmpty) {
-      path += "$_rootPath${Platform.pathSeparator}$_exportRootName${Platform.pathSeparator}$bookName.zip";
+  String _outputDirPath({String bookName = "", bool isOutChapter = false, bool isOutBook = false, bool isOutZip = false}) {
+    String path = "$_exportRootPath${Platform.pathSeparator}$bookName";
+    if (isOutChapter) {
+      path += "${Platform.pathSeparator}$_exportChapterDirName";
+    } else if (isOutBook) {
+      path += "${Platform.pathSeparator}$_exportBookDirName";
+    } else if (isOutZip) {
+      path += "${Platform.pathSeparator}$_exportZipDirName";
     }
+    path += Platform.pathSeparator;
     return path;
   }
-
+  
   /////////////////////////////////////////////////////////////////////////////
-  //                                导出zip                                  //
+  //                                导出文件                                  //
   ////////////////////////////////////////////////////////////////////////////
+  /// 导出书本某一章节
+  void exportChapter(String bookName, String chapterName) {
+    File file = File("${_inputDirPath(bookName: bookName)}${Platform.pathSeparator}$chapterName");
+    file.copySync("${_outputDirPath(bookName: bookName, isOutChapter: true)}$chapterName.txt");
+  }
+
+  /// 导出书本全部章节
   void exportBook(String bookName) {
+    List<String> chapterList = _ioBase.getAllChapters(bookName);
+
+    String inputPathPreFix = "${_inputDirPath(bookName: bookName)}${Platform.pathSeparator}";
+    String outputPathPreFix = "${_outputDirPath(bookName: bookName, isOutBook: true)}${Platform.pathSeparator}";
+
+    for (var index = 0; index < chapterList.length; ++index) {
+      File file = File("$inputPathPreFix${chapterList[index]}");
+      file.copySync("$outputPathPreFix$index${chapterList[index]}.txt");
+    }
+  }
+
+  /// 导出.zip
+  void exportZip(String bookName) {
     var encoder = ZipFileEncoder();
     encoder.create(_outputDirPath(bookName: bookName));
     encoder.addDirectory(Directory(_inputDirPath(bookName: bookName)));
     encoder.close();
   }
+
   void importBook(String bookName) {
     // Read the Zip file from disk.
     final bytes = File('test.zip').readAsBytesSync();
