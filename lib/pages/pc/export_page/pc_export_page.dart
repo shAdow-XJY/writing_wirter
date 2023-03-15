@@ -18,17 +18,13 @@ class _PCExportPageState extends State<PCExportPage> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-文件导出操作工具类
-  late final ExportIOBase exportIOBase;
+  final ExportIOBase exportIOBase = appGetIt.get(instanceName: "ExportIOBase");
 
   List<String> bookNameList= [];
 
   @override
   void initState() {
     super.initState();
-    if (!appGetIt.isRegistered<ExportIOBase>(instanceName: "ExportIOBase")) {
-      appGetIt.registerSingleton<ExportIOBase>(ExportIOBase(ioBase), instanceName: "ExportIOBase");
-    }
-    exportIOBase = appGetIt.get(instanceName: "ExportIOBase");
     bookNameList = ioBase.getAllBooks();
   }
 
