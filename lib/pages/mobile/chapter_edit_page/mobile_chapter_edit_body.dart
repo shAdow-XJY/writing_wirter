@@ -27,9 +27,9 @@ class MobileChapterEditPageBody extends StatefulWidget {
 
 class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   /// 全局单例-客户端webSocket
   late WebSocketServer webSocketServer;
   late StreamSubscription subscription_1;

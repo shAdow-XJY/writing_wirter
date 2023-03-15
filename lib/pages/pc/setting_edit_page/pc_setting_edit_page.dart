@@ -24,9 +24,9 @@ class PCSettingEditPage extends StatefulWidget {
 
 class _SettingEditPageState extends State<PCSettingEditPage> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
 
   /// status 状态变量
   String currentBook = "";

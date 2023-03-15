@@ -21,7 +21,7 @@ class ChapterEditPageAppBar extends StatefulWidget implements PreferredSizeWidge
 
 class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
 
   /// text
   String currentBook = "";

@@ -14,7 +14,7 @@ class PCExportPage extends StatefulWidget {
 
 class _PCExportPageState extends State<PCExportPage> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
 
   List<String> bookNameList= [];
 
@@ -45,7 +45,6 @@ class _PCExportPageState extends State<PCExportPage> {
         itemBuilder: (context, index) {
           return PCExportCard(
             bookName: bookNameList[index],
-            onPressed: () {},
           );
         },
       ),

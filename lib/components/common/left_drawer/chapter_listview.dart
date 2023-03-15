@@ -22,7 +22,7 @@ class ChapterListView extends StatefulWidget {
 
 class _ChapterListViewState extends State<ChapterListView> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
 
   List<Widget> chapterListViewItems = [];
 
@@ -72,7 +72,7 @@ class ChapterListViewItem extends StatelessWidget {
         debugPrint("store in chapter_listview");
         /// 切换到别的书籍，设定解析addTextParser初始化
         void clickAnotherBook() {
-          Map<String, Set<String>> newParserModel = Parser.getBookInitParserModel(appGetIt<IOBase>(), bookName);
+          Map<String, Set<String>> newParserModel = Parser.getBookInitParserModel(appGetIt.get(instanceName: "IOBase"), bookName);
           store.dispatch(SetParserDataAction(parserObj: newParserModel));
         }
         return () => {

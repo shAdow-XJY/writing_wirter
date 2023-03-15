@@ -80,7 +80,6 @@ class ExportIOBase
     } else if (isOutZip) {
       path += "${Platform.pathSeparator}$_exportZipDirName";
     }
-    path += Platform.pathSeparator;
     return path;
   }
   
@@ -90,7 +89,7 @@ class ExportIOBase
   /// 导出书本某一章节
   void exportChapter(String bookName, String chapterName) {
     File file = File("${_inputDirPath(bookName: bookName)}${Platform.pathSeparator}$chapterName");
-    file.copySync("${_outputDirPath(bookName: bookName, isOutChapter: true)}$chapterName.txt");
+    file.copySync("${_outputDirPath(bookName: bookName, isOutChapter: true)}${Platform.pathSeparator}$chapterName.txt");
   }
 
   /// 导出书本全部章节
@@ -109,7 +108,7 @@ class ExportIOBase
   /// 导出.zip
   void exportZip(String bookName) {
     var encoder = ZipFileEncoder();
-    encoder.create(_outputDirPath(bookName: bookName));
+    encoder.create("${_outputDirPath(bookName: bookName)}${Platform.pathSeparator}$bookName.zip");
     encoder.addDirectory(Directory(_inputDirPath(bookName: bookName)));
     encoder.close();
   }

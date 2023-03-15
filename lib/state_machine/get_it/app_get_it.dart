@@ -7,8 +7,8 @@ GetIt appGetIt = GetIt.instance;
 
 Future<void> setupAppGetIt({bool test = false}) async {
   /// tool one -- IOBase : file IO tool class register
-  appGetIt.registerSingleton<IOBase>(IOBase());
+  appGetIt.registerSingleton<IOBase>(IOBase(), instanceName: "IOBase");
 
   /// tool two -- EventBus : EventBus Stream tool class register
-  appGetIt.registerSingleton<EventBus>(EventBus());
+  appGetIt.registerSingleton<EventBus>(EventBus(), instanceName: "EventBus");
 }

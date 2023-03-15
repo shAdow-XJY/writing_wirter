@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 class PCExportCard extends StatelessWidget {
   final String bookName;
-  final VoidCallback onPressed;
 
   const PCExportCard({
     Key? key,
     required this.bookName,
-    required this.onPressed,
   }) : super(key: key);
 
   @override

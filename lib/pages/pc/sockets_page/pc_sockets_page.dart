@@ -18,7 +18,7 @@ class PCSocketsPage extends StatefulWidget {
 
 class _PCSocketsPageState extends State<PCSocketsPage> {
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
 
   TextEditingController ipTextController = TextEditingController();

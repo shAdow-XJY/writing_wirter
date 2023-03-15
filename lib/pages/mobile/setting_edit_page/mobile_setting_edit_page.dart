@@ -28,9 +28,9 @@ class MobileSettingEditPage extends StatefulWidget {
 
 class _SettingEditPageState extends State<MobileSettingEditPage> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   /// 全局单例-客户端webSocket
   late WebSocketServer webSocketServer;
   /// 是否 textEditingController 的监听函数已完成设置

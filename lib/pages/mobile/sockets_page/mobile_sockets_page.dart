@@ -19,7 +19,7 @@ class MobileSocketsPage extends StatefulWidget {
 
 class _PCSocketsPageState extends State<MobileSocketsPage> {
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   /// webSocket 服务端
   late WebSocketServer webSocketServer;
   /// webSocket 服务端是否开启

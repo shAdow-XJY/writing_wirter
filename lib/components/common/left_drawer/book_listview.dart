@@ -23,9 +23,9 @@ class BookListView extends StatefulWidget {
 
 class _BookListViewState extends State<BookListView> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
 
   List<String> bookNameList = [];
@@ -77,9 +77,9 @@ class BookListViewItem extends StatefulWidget {
 
 class _BookListViewItemState extends State<BookListViewItem> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
 
