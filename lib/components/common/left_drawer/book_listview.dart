@@ -8,7 +8,7 @@ import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../../../state_machine/event_bus/events.dart';
-import '../toast_dialog.dart';
+import '../edit_toast_dialog.dart';
 import '../transparent_icon_button.dart';
 import 'chapter_listview.dart';
 
@@ -138,7 +138,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                               onPressed: () {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => ToastDialog(
+                                  builder: (context) => EditToastDialog(
                                     init: widget.bookName,
                                     title: '重命名书籍',
                                     callBack: (newBookName) => {
@@ -174,7 +174,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                 onPressed: () {
                                   showDialog(
                                     context: context,
-                                    builder: (context) => ToastDialog(
+                                    builder: (context) => EditToastDialog(
                                       title: '新建章节',
                                       callBack: (chapterName) => {
                                         if (chapterName.isNotEmpty) {

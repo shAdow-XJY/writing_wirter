@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:writing_writer/components/pc/pc_export_card.dart';
+import 'package:writing_writer/service/file/export_IOBase.dart';
+import '../../../components/common/select_toast_dialog.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
@@ -15,13 +16,58 @@ class PCExportPage extends StatefulWidget {
 class _PCExportPageState extends State<PCExportPage> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
+  /// 全局单例-文件导出操作工具类
+  late final ExportIOBase exportIOBase;
 
   List<String> bookNameList= [];
 
   @override
   void initState() {
     super.initState();
+    if (!appGetIt.isRegistered<ExportIOBase>(instanceName: "ExportIOBase")) {
+      appGetIt.registerSingleton<ExportIOBase>(ExportIOBase(ioBase), instanceName: "ExportIOBase");
+    }
+    exportIOBase = appGetIt.get(instanceName: "ExportIOBase");
     bookNameList = ioBase.getAllBooks();
+  }
+
+  Card getCard(String bookName) {
+    return Card(
+      child: Column(
+        children: [
+          Text(bookName),
+          TextButton(
+            child: const Text("导出某一章节"),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => SelectToastDialog(
+                  items: ioBase.getAllChapters(bookName),
+                  title: '选择导出的章节',
+                  callBack: (exportChapterName) => {
+                    if (exportChapterName.isNotEmpty) {
+                      exportIOBase.exportChapter(bookName, exportChapterName),
+                    },
+                  },
+                ),
+              );
+            },
+          ),
+          TextButton(
+            child: const Text("导出全部章节"),
+            onPressed: () {},
+          ),
+          TextButton(
+            child: const Text("导出.zip可移植文件"),
+            onPressed: () {},
+          ),
+          TextButton(
+            child: const Text("打开导出文件位置"),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -43,9 +89,7 @@ class _PCExportPageState extends State<PCExportPage> {
         ),
         itemCount: bookNameList.length,
         itemBuilder: (context, index) {
-          return PCExportCard(
-            bookName: bookNameList[index],
-          );
+          return getCard(bookNameList[index]);
         },
       ),
     );

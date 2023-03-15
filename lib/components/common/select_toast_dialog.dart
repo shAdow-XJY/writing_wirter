@@ -1,30 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ToastDialog extends StatefulWidget {
+import 'drop_down_button.dart';
+
+class SelectToastDialog extends StatefulWidget {
   final String title;
   final Function(String) callBack;
-  final String init;
-  const ToastDialog({
+  final List<String> items;
+  final String? hintText;
+  final int? initIndex;
+  const SelectToastDialog({
     Key? key,
     required this.title,
     required this.callBack,
-    this.init = '',
+    required this.items,
+    this.hintText,
+    this.initIndex,
   }) : super(key: key);
 
   @override
-  State<ToastDialog> createState() => _ToastDialogState();
+  State<SelectToastDialog> createState() => _SelectToastDialogState();
 }
 
-class _ToastDialogState extends State<ToastDialog> {
+class _SelectToastDialogState extends State<SelectToastDialog> {
 
-  /// 输入框控制器
-  final TextEditingController textEditingController = TextEditingController();
+  String selectedValue = "";
 
   @override
   void initState() {
     super.initState();
-    textEditingController.text = widget.init;
+    print(widget.items);
   }
 
   @override
@@ -33,8 +38,13 @@ class _ToastDialogState extends State<ToastDialog> {
       backgroundColor: Colors.transparent.withOpacity(0.5),
       body: CupertinoAlertDialog(
         title: Text(widget.title,),
-        content: TextField(
-          controller: textEditingController,
+        content: DropDownButton(
+          initIndex: widget.initIndex,
+          hintText: widget.hintText,
+          items: widget.items,
+          onChanged: (String selected) {
+            selectedValue = selected;
+          },
         ),
         actions: <Widget>[
           CupertinoButton(
@@ -46,7 +56,7 @@ class _ToastDialogState extends State<ToastDialog> {
           CupertinoButton(
             child: const Text("确定"),
             onPressed: () {
-              widget.callBack(textEditingController.text);
+              widget.callBack(selectedValue);
               Navigator.pop(context);
             },
           ),

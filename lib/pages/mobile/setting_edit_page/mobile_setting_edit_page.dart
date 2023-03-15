@@ -8,7 +8,7 @@ import 'package:redux/redux.dart';
 import 'package:writing_writer/components/common/transparent_icon_button.dart';
 import 'dart:convert' as convert;
 import '../../../components/common/drop_down_button.dart';
-import '../../../components/common/toast_dialog.dart';
+import '../../../components/common/edit_toast_dialog.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../service/web_socket/web_socket_msg_type.dart';
 import '../../../service/web_socket/web_socket_server.dart';
@@ -248,7 +248,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
                     onTap: () {
                       showDialog(
                         context: context,
-                        builder: (context) => ToastDialog(
+                        builder: (context) => EditToastDialog(
                           title: '设定重命名',
                           init: currentSetting,
                           callBack: (strBack) => {
@@ -283,7 +283,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
                           onPressed: () {
                             showDialog(
                               context: context,
-                              builder: (context) => ToastDialog(
+                              builder: (context) => EditToastDialog(
                                 title: '新建设定节点',
                                 callBack: (flagChapter) => {
                                   if (flagChapter.isNotEmpty)

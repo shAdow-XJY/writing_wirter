@@ -28,10 +28,8 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
   @override
   void initState() {
     super.initState();
-    if (!appGetIt.isRegistered<WebSocketClient>(
-        instanceName: "WebSocketClient")) {
-      appGetIt.registerSingleton<WebSocketClient>(WebSocketClient(eventBus),
-          instanceName: "WebSocketClient");
+    if (!appGetIt.isRegistered<WebSocketClient>(instanceName: "WebSocketClient")) {
+      appGetIt.registerSingleton<WebSocketClient>(WebSocketClient(eventBus), instanceName: "WebSocketClient");
     }
     webSocketClient = appGetIt.get(instanceName: "WebSocketClient");
 

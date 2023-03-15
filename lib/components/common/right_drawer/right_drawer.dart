@@ -7,7 +7,7 @@ import 'package:writing_writer/state_machine/event_bus/events.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
-import '../toast_dialog.dart';
+import '../edit_toast_dialog.dart';
 
 class RightDrawer extends StatefulWidget {
   final double? widthFactor;
@@ -77,7 +77,7 @@ class _RightDrawerState extends State<RightDrawer> {
                               onPressed: () {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => ToastDialog(
+                                  builder: (context) => EditToastDialog(
                                     title: '新建设定集',
                                     callBack: (setName) => {
                                       if (setName.isNotEmpty)

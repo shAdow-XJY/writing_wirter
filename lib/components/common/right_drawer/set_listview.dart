@@ -11,7 +11,7 @@ import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
-import '../toast_dialog.dart';
+import '../edit_toast_dialog.dart';
 import '../transparent_checkbox.dart';
 import '../transparent_icon_button.dart';
 
@@ -174,7 +174,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                             onPressed: () {
                               showDialog(
                                 context: context,
-                                builder: (context) => ToastDialog(
+                                builder: (context) => EditToastDialog(
                                   init: widget.setName,
                                   title: '重命名设定类',
                                   callBack: (newSetName) => {
@@ -223,7 +223,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                               onPressed: () {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => ToastDialog(
+                                  builder: (context) => EditToastDialog(
                                     title: '新建设定',
                                     callBack: (settingName) => {
                                       if (settingName.isNotEmpty) {

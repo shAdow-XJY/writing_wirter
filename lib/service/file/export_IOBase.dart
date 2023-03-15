@@ -80,6 +80,10 @@ class ExportIOBase
     } else if (isOutZip) {
       path += "${Platform.pathSeparator}$_exportZipDirName";
     }
+    Directory dir = Directory(path);
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
     return path;
   }
   

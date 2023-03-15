@@ -27,7 +27,7 @@ class _DropDownButtonState extends State<DropDownButton> {
   void initState() {
     super.initState();
     initIndex = widget.initIndex;
-    if (initIndex! >= 0) {
+    if (initIndex != null && initIndex! >= 0) {
       selectedValue = widget.items[initIndex as int];
     }
   }
@@ -40,10 +40,13 @@ class _DropDownButtonState extends State<DropDownButton> {
 
   @override
   Widget build(BuildContext context) {
-    if (initIndex != widget.initIndex || !widget.items.contains(selectedValue!)) {
-      initIndex = widget.initIndex;
-      selectedValue = widget.items[initIndex as int];
+    if (widget.initIndex != null) {
+      if (initIndex != widget.initIndex || !widget.items.contains(selectedValue!)) {
+        initIndex = widget.initIndex;
+        selectedValue = widget.items[initIndex as int];
+      }
     }
+
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
         buttonHeight: 40,
