@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'IOBase.dart';
 import 'file_configure.dart';
 
@@ -86,7 +87,17 @@ class ExportIOBase
     }
     return path;
   }
-  
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                                导出文件                                  //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 根据路径打开资源管理器
+  void openFileManager(String bookName) {
+    final Uri url = Uri.file(_outputDirPath(bookName: bookName));
+    /// launchUrl(url);
+    /// 改用下面的方法解决路径中包含中文导致打开失败
+    launchUrlString(url.toFilePath());
+  }
   /////////////////////////////////////////////////////////////////////////////
   //                                导出文件                                  //
   ////////////////////////////////////////////////////////////////////////////
@@ -105,14 +116,14 @@ class ExportIOBase
 
     for (var index = 0; index < chapterList.length; ++index) {
       File file = File("$inputPathPreFix${chapterList[index]}");
-      file.copySync("$outputPathPreFix$index${chapterList[index]}.txt");
+      file.copySync("$outputPathPreFix${index+1}.${chapterList[index]}.txt");
     }
   }
 
   /// 导出.zip
   void exportZip(String bookName) {
     var encoder = ZipFileEncoder();
-    encoder.create("${_outputDirPath(bookName: bookName)}${Platform.pathSeparator}$bookName.zip");
+    encoder.create("${_outputDirPath(bookName: bookName, isOutZip: true)}${Platform.pathSeparator}$bookName.zip");
     encoder.addDirectory(Directory(_inputDirPath(bookName: bookName)));
     encoder.close();
   }

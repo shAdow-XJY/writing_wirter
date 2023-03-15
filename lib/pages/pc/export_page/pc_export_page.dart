@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:writing_writer/service/file/export_IOBase.dart';
-import '../../../components/common/select_toast_dialog.dart';
+import '../../../components/common/dialog/select_toast_dialog.dart';
+import '../../../components/common/dialog/text_toast_dialog.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
@@ -55,15 +56,48 @@ class _PCExportPageState extends State<PCExportPage> {
           ),
           TextButton(
             child: const Text("导出全部章节"),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => TextToastDialog(
+                  title: '导出书籍',
+                  text: '确定导出书籍$bookName',
+                  callBack: () => {
+                    exportIOBase.exportBook(bookName),
+                  },
+                ),
+              );
+            },
           ),
           TextButton(
             child: const Text("导出.zip可移植文件"),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => TextToastDialog(
+                  title: '导出.zip可移植文件',
+                  text: '确定导出书籍$bookName.zip可移植文件',
+                  callBack: () => {
+                    exportIOBase.exportZip(bookName),
+                  },
+                ),
+              );
+            },
           ),
           TextButton(
             child: const Text("打开导出文件位置"),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => TextToastDialog(
+                  title: '导出.zip可移植文件',
+                  text: '确定书籍$bookName导出文件位置',
+                  callBack: () => {
+                  exportIOBase.openFileManager(bookName),
+                },
+                ),
+              );
+            },
           ),
         ],
       ),

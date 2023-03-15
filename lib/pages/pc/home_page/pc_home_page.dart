@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
-import '../../../components/common/semicircle_button.dart';
+import '../../../components/common/buttons/semicircle_button.dart';
 import '../../../components/common/transparent_bar_scroll_view.dart';
 import '../../../components/pc/pc_float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_app_bar.dart';

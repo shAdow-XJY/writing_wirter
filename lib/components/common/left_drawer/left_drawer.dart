@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
-import '../edit_toast_dialog.dart';
+import '../dialog/edit_toast_dialog.dart';
 import 'book_listview.dart';
 
 class LeftDrawer extends StatefulWidget {

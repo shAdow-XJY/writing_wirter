@@ -11,9 +11,9 @@ import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
-import '../edit_toast_dialog.dart';
+import '../dialog/edit_toast_dialog.dart';
 import '../transparent_checkbox.dart';
-import '../transparent_icon_button.dart';
+import '../buttons/transparent_icon_button.dart';
 
 class SetListView extends StatefulWidget {
   const SetListView({
