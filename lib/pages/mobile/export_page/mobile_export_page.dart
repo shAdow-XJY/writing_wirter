@@ -167,7 +167,7 @@ class _MobileExportPageState extends State<MobileExportPage> {
           },
         ),
         centerTitle: true,
-        title: const Text("本地书籍分享"),
+        title: const Text("本地书籍分享(右滑)"),
       ),
       body: ListView.builder(
         itemCount: bookNameList.length,

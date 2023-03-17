@@ -45,6 +45,25 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
               children: const [
                 Expanded(
                   flex: 1,
+                  child: Text("设置"),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Icon(Icons.settings,),
+                )
+              ],
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      bottomWidget: Row(
+        children: [
+          TransTextButton(
+            child: Column(
+              children: const [
+                Expanded(
+                  flex: 1,
                   child: Text("分享"),
                 ),
                 Expanded(
@@ -58,7 +77,7 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
             },
           ),
           TransTextButton(
-            child: Row(
+            child: Column(
               children: const [
                 Expanded(
                   flex: 1,
@@ -73,7 +92,7 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
             onPressed: () {},
           ),
           TransTextButton(
-            child: Row(
+            child: Column(
               children: const [
                 Expanded(
                   flex: 1,
@@ -91,25 +110,6 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
                 builder: (context) => const MobileSocketsPage(),
               );
             },
-          ),
-        ],
-      ),
-      bottomWidget: Row(
-        children: [
-          TransTextButton(
-            child: Column(
-              children: const [
-                Expanded(
-                  flex: 1,
-                  child: Text("设置"),
-                ),
-                Expanded(
-                    flex: 2,
-                    child: Icon(Icons.settings,),
-                )
-              ],
-            ),
-            onPressed: () {},
           ),
         ],
       ),
