@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'IOBase.dart';
 import 'file_configure.dart';
@@ -89,7 +90,7 @@ class ExportIOBase
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  //                                导出文件                                  //
+  //                                打开文件                                  //
   ////////////////////////////////////////////////////////////////////////////
   /// 根据路径打开资源管理器
   void openFileManager(String bookName) {
@@ -112,7 +113,16 @@ class ExportIOBase
     List<String> chapterList = _ioBase.getAllChapters(bookName);
 
     String inputPathPreFix = "${_inputDirPath(bookName: bookName)}${Platform.pathSeparator}";
-    String outputPathPreFix = "${_outputDirPath(bookName: bookName, isOutBook: true)}${Platform.pathSeparator}";
+    String outputPathPreFix = _outputDirPath(bookName: bookName, isOutBook: true);
+
+    /// 先清空原有的导出文件
+    Directory dir = Directory(outputPathPreFix);
+    if (dir.existsSync()) {
+      dir.deleteSync(recursive: true);
+      dir.createSync(recursive: true);
+    }
+
+    outputPathPreFix += Platform.pathSeparator;
 
     for (var index = 0; index < chapterList.length; ++index) {
       File file = File("$inputPathPreFix${chapterList[index]}");
@@ -120,32 +130,46 @@ class ExportIOBase
     }
   }
 
-  /// 导出.zip
-  void exportZip(String bookName) {
+  /// 导出可移植.zip（包含chapter 和 set）
+  Future<void> exportZip(String bookName) async {
     var encoder = ZipFileEncoder();
     encoder.create("${_outputDirPath(bookName: bookName, isOutZip: true)}${Platform.pathSeparator}$bookName.zip");
-    encoder.addDirectory(Directory(_inputDirPath(bookName: bookName)));
+    await encoder.addDirectory(Directory(_inputDirPath(bookName: bookName)));
     encoder.close();
   }
 
-  void importBook(String bookName) {
-    // Read the Zip file from disk.
-    final bytes = File('test.zip').readAsBytesSync();
-
-    // Decode the Zip file
-    final archive = ZipDecoder().decodeBytes(bytes);
-
-    // Extract the contents of the Zip archive to disk.
-    for (final file in archive) {
-      final filename = file.name;
-      if (file.isFile) {
-        final data = file.content as List<int>;
-        File('out/' + filename)
-          ..createSync(recursive: true)
-          ..writeAsBytesSync(data);
-      } else {
-        Directory('out/' + filename).create(recursive: true);
-      }
-    }
+  /////////////////////////////////////////////////////////////////////////////
+  //                                导出文件                                  //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 分享单一章节
+  void shareChapter(String bookName, String chapterName) {
+    exportChapter(bookName, chapterName);
+    Share.shareXFiles([XFile("${_outputDirPath(bookName: bookName, isOutChapter: true)}${Platform.pathSeparator}$chapterName.txt")], text: 'share chapter');
   }
+
+  /// 分享全书
+  Future<void> shareBook(String bookName) async {
+    await exportZip(bookName);
+    Share.shareXFiles([XFile("${_outputDirPath(bookName: bookName, isOutZip: true)}${Platform.pathSeparator}$bookName.zip")], text: 'share book');
+  }
+  // void importBook(String bookName) {
+  //   // Read the Zip file from disk.
+  //   final bytes = File('test.zip').readAsBytesSync();
+  //
+  //   // Decode the Zip file
+  //   final archive = ZipDecoder().decodeBytes(bytes);
+  //
+  //   // Extract the contents of the Zip archive to disk.
+  //   for (final file in archive) {
+  //     final filename = file.name;
+  //     if (file.isFile) {
+  //       final data = file.content as List<int>;
+  //       File('out/' + filename)
+  //         ..createSync(recursive: true)
+  //         ..writeAsBytesSync(data);
+  //     } else {
+  //       Directory('out/' + filename).create(recursive: true);
+  //     }
+  //   }
+  // }
 }

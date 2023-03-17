@@ -65,3 +65,6 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 10. [get_it](https://pub.dev/packages/get_it/example)
 11. [circular_menu](https://pub.dev/packages/circular_menu/example)
 12. [animated_stack](https://pub.dev/packages/animated_stack)
+13. [archive](https://pub.dev/packages/archive/example)
+14. [flutter_slidable](https://pub.dev/packages/flutter_slidable)
+15. [share_plus](https://pub.dev/packages/share_plus)

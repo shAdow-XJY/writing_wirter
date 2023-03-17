@@ -45,15 +45,17 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
               children: const [
                 Expanded(
                   flex: 1,
-                  child: Text("导出"),
+                  child: Text("分享"),
                 ),
                 Expanded(
                   flex: 2,
-                  child: Icon(Icons.output,),
+                  child: Icon(Icons.share,),
                 )
               ],
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/export');
+            },
           ),
           TransTextButton(
             child: Row(
