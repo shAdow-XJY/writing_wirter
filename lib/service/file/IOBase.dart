@@ -25,7 +25,14 @@ class IOBase
   late final String _writeRootPath;
   /// writing writer 写作内容文件夹名称
   final String _writeRootName = FileConfig.writeRootName;
+  /// writing writer 写作内容子文件夹名称
+  final String _writeSetDirName = FileConfig.writeSetDirName;
+  final String _writeChapterDirName = FileConfig.writeChapterDirName;
 
+  /// 文件格式后缀
+  final String chsFilePostfix = FileConfig.chsFilePostfix;
+  final String jsonFilePostfix = FileConfig.jsonFilePostfix;
+  
   IOBase() {
     getApplicationDocumentsDirectory().then((appDocDir) => {
       _appDocDir = appDocDir,
@@ -57,12 +64,14 @@ class IOBase
   }
 
   /// 目录路径统一生成函数
-  String _dirPath({String bookName = "", bool isSet = false, String setName = ""}) {
+  String _dirPath({String bookName = "", bool isChapter = false, bool isSet = false, String setName = ""}) {
     String path = _writeRootPath;
     if (bookName.isNotEmpty) {
       path += "${Platform.pathSeparator}$bookName";
-      if (isSet) {
-        path += "${Platform.pathSeparator}${bookName}Set";
+      if (isChapter) {
+        path += "${Platform.pathSeparator}$_writeChapterDirName";
+      } else if (isSet) {
+        path += "${Platform.pathSeparator}$_writeSetDirName";
         if (setName.isNotEmpty) {
           path += "${Platform.pathSeparator}$setName";
         }
@@ -72,36 +81,36 @@ class IOBase
   }
 
   /// 文件路径统一生成函数
-  String _filePath({String bookName = "", String chapterName = ""}) {
+  String _chsFilePath({String bookName = "", String chapterName = ""}) {
     String path = _writeRootPath;
     if (bookName.isNotEmpty) {
-      path += "${Platform.pathSeparator}$bookName";
+      path += "${Platform.pathSeparator}$bookName${Platform.pathSeparator}$_writeChapterDirName";
       if (chapterName.isNotEmpty) {
-        path += "${Platform.pathSeparator}$chapterName";
+        path += "${Platform.pathSeparator}$chapterName$chsFilePostfix";
       }
     }
     return path;
   }
 
   /// json文件路径统一生成函数
-  String _jsonFilePath({String bookName = "", bool isBookChapterJson = false, bool isBookSetJson = false, bool isSetSettingJson = false, String setName = "", String settingName = ""}) {
+  String _jsonFilePath({String bookName = "", bool isChapterJson = false, bool isSetJson = false, bool isSettingJson = false, String setName = "", String settingName = ""}) {
     String path = _writeRootPath;
     if (bookName.isNotEmpty) {
       path += "${Platform.pathSeparator}$bookName";
-      /// {$bookName}Chapter.json
-      if (isBookChapterJson) {
-        path += "${Platform.pathSeparator}${bookName}Chapter.json";
+      /// Chapter.json
+      if (isChapterJson) {
+        path += "${Platform.pathSeparator}$_writeChapterDirName$jsonFilePostfix";
       }
-      /// {$bookName}Set.json
-      else if (isBookSetJson) {
-        path += "${Platform.pathSeparator}${bookName}Set";
-        path += "${Platform.pathSeparator}${bookName}Set.json";
+      /// Set.json
+      else if (isSetJson) {
+        path += "${Platform.pathSeparator}$_writeSetDirName";
+        path += "${Platform.pathSeparator}$_writeSetDirName$jsonFilePostfix";
       }
       /// {$settingName}.json
-      else if (isSetSettingJson || (setName.isNotEmpty && settingName.isNotEmpty)) {
-        path += "${Platform.pathSeparator}${bookName}Set";
+      else if (isSettingJson || (setName.isNotEmpty && settingName.isNotEmpty)) {
+        path += "${Platform.pathSeparator}$_writeSetDirName";
         path += "${Platform.pathSeparator}$setName";
-        path += "${Platform.pathSeparator}$settingName.json";
+        path += "${Platform.pathSeparator}$settingName$jsonFilePostfix";
       }
     }
     return path;
@@ -146,7 +155,7 @@ class IOBase
   }
 
   void openBookDirectory(String bookName) {
-    _openFileManager(_dirPath(bookName: bookName));
+    _openFileManager(_dirPath(bookName: bookName, isChapter: true));
   }
 
   void openSettingDirectory(String bookName) {
@@ -179,9 +188,11 @@ class IOBase
     Directory dir = Directory(_dirPath(bookName: bookName));
     if (!dir.existsSync()) {
       dir.createSync(recursive: true);
-      /// 创建该书对应{$bookName}Set：文件夹
+      /// 创建书对应Chapter：文件夹
+      createBookNameChapterDir(bookName);
+      /// 创建该书对应Set：文件夹
       createBookNameSetDir(bookName);
-      /// 创建该书对应{$bookName}Chapter.json：json文件
+      /// 创建该书对应Chapter.json：json文件
       createBookChapterJson(bookName);
     }
   }
@@ -192,10 +203,7 @@ class IOBase
       Directory dir = Directory(_dirPath(bookName: oldBookName));
       if (dir.existsSync()) {
         dir.renameSync(_dirPath(bookName: newBookName));
-        /// 再重命名该书对应{$bookName}Set：文件夹
-        renameBookNameSetDir(oldBookName, newBookName);
-        /// 再重命名该书对应{$bookName}Chapter.json：json文件
-        renameBookChapterJson(oldBookName, newBookName);
+        /// json中的bookName待修改
       }
     } on Exception catch (e, s) {
       debugPrint("/// 书籍重命名");
@@ -206,8 +214,15 @@ class IOBase
   /////////////////////////////////////////////////////////////////////////////
   //                             章节                                        //
   ////////////////////////////////////////////////////////////////////////////
+  /// 创建书对应Chapter：文件夹
+  void createBookNameChapterDir(String bookName) {
+    Directory dir2 = Directory(_dirPath(bookName: bookName, isChapter: true));
+    if (!dir2.existsSync()) {
+      dir2.createSync(recursive: true);
+    }
+  }
 
-  /// 遍历指定书下所有章节：读取对应书籍-章节json文件
+  /// 遍历指定书下所有章节：读取对应书籍-章节文件：Chapter.json
   List<String> getAllChapters(String bookName) {
     List<String> chapterNames = [];
     if (bookName.isEmpty) {
@@ -226,7 +241,7 @@ class IOBase
 
   /// 创建一章节：文件
   void createChapter(String bookName, String chapterName) {
-    File file = File(_filePath(bookName: bookName, chapterName: chapterName));
+    File file = File(_chsFilePath(bookName: bookName, chapterName: chapterName));
     if (!file.existsSync()) {
       file.createSync(recursive: true);
     }
@@ -235,15 +250,15 @@ class IOBase
 
   /// 章节重命名
   void renameChapter(String bookName, String oldChapterName, String newChapterName) {
-    File file = File(_filePath(bookName: bookName, chapterName: oldChapterName));
+    File file = File(_chsFilePath(bookName: bookName, chapterName: oldChapterName));
     if (file.existsSync()) {
-      file.renameSync(_filePath(bookName: bookName, chapterName: newChapterName));
+      file.renameSync(_chsFilePath(bookName: bookName, chapterName: newChapterName));
     }
   }
 
   /// 保存章节
   void saveChapter(String bookName, String chapterName, String content) {
-    File file = File(_filePath(bookName: bookName, chapterName: chapterName));
+    File file = File(_chsFilePath(bookName: bookName, chapterName: chapterName));
     if (file.existsSync()) {
       file.writeAsStringSync(content);
     }
@@ -251,7 +266,7 @@ class IOBase
 
   /// 获取章节的文字内容：读取章节文件
   String getChapterContent(String bookName, String chapterName) {
-    File file = File(_filePath(bookName: bookName, chapterName: chapterName));
+    File file = File(_chsFilePath(bookName: bookName, chapterName: chapterName));
     String content = "";
     try {
       content = file.readAsStringSync();
@@ -266,37 +281,26 @@ class IOBase
   //                             设定集                                       //
   ////////////////////////////////////////////////////////////////////////////
 
-  /// 创建书对应{$bookName}Set：文件夹
+  /// 创建书对应Set：文件夹
   void createBookNameSetDir(String bookName) {
     Directory dir2 = Directory(_dirPath(bookName: bookName, isSet: true));
     if (!dir2.existsSync()) {
       dir2.createSync(recursive: true);
     }
-    /// 创建书对应{$bookName}Set.json：json文件
+    /// 创建书对应Set.json：json文件
     createBookSetJson(bookName);
   }
 
-  /// 重命名书对应{$bookName}Set：文件夹
-  void renameBookNameSetDir(String oldBookName, String newBookName) {
-    // Directory dir2 = Directory("$_writeRootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${oldBookName}Set");
-    Directory dir2 = Directory(_tempPath(newBookName: newBookName, oldBookName: oldBookName, isRenameBookNameSetDir: true));
-    if (dir2.existsSync()) {
-      dir2.renameSync(_dirPath(bookName: newBookName, isSet: true));
-    }
-    /// 重命名该书对应{$bookName}Set.json：json文件
-    renameBookSetJson(oldBookName, newBookName);
-  }
-
-  /// 遍历书下所有设定集：该书对应{$bookName}Set.json：json文件
+  /// 遍历书下所有设定集：该书对应Set.json：json文件
   Map<String, dynamic> getAllSetMap(String bookName) {
     Map<String, dynamic> bookSetJson = {};
     if (bookName.isEmpty) {
       return bookSetJson;
     }
     try {
-      bookSetJson =  getBookSetJsonContent(bookName);
+      bookSetJson = getBookSetJsonContent(bookName);
     } on Exception catch (e, s) {
-      debugPrint("/// 遍历书下所有设定集：该书对应{$bookName}Set.json：json文件");
+      debugPrint("/// 遍历书下所有设定集：该书对应Set.json：json文件");
       print(s);
     }
     return bookSetJson;
@@ -308,7 +312,7 @@ class IOBase
     if (!dir2.existsSync()) {
       dir2.createSync(recursive: true);
     }
-    /// {$bookName}Set.json添加（新建设定类）
+    /// Set.json添加（新建设定类）
     addSetOfBookSetJson(bookName, setName);
   }
 
@@ -339,7 +343,6 @@ class IOBase
       debugPrint("/// 遍历指定设定集下所有设定：遍历设定（.json文件）");
       print(s);
     }
-    settingNames.sort();
     return settingNames;
   }
 
@@ -359,7 +362,7 @@ class IOBase
           settingName: settingName
         )
     );
-    /// {$bookName}Set.json添加设定（新建设定）
+    /// Set.json添加设定（新建设定）
     addSettingOfBookSetJson(bookName, setName, settingName);
   }
 
@@ -394,35 +397,26 @@ class IOBase
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  //                (书籍-章节){$bookName}Chapter.json                        //
+  //                (书籍-章节)Chapter.json                                   //
   ////////////////////////////////////////////////////////////////////////////
 
   /// 创建该书对应{$bookName}Chapter.json：json文件
   void createBookChapterJson(String bookName) {
-    File file2 = File(_jsonFilePath(bookName: bookName, isBookChapterJson: true));
+    File file2 = File(_jsonFilePath(bookName: bookName, isChapterJson: true));
     if (!file2.existsSync()) {
       file2.createSync(recursive: true);
     }
     saveBookChapterJson(bookName, BookConfig.getDefaultBookChapterJsonString(bookName: bookName));
   }
 
-  /// 重命名该书对应{$bookName}Chapter.json：json文件
-  void renameBookChapterJson(String oldBookName, String newBookName) {
-    // File file2 = File("$_writeRootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${oldBookName}Chapter.json");
-    File file2 = File(_tempPath(newBookName: newBookName, oldBookName: oldBookName, isRenameBookChapterJson: true));
-    if (file2.existsSync()) {
-      file2.renameSync(_jsonFilePath(bookName: newBookName, isBookChapterJson: true));
-    }
-  }
-
-  /// {$bookName}Chapter.json读取
+  /// Chapter.json读取
   Map<String, dynamic> getBookChapterJsonContent(String bookName) {
-    File file = File(_jsonFilePath(bookName: bookName, isBookChapterJson: true));
+    File file = File(_jsonFilePath(bookName: bookName, isChapterJson: true));
     String jsonContent = "";
     try {
       jsonContent = file.readAsStringSync();
     } on Exception catch (e, s) {
-      debugPrint("/// {$bookName}Chapter.json读取");
+      debugPrint("/// Chapter.json读取");
       print(s);
     }
     return convert.jsonDecode(jsonContent);
@@ -430,7 +424,7 @@ class IOBase
 
   /// {$bookName}Chapter.json保存（初始化、章节顺序有变化）
   void saveBookChapterJson(String bookName, String content) {
-    File file = File(_jsonFilePath(bookName: bookName, isBookChapterJson: true));
+    File file = File(_jsonFilePath(bookName: bookName, isChapterJson: true));
     if (!file.existsSync()) {
       file.createSync(recursive: true);
     }
@@ -439,36 +433,27 @@ class IOBase
 
   /// {$bookName}Chapter.json添加（新建章节）
   void addBookChapterJson(String bookName, String chapterName) {
-    Map<String, dynamic> bookChapterJson =  getBookChapterJsonContent(bookName);
+    Map<String, dynamic> bookChapterJson = getBookChapterJsonContent(bookName);
     bookChapterJson["chapterList"].add(chapterName);
     saveBookChapterJson(bookName, convert.jsonEncode(bookChapterJson));
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  //                     (书籍-设定){$bookName}Set.json                       //
+  //                     (书籍-设定)Set.json                                  //
   ////////////////////////////////////////////////////////////////////////////
 
-  /// 创建该书对应{$bookName}Set.json：json文件
+  /// 创建该书对应Set.json：json文件
   void createBookSetJson(String bookName) {
-    File file2 = File(_jsonFilePath(bookName: bookName, isBookSetJson: true));
+    File file2 = File(_jsonFilePath(bookName: bookName, isSetJson: true));
     if (!file2.existsSync()) {
       file2.createSync(recursive: true);
     }
     saveBookSetJson(bookName, BookConfig.getDefaultBookSetJsonString(bookName: bookName));
   }
 
-  /// 重命名该书对应{$bookName}Set.json：json文件
-  void renameBookSetJson(String oldBookName, String newBookName) {
-    // File file2 = File("$_writeRootPath${Platform.pathSeparator}$newBookName${Platform.pathSeparator}${newBookName}Set${Platform.pathSeparator}${oldBookName}Set.json");
-    File file2 = File(_tempPath(newBookName: newBookName, oldBookName: oldBookName, isRenameBookSetJson: true));
-    if (file2.existsSync()) {
-      file2.renameSync(_jsonFilePath(bookName: newBookName, isBookSetJson: true));
-    }
-  }
-
-  /// {$bookName}Set.json读取
+  /// Set.json读取
   Map<String, dynamic> getBookSetJsonContent(String bookName) {
-    File file = File(_jsonFilePath(bookName: bookName, isBookSetJson: true));
+    File file = File(_jsonFilePath(bookName: bookName, isSetJson: true));
     String jsonContent = "";
     try {
       jsonContent = file.readAsStringSync();
@@ -479,10 +464,10 @@ class IOBase
     return convert.jsonDecode(jsonContent);
   }
 
-  /// {$bookName}Set.json保存
+  /// Set.json保存
   void saveBookSetJson(String bookName, String content) {
     try {
-      File file = File(_jsonFilePath(bookName: bookName, isBookSetJson: true));
+      File file = File(_jsonFilePath(bookName: bookName, isSetJson: true));
       if (!file.existsSync()) {
         file.createSync(recursive: true);
       }
@@ -493,7 +478,7 @@ class IOBase
     }
   }
 
-  /// {$bookName}Set.json添加设定类（新建设定类）
+  /// Set.json添加设定类（新建设定类）
   void addSetOfBookSetJson(String bookName, String setName) {
     Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
     /// setList: []
@@ -507,7 +492,7 @@ class IOBase
     saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
   }
 
-  /// {$bookName}Set.json添加设定（新建设定）
+  /// Set.json添加设定（新建设定）
   void addSettingOfBookSetJson(String bookName, String setName, String settingName) {
     Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
     Map<String, dynamic> newSetSettingMap = bookSetJson[setName];
@@ -516,7 +501,7 @@ class IOBase
     saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
   }
 
-  /// {$bookName}Set.json 修改属性值addToParser（是否加入解析）
+  /// Set.json 修改属性值addToParser（是否加入解析）
   void changeParserOfBookSetJson(String bookName, String setName, bool addToParser) {
     Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
     List<dynamic> settingList = bookSetJson["setList"];
