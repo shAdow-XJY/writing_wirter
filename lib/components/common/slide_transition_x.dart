@@ -49,7 +49,7 @@ class SlideTransitionX extends AnimatedWidget {
           offset = Offset(offset.dx, -offset.dy);
           break;
         case AxisDirection.left:
-          offset = Offset(offset.dx, offset.dy);
+          offset = Offset(-offset.dx, offset.dy);
           break;
       }
     }

@@ -71,6 +71,7 @@ class _MobileHomePageState extends State<MobileHomePage> with SingleTickerProvid
         },
         child: Scaffold(
           key: scaffoldKey,
+          extendBody: true,
           appBar: const ChapterEditPageAppBar(),
           drawer: const LeftDrawer(widthFactor: 0.9),
           endDrawer: const RightDrawer(widthFactor: 0.9),
@@ -79,11 +80,11 @@ class _MobileHomePageState extends State<MobileHomePage> with SingleTickerProvid
           body: AnimatedSwitcher(
             duration: const Duration(milliseconds: 1000),
             switchInCurve: Curves.decelerate,
-            switchOutCurve: Curves.bounceIn,
+            switchOutCurve: _currentIndex == 0 ? Curves.decelerate : Curves.bounceIn,
             child: _currentWidget,
             transitionBuilder: (child, animation) {
               return SlideTransitionX(
-                direction: AxisDirection.left,
+                direction: _currentIndex == 0 ? AxisDirection.right : AxisDirection.left,
                 position: animation,
                 child: child,
               );
