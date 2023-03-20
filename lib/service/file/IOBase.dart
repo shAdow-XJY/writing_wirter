@@ -50,6 +50,10 @@ class IOBase
         path += "${Platform.pathSeparator}${FileConfig.writeBookChapterDirPath(bookName)}";
       }
       /// ${bookName}/Set
+      else if (isSetDir && setName.isEmpty) {
+        path += "${Platform.pathSeparator}${FileConfig.writeBookSetRootDirPath(bookName)}";
+      }
+      /// ${bookName}/Set/${setName}
       else if (isSetDir && setName.isNotEmpty) {
         path += "${Platform.pathSeparator}${FileConfig.writeBookSetDirPath(bookName, setName)}";
       }
@@ -57,6 +61,8 @@ class IOBase
       else {
         path += "${Platform.pathSeparator}${FileConfig.writeBookDirPath(bookName)}";
       }
+    } else {
+      path += "${Platform.pathSeparator}${FileConfig.rootDirPath()}";
     }
     return path;
   }

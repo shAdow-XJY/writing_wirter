@@ -49,6 +49,11 @@ class ExportIOBase
   ////////////////////////////////////////////////////////////////////////////
   /// 导出书本某一章节
   void exportChapter(String bookName, String chapterName) {
+    /// 先创建目录chs
+    Directory dir = Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookChsDirPath(bookName)}");
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
     File file = File("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookChapterFilePath(bookName, chapterName)}");
     file.copySync("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookChapterFilePath(bookName, chapterName)}");
   }
@@ -59,8 +64,8 @@ class ExportIOBase
     Directory dir = Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookBokDirPath(bookName)}");
     if (dir.existsSync()) {
       dir.deleteSync(recursive: true);
-      dir.createSync(recursive: true);
     }
+    dir.createSync(recursive: true);
 
     for (var index = 0; index < chapterList.length; ++index) {
       File file = File("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookChapterFilePath(bookName, chapterList[index])}");

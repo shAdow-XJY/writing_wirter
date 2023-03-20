@@ -25,7 +25,7 @@ class FileConfig {
   /// 文件相对路径函数
   /// wWriter
   static String rootDirPath() {
-    return writeRootName;
+    return rootName;
   }
   /// 写作部分
   /// wWriter/write
