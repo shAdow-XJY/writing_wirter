@@ -13,6 +13,6 @@ Future<void> setupAppGetIt({bool test = false}) async {
   /// tool two -- EventBus : EventBus Stream tool class register
   appGetIt.registerSingleton<EventBus>(EventBus(), instanceName: "EventBus");
 
-  /// tool three -- ExportIOBase : Export file IO tool class register, depends on IOBase
-  appGetIt.registerSingleton<ExportIOBase>(ExportIOBase(appGetIt.get(instanceName: "IOBase")), instanceName: "ExportIOBase");
+  /// tool three -- ExportIOBase : Export file IO tool class register
+  appGetIt.registerSingleton<ExportIOBase>(ExportIOBase(), instanceName: "ExportIOBase");
 }

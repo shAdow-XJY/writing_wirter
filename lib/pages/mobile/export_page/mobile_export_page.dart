@@ -29,78 +29,6 @@ class _MobileExportPageState extends State<MobileExportPage> {
     bookNameList = ioBase.getAllBooks();
   }
 
-  Card getCard(String bookName) {
-    return Card(
-      child: Column(
-        children: [
-          Text(bookName),
-          TextButton(
-            child: const Text("导出某一章节"),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => SelectToastDialog(
-                  items: ioBase.getAllChapters(bookName),
-                  title: '选择导出的章节',
-                  callBack: (exportChapterName) => {
-                    if (exportChapterName.isNotEmpty) {
-                      exportIOBase.exportChapter(bookName, exportChapterName),
-                    },
-                  },
-                ),
-              );
-            },
-          ),
-          TextButton(
-            child: const Text("导出全部章节"),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => TextToastDialog(
-                  title: '导出书籍',
-                  text: '确定导出书籍$bookName',
-                  callBack: () => {
-                    exportIOBase.exportBook(bookName),
-                  },
-                ),
-              );
-            },
-          ),
-          TextButton(
-            child: const Text("导出.zip可移植文件"),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => TextToastDialog(
-                  title: '导出.zip可移植文件',
-                  text: '确定导出书籍$bookName.zip可移植文件',
-                  callBack: () => {
-                    exportIOBase.exportZip(bookName),
-                  },
-                ),
-              );
-            },
-          ),
-          TextButton(
-            child: const Text("打开导出文件位置"),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => TextToastDialog(
-                  title: '导出.zip可移植文件',
-                  text: '确定书籍$bookName导出文件位置',
-                  callBack: () => {
-                  exportIOBase.openFileManager(bookName),
-                },
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   Slidable getSlidable(String bookName) {
     return Slidable(
       endActionPane: ActionPane(
@@ -138,7 +66,7 @@ class _MobileExportPageState extends State<MobileExportPage> {
                   title: '分享书籍',
                   text: '确定分享书籍$bookName',
                   callBack: () => {
-                    exportIOBase.shareBook(bookName),
+                    exportIOBase.shareBook(bookName, ioBase.getAllChapters(bookName)),
                   },
                 ),
               );

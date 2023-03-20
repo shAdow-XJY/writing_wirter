@@ -34,10 +34,10 @@ class BookConfig {
       "setList": [
         // {
         //   "setName": "",
-        //   "addToParser": true,
+        //   "isParsed": true,
         // }
       ],
-      // "setName": {
+      // "${setName}": {
       //   "settingList": ["settingName"]
       // }
     };

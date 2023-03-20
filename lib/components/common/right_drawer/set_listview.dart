@@ -61,7 +61,7 @@ class _SetListViewState extends State<SetListView> {
           itemCount: setList.length,
           itemBuilder: (context, index) => SetListViewItem(
               setName: setList[index]["setName"],
-              addToParser: setList[index]["addToParser"],
+              isParsed: setList[index]["isParsed"],
           ),
         );
       },
@@ -71,12 +71,12 @@ class _SetListViewState extends State<SetListView> {
 
 class SetListViewItem extends StatefulWidget {
   String setName;
-  final bool addToParser;
+  final bool isParsed;
 
   SetListViewItem({
     Key? key,
     required this.setName,
-    required this.addToParser,
+    required this.isParsed,
   }) : super(key: key);
 
   @override
@@ -99,7 +99,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
   @override
   void initState() {
     super.initState();
-    addTextParser = widget.addToParser;
+    addTextParser = widget.isParsed;
     subscription_1 = eventBus.on<RenameSetEvent>().listen((event) {
       setState(() {
         widget.setName;
@@ -144,8 +144,8 @@ class _SetListViewItemState extends State<SetListViewItem> {
           ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
         };
         /// 修改设定集是否加入解析
-        void changeParserOfBookSetJson(bool addToParser) {
-          ioBase.changeParserOfBookSetJson(store.state.textModel.currentBook, widget.setName, addToParser);
+        void changeParserOfBookSetJson(bool isParsed) {
+          ioBase.changeParserOfBookSetJson(store.state.textModel.currentBook, widget.setName, isParsed);
         }
         return {
           "settingsList": settingsList,

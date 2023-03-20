@@ -59,7 +59,7 @@ class _PCExportPageState extends State<PCExportPage> {
                   title: '导出书籍',
                   text: '确定导出书籍$bookName',
                   callBack: () => {
-                    exportIOBase.exportBook(bookName),
+                    exportIOBase.exportBook(bookName, ioBase.getAllChapters(bookName)),
                   },
                 ),
               );
