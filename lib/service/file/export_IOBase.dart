@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:archive/archive_io.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -99,24 +100,30 @@ class ExportIOBase
     encoder.close();
     Share.shareXFiles([XFile("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookZipFilePath(bookName)}")], text: 'share book');
   }
-  // void importBook(String bookName) {
-  //   // Read the Zip file from disk.
-  //   final bytes = File('test.zip').readAsBytesSync();
-  //
-  //   // Decode the Zip file
-  //   final archive = ZipDecoder().decodeBytes(bytes);
-  //
-  //   // Extract the contents of the Zip archive to disk.
-  //   for (final file in archive) {
-  //     final filename = file.name;
-  //     if (file.isFile) {
-  //       final data = file.content as List<int>;
-  //       File('out/' + filename)
-  //         ..createSync(recursive: true)
-  //         ..writeAsBytesSync(data);
-  //     } else {
-  //       Directory('out/' + filename).create(recursive: true);
-  //     }
-  //   }
-  // }
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                                导入.zip文件                              //
+  ////////////////////////////////////////////////////////////////////////////
+  Future<String> importBook() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ["zip"],
+      lockParentWindow: true
+    );
+
+    String bookName = "";
+    if (result != null) {
+      bookName = result.files.single.name.split(".").first;
+      // Use an InputFileStream to access the zip file without storing it in memory.
+      final inputStream = InputFileStream(result.files.single.path??"");
+      // Decode the zip from the InputFileStream. The archive will have the contents of the
+      // zip, without having stored the data in memory.
+      final archive = ZipDecoder().decodeBuffer(inputStream);
+      extractArchiveToDisk(archive, "$_appDocPath${Platform.pathSeparator}${FileConfig.writeRootDirPath()}");
+    } else {
+      // User canceled the picker
+    }
+
+    return bookName;
+  }
 }

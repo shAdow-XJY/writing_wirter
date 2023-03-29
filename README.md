@@ -68,3 +68,4 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 13. [archive](https://pub.dev/packages/archive/example)
 14. [flutter_slidable](https://pub.dev/packages/flutter_slidable)
 15. [share_plus](https://pub.dev/packages/share_plus)
+16. [file_picker](https://pub.dev/packages/file_picker)
