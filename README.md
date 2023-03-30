@@ -12,6 +12,10 @@ v3.0.0:
 added lines: 28178, removed lines: 3654, total lines: 24524
 v4.0.0:
 added lines: 30282, removed lines: 4403, total lines: 25879
+
+v5.0.0:
+files number in /lib：102
+lines number in /lib：4994
 ```
 
 ---
