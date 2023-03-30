@@ -56,7 +56,7 @@ class Parser
     List<dynamic> setObjList = setJson["setList"] ?? [];
     List<String> setList = [];
     for (var setObj in setObjList) {
-      if (setObj["addToParser"]) {
+      if (setObj["isParsed"]) {
         setList.add(setObj["setName"].toString());
       }
     }

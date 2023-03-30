@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
-import '../../../components/common/semicircle_button.dart';
+import '../../../components/common/buttons/semicircle_button.dart';
 import '../../../components/common/transparent_bar_scroll_view.dart';
 import '../../../components/pc/pc_float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_app_bar.dart';
@@ -24,10 +24,8 @@ class _PCHomePageState extends State<PCHomePage>{
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
         appBar: const ChapterEditPageAppBar(),
-        drawerEdgeDragWidth: screenSize.width / 2.0,
         drawer: const LeftDrawer(widthFactor: 0.3,),
         endDrawer: const RightDrawer(widthFactor: 0.3,),
         body: Row(
@@ -56,7 +54,7 @@ class _PCHomePageState extends State<PCHomePage>{
             ),
             openSettingPage
                 ? const Expanded(flex: 9, child: PCSettingEditPage(),)
-                : const SizedBox()
+                : const SizedBox(height: double.infinity,)
           ],
         ),
         floatingActionButton: const PCFloatButton()

@@ -1,20 +1,20 @@
 import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
 
-import '../../../service/websocket/websocket_client.dart';
-import '../../../service/websocket/websocket_msg_type.dart';
+import '../../../service/web_socket/web_socket_client.dart';
+import '../../../service/web_socket/web_socket_msg_type.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
-class SpaceEditPage extends StatefulWidget {
-  const SpaceEditPage({
+class PCSpaceEditPage extends StatefulWidget {
+  const PCSpaceEditPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<SpaceEditPage> createState() => _ChapterEditPageBodyState();
+  State<PCSpaceEditPage> createState() => _ChapterEditPageBodyState();
 }
 
-class _ChapterEditPageBodyState extends State<SpaceEditPage> {
+class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
   /// 全局单例-客户端webSocket
   final WebSocketClient webSocketClient = appGetIt.get(instanceName: "WebSocketClient");
   /// 章节内容输入框控制器

@@ -12,6 +12,10 @@ v3.0.0:
 added lines: 28178, removed lines: 3654, total lines: 24524
 v4.0.0:
 added lines: 30282, removed lines: 4403, total lines: 25879
+
+v5.0.0:
+files number in /lib：102
+lines number in /lib：4994
 ```
 
 ---
@@ -46,6 +50,9 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 21. [Flutter踩坑系列：滑动手势监听不到](https://www.jianshu.com/p/1d89c97c5bdc)
 22. [Scaffold.of() called with a context that does not contain a Scaffold](https://www.fluttercampus.com/guide/329/scaffold-of-called-with-a-context-that-does-not-contain-a-scaffold/)
 23. [Build exe file for Flutter Windows Application](https://www.youtube.com/watch?v=1J6P6L-vH9s)
+24. [flutter 打包与apk网络问题处理](https://blog.csdn.net/qq_36723759/article/details/117379990)
+25. [动画切换组件（AnimatedSwitcher）](https://book.flutterchina.club/chapter9/animated_switcher.html#_9-6-3-slidetransitionx)
+26. [Flutter 动画曲线Curves 效果一览](https://blog.csdn.net/qq_17766199/article/details/95632571)
 
 ---
 
@@ -62,3 +69,7 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 10. [get_it](https://pub.dev/packages/get_it/example)
 11. [circular_menu](https://pub.dev/packages/circular_menu/example)
 12. [animated_stack](https://pub.dev/packages/animated_stack)
+13. [archive](https://pub.dev/packages/archive/example)
+14. [flutter_slidable](https://pub.dev/packages/flutter_slidable)
+15. [share_plus](https://pub.dev/packages/share_plus)
+16. [file_picker](https://pub.dev/packages/file_picker)

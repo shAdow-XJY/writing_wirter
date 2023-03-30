@@ -1,14 +1,13 @@
-// TODO Implement this library.
 import 'dart:convert' as convert;
 
 class BookConfig {
 
-  /// default book-chapter : {$bookName}Chapter.json
+  /// default book-chapter : Chapter.json
   static String getDefaultBookChapterJsonString({String bookName = ""}) {
     return convert.jsonEncode(getDefaultBookChapterJson(bookName: bookName));
   }
 
-  /// default book-set : {$bookName}Set.json
+  /// default book-set : Set.json
   static String getDefaultBookSetJsonString({String bookName = ""}) {
     return convert.jsonEncode(getDefaultBookSetJson(bookName: bookName));
   }
@@ -18,7 +17,7 @@ class BookConfig {
     return convert.jsonEncode(getDefaultSetSettingJson(bookName: bookName, setName: setName, settingName: settingName));
   }
 
-  /// default book-chapter : {$bookName}Chapter.json
+  /// default book-chapter : Chapter.json
   static Map<String, Object> getDefaultBookChapterJson({String bookName = ""})
   {
     return {
@@ -27,7 +26,7 @@ class BookConfig {
     };
   }
 
-  /// default book-set : {$bookName}Set.json
+  /// default book-set : Set.json
   static Map<String, Object> getDefaultBookSetJson({String bookName = ""})
   {
     return {
@@ -35,10 +34,10 @@ class BookConfig {
       "setList": [
         // {
         //   "setName": "",
-        //   "addToParser": true,
+        //   "isParsed": true,
         // }
       ],
-      // "setName": {
+      // "${setName}": {
       //   "settingList": ["settingName"]
       // }
     };
@@ -48,7 +47,6 @@ class BookConfig {
   static Map<String, Object> getDefaultSetSettingJson({String bookName = "", String setName = "", String settingName = ""})
   {
     return {
-      "bookName": bookName,
       "setName": setName,
       "settingName": settingName,
       "chapterFlags": ['1'],

@@ -7,7 +7,7 @@ import 'package:writing_writer/state_machine/event_bus/events.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
-import '../toast_dialog.dart';
+import '../dialog/edit_toast_dialog.dart';
 
 class RightDrawer extends StatefulWidget {
   final double? widthFactor;
@@ -22,9 +22,9 @@ class RightDrawer extends StatefulWidget {
 
 class _RightDrawerState extends State<RightDrawer> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
 
   /// 抽屉的宽度因子
   double widthFactor = 0.9;
@@ -77,7 +77,7 @@ class _RightDrawerState extends State<RightDrawer> {
                               onPressed: () {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => ToastDialog(
+                                  builder: (context) => EditToastDialog(
                                     title: '新建设定集',
                                     callBack: (setName) => {
                                       if (setName.isNotEmpty)

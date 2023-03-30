@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import '../../../service/websocket/websocket_msg_type.dart';
-import '../../../service/websocket/websocket_server.dart';
+import '../../../service/web_socket/web_socket_msg_type.dart';
+import '../../../service/web_socket/web_socket_server.dart';
 import '../../../state_machine/event_bus/mobile_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
@@ -19,7 +19,7 @@ class MobileSocketsPage extends StatefulWidget {
 
 class _PCSocketsPageState extends State<MobileSocketsPage> {
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   /// webSocket 服务端
   late WebSocketServer webSocketServer;
   /// webSocket 服务端是否开启

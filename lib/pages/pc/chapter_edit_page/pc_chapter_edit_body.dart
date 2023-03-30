@@ -20,7 +20,7 @@ class PCChapterEditPageBody extends StatefulWidget {
 
 class _ChapterEditPageBodyState extends State<PCChapterEditPageBody> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
 
   /// 章节内容输入框控制器
   final ClickTextEditingController textEditingController =

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
+import '../../../components/common/slide_transition_x.dart';
 import '../../../components/mobile/mobile_float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_app_bar.dart';
 import '../chapter_edit_page/mobile_chapter_edit_body.dart';
@@ -15,7 +16,7 @@ class MobileHomePage extends StatefulWidget {
   State<MobileHomePage> createState() => _MobileHomePageState();
 }
 
-class _MobileHomePageState extends State<MobileHomePage> {
+class _MobileHomePageState extends State<MobileHomePage> with SingleTickerProviderStateMixin {
   /// 页面切换初始化
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Widget> _widgetList = [
@@ -70,6 +71,7 @@ class _MobileHomePageState extends State<MobileHomePage> {
         },
         child: Scaffold(
           key: scaffoldKey,
+          extendBody: true,
           appBar: const ChapterEditPageAppBar(),
           drawer: const LeftDrawer(widthFactor: 0.9),
           endDrawer: const RightDrawer(widthFactor: 0.9),
@@ -77,10 +79,13 @@ class _MobileHomePageState extends State<MobileHomePage> {
           endDrawerEnableOpenDragGesture: false,
           body: AnimatedSwitcher(
             duration: const Duration(milliseconds: 1000),
+            switchInCurve: Curves.decelerate,
+            switchOutCurve: _currentIndex == 0 ? Curves.decelerate : Curves.bounceIn,
             child: _currentWidget,
             transitionBuilder: (child, animation) {
-              return SizeTransition(
-                sizeFactor: animation,
+              return SlideTransitionX(
+                direction: _currentIndex == 0 ? AxisDirection.right : AxisDirection.left,
+                position: animation,
                 child: child,
               );
             },

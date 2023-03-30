@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import '../../../components/common/toast_dialog.dart';
+import '../../../components/common/dialog/edit_toast_dialog.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/text_action.dart';
@@ -21,7 +21,7 @@ class ChapterEditPageAppBar extends StatefulWidget implements PreferredSizeWidge
 
 class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
 
   /// text
   String currentBook = "";
@@ -70,7 +70,7 @@ class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
           onTap: () {
             showDialog(
               context: context,
-              builder: (context) => ToastDialog(
+              builder: (context) => EditToastDialog(
                 title: '章节重命名',
                 init: currentChapter,
                 callBack: (strBack) => {

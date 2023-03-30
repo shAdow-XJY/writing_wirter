@@ -2,7 +2,7 @@ import 'package:animated_stack/animated_stack.dart';
 import 'package:flutter/material.dart';
 
 import '../../pages/mobile/sockets_page/mobile_sockets_page.dart';
-import '../common/transparent_text_button.dart';
+import '../common/buttons/transparent_text_button.dart';
 
 class MobileFloatButton extends StatefulWidget {
   final Widget mainPage;
@@ -45,18 +45,39 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
               children: const [
                 Expanded(
                   flex: 1,
-                  child: Text("导出"),
+                  child: Text("设置"),
                 ),
                 Expanded(
                   flex: 2,
-                  child: Icon(Icons.output,),
+                  child: Icon(Icons.settings,),
                 )
               ],
             ),
             onPressed: () {},
           ),
+        ],
+      ),
+      bottomWidget: Row(
+        children: [
           TransTextButton(
-            child: Row(
+            child: Column(
+              children: const [
+                Expanded(
+                  flex: 1,
+                  child: Text("分享"),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Icon(Icons.share,),
+                )
+              ],
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, '/export');
+            },
+          ),
+          TransTextButton(
+            child: Column(
               children: const [
                 Expanded(
                   flex: 1,
@@ -71,7 +92,7 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
             onPressed: () {},
           ),
           TransTextButton(
-            child: Row(
+            child: Column(
               children: const [
                 Expanded(
                   flex: 1,
@@ -89,25 +110,6 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
                 builder: (context) => const MobileSocketsPage(),
               );
             },
-          ),
-        ],
-      ),
-      bottomWidget: Row(
-        children: [
-          TransTextButton(
-            child: Column(
-              children: const [
-                Expanded(
-                  flex: 1,
-                  child: Text("设置"),
-                ),
-                Expanded(
-                    flex: 2,
-                    child: Icon(Icons.settings,),
-                )
-              ],
-            ),
-            onPressed: () {},
           ),
         ],
       ),

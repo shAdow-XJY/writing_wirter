@@ -11,9 +11,9 @@ import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
-import '../toast_dialog.dart';
+import '../dialog/edit_toast_dialog.dart';
 import '../transparent_checkbox.dart';
-import '../transparent_icon_button.dart';
+import '../buttons/transparent_icon_button.dart';
 
 class SetListView extends StatefulWidget {
   const SetListView({
@@ -26,9 +26,9 @@ class SetListView extends StatefulWidget {
 
 class _SetListViewState extends State<SetListView> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
 
   @override
@@ -61,7 +61,7 @@ class _SetListViewState extends State<SetListView> {
           itemCount: setList.length,
           itemBuilder: (context, index) => SetListViewItem(
               setName: setList[index]["setName"],
-              addToParser: setList[index]["addToParser"],
+              isParsed: setList[index]["isParsed"],
           ),
         );
       },
@@ -71,12 +71,12 @@ class _SetListViewState extends State<SetListView> {
 
 class SetListViewItem extends StatefulWidget {
   String setName;
-  final bool addToParser;
+  final bool isParsed;
 
   SetListViewItem({
     Key? key,
     required this.setName,
-    required this.addToParser,
+    required this.isParsed,
   }) : super(key: key);
 
   @override
@@ -85,9 +85,9 @@ class SetListViewItem extends StatefulWidget {
 
 class _SetListViewItemState extends State<SetListViewItem> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
 
@@ -99,7 +99,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
   @override
   void initState() {
     super.initState();
-    addTextParser = widget.addToParser;
+    addTextParser = widget.isParsed;
     subscription_1 = eventBus.on<RenameSetEvent>().listen((event) {
       setState(() {
         widget.setName;
@@ -144,8 +144,8 @@ class _SetListViewItemState extends State<SetListViewItem> {
           ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
         };
         /// 修改设定集是否加入解析
-        void changeParserOfBookSetJson(bool addToParser) {
-          ioBase.changeParserOfBookSetJson(store.state.textModel.currentBook, widget.setName, addToParser);
+        void changeParserOfBookSetJson(bool isParsed) {
+          ioBase.changeParserOfBookSetJson(store.state.textModel.currentBook, widget.setName, isParsed);
         }
         return {
           "settingsList": settingsList,
@@ -174,7 +174,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                             onPressed: () {
                               showDialog(
                                 context: context,
-                                builder: (context) => ToastDialog(
+                                builder: (context) => EditToastDialog(
                                   init: widget.setName,
                                   title: '重命名设定类',
                                   callBack: (newSetName) => {
@@ -223,7 +223,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                               onPressed: () {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => ToastDialog(
+                                  builder: (context) => EditToastDialog(
                                     title: '新建设定',
                                     callBack: (settingName) => {
                                       if (settingName.isNotEmpty) {

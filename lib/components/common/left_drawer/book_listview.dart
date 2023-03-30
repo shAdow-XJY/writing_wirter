@@ -8,8 +8,8 @@ import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../../../state_machine/event_bus/events.dart';
-import '../toast_dialog.dart';
-import '../transparent_icon_button.dart';
+import '../dialog/edit_toast_dialog.dart';
+import '../buttons/transparent_icon_button.dart';
 import 'chapter_listview.dart';
 
 class BookListView extends StatefulWidget {
@@ -23,9 +23,9 @@ class BookListView extends StatefulWidget {
 
 class _BookListViewState extends State<BookListView> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
 
   List<String> bookNameList = [];
@@ -77,9 +77,9 @@ class BookListViewItem extends StatefulWidget {
 
 class _BookListViewItemState extends State<BookListViewItem> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
 
@@ -138,7 +138,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                               onPressed: () {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => ToastDialog(
+                                  builder: (context) => EditToastDialog(
                                     init: widget.bookName,
                                     title: '重命名书籍',
                                     callBack: (newBookName) => {
@@ -174,7 +174,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                 onPressed: () {
                                   showDialog(
                                     context: context,
-                                    builder: (context) => ToastDialog(
+                                    builder: (context) => EditToastDialog(
                                       title: '新建章节',
                                       callBack: (chapterName) => {
                                         if (chapterName.isNotEmpty) {

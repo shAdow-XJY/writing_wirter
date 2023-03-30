@@ -5,13 +5,13 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:writing_writer/components/common/transparent_icon_button.dart';
+import 'package:writing_writer/components/common/buttons/transparent_icon_button.dart';
 import 'dart:convert' as convert;
-import '../../../components/common/drop_down_button.dart';
-import '../../../components/common/toast_dialog.dart';
+import '../../../components/common/buttons/drop_down_button.dart';
+import '../../../components/common/dialog/edit_toast_dialog.dart';
 import '../../../service/file/IOBase.dart';
-import '../../../service/websocket/websocket_msg_type.dart';
-import '../../../service/websocket/websocket_server.dart';
+import '../../../service/web_socket/web_socket_msg_type.dart';
+import '../../../service/web_socket/web_socket_server.dart';
 import '../../../state_machine/event_bus/mobile_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
@@ -28,9 +28,9 @@ class MobileSettingEditPage extends StatefulWidget {
 
 class _SettingEditPageState extends State<MobileSettingEditPage> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   /// 全局单例-客户端webSocket
   late WebSocketServer webSocketServer;
   /// 是否 textEditingController 的监听函数已完成设置
@@ -248,7 +248,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
                     onTap: () {
                       showDialog(
                         context: context,
-                        builder: (context) => ToastDialog(
+                        builder: (context) => EditToastDialog(
                           title: '设定重命名',
                           init: currentSetting,
                           callBack: (strBack) => {
@@ -283,7 +283,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
                           onPressed: () {
                             showDialog(
                               context: context,
-                              builder: (context) => ToastDialog(
+                              builder: (context) => EditToastDialog(
                                 title: '新建设定节点',
                                 callBack: (flagChapter) => {
                                   if (flagChapter.isNotEmpty)

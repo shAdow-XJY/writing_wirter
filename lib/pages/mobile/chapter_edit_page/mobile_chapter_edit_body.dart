@@ -6,10 +6,11 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import '../../../components/common/transparent_bar_scroll_view.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../service/parser/Parser.dart';
-import '../../../service/websocket/websocket_msg_type.dart';
-import '../../../service/websocket/websocket_server.dart';
+import '../../../service/web_socket/web_socket_msg_type.dart';
+import '../../../service/web_socket/web_socket_server.dart';
 import '../../../state_machine/event_bus/mobile_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
@@ -27,9 +28,9 @@ class MobileChapterEditPageBody extends StatefulWidget {
 
 class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   /// 全局单例-文件操作工具类
-  final IOBase ioBase = appGetIt<IOBase>();
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
   /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt<EventBus>();
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   /// 全局单例-客户端webSocket
   late WebSocketServer webSocketServer;
   late StreamSubscription subscription_1;
@@ -170,22 +171,26 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
       builder: (BuildContext context, Map<String, dynamic> map) {
         return currentChapter.isEmpty
             ? const SizedBox()
-            : BlurGlass(
-                child: ClickTextField(
-                  focusNode: focusNode,
-                  controller: textEditingController,
-                  regExp: Parser.generateRegExp(currentParserObj),
-                  onTapText: (String clickText) {
-                    map["clickHighLightSetting"](clickText);
-                  },
-                  decoration: const InputDecoration(
-                    /// 消除下边框
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
+            : Scaffold(
+          body: BlurGlass(
+            outBorderRadius: 0.0,
+            child: ClickTextField(
+              focusNode: focusNode,
+              controller: textEditingController,
+              regExp: Parser.generateRegExp(currentParserObj),
+              onTapText: (String clickText) {
+                map["clickHighLightSetting"](clickText);
+              },
+              decoration: const InputDecoration(
+                /// 消除下边框
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
                 ),
-              );
+              ),
+            ),
+          ),
+        )
+        ;
       },
     );
   }
