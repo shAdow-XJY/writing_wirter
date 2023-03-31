@@ -21,7 +21,9 @@ class _PCFloatButtonState extends State<PCFloatButton> {
         CircularMenuItem(
           icon: Icons.settings,
           color: Colors.orange,
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, '/setting');
+          },
         ),
         CircularMenuItem(
           icon: Icons.output,

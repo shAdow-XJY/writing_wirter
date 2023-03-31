@@ -3,6 +3,7 @@ import 'package:writing_writer/pages/pc/export_page/pc_export_page.dart';
 import 'package:writing_writer/pages/pc/space_edit_page/pc_space_edit_page.dart';
 
 import '../../pages/common/pre_page/pre_page.dart';
+import '../../pages/common/setting_page/setting_page.dart';
 import '../../pages/pc/home_page/pc_home_page.dart';
 
 /// 需要引入跳转页面地址
@@ -15,6 +16,7 @@ final routes = {
   '/home': (context) => const PCHomePage(),
   '/space': (context) => const PCSpaceEditPage(),
   '/export': (context) => const PCExportPage(),
+  '/setting': (context) => const SettingPage(),
 };
 
 /// 固定写法，统一处理，无需更改
