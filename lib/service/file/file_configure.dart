@@ -17,10 +17,10 @@ class FileConfig {
   static String exportBookDirName = "bok";
   static String exportZipDirName = "zip";
 
-  /// writing writer 用户配置根文件夹名称
-  static String userRootName = "user";
-  /// writing writer 用户配置内容子文件名称
-  static String userConfigFileName = "config";
+  /// writing writer 应用配置根文件夹名称
+  static String configRootName = "config";
+  /// writing writer 应用配置内容子文件名称
+  static String configUserFileName = "user";
 
   /// 文件格式后缀
   static String chsFilePostfix = ".txt";
@@ -112,12 +112,12 @@ class FileConfig {
 
   /// 用户配置部分
   /// wWriter/user
-  static String userRootDirPath() {
-    return rootDirPath() + Platform.pathSeparator + userRootName;
+  static String configRootDirPath() {
+    return rootDirPath() + Platform.pathSeparator + configRootName;
   }
   /// wWriter/user/userConfigFileName.json
-  static String userConfigFilePath() {
-    return userRootDirPath() + Platform.pathSeparator + userConfigFileName + jsonFilePostfix;
+  static String configUserFilePath() {
+    return configRootDirPath() + Platform.pathSeparator + configUserFileName + jsonFilePostfix;
   }
 }
 /// 书籍结构实例：
