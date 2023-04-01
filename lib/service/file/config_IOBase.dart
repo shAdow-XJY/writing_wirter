@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
-
 import 'file_configure.dart';
 import 'dart:convert' as convert;
 import 'package:path_provider/path_provider.dart';
@@ -61,13 +60,13 @@ class ConfigIOBase
   }
 
   /// user.json保存
-  void saveUserJson(String content) {
+  void saveUserJson(Map<String, dynamic> userJson) {
     try {
       File userJsonFile = File("$_appDocPath${Platform.pathSeparator}${FileConfig.configUserFilePath()}");
       if (!userJsonFile.existsSync()) {
         userJsonFile.createSync(recursive: true);
       }
-      userJsonFile.writeAsStringSync(content);
+      userJsonFile.writeAsStringSync(convert.jsonEncode(userJson));
     } on Exception catch (e, s) {
       debugPrint("/// user.json保存");
       print(s);
@@ -82,7 +81,7 @@ class ConfigIOBase
       "user": user,
       "password": password,
     };
-    saveUserJson(convert.jsonEncode(userJson));
+    saveUserJson(userJson);
   }
 
   /// 获取 webDAV 信息

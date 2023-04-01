@@ -9,10 +9,8 @@ class WebDAV {
     debug: true,
   );
 
-  late final IOBase _ioBase;
 
-  WebDAV(IOBase ioBase) {
-    _ioBase = ioBase;
+  WebDAV() {
   }
 
   /// 书籍上传更新

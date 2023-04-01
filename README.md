@@ -53,6 +53,7 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 24. [flutter 打包与apk网络问题处理](https://blog.csdn.net/qq_36723759/article/details/117379990)
 25. [动画切换组件（AnimatedSwitcher）](https://book.flutterchina.club/chapter9/animated_switcher.html#_9-6-3-slidetransitionx)
 26. [Flutter 动画曲线Curves 效果一览](https://blog.csdn.net/qq_17766199/article/details/95632571)
+27. [InputDecoration](https://book.flutterchina.club/chapter3/input_and_form.html#_3-5-1-textfield)
 
 ---
 
