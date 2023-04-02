@@ -35,7 +35,9 @@ class _PCFloatButtonState extends State<PCFloatButton> {
         CircularMenuItem(
           icon: Icons.cloud,
           color: Colors.blue,
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, '/cloud');
+          },
         ),
         CircularMenuItem(
           icon: Icons.phone_android,

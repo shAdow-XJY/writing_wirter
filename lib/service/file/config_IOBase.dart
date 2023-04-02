@@ -74,7 +74,7 @@ class ConfigIOBase
   }
 
   /// 存储 webDAV 信息
-  void storeWevDAV(String uri, String user, String password) {
+  void storeWevDAVInfo(String uri, String user, String password) {
     Map<String, dynamic> userJson = getUserJsonContent();
     userJson["webDAV"] = {
       "uri": uri,
@@ -85,7 +85,7 @@ class ConfigIOBase
   }
 
   /// 获取 webDAV 信息
-  Map<String, dynamic> getWevDAV() {
+  Map<String, dynamic> getWevDAVInfo() {
     Map<String, dynamic> userJson = getUserJsonContent();
     return userJson["webDAV"];
   }
