@@ -39,7 +39,9 @@ class _CloudPageState extends State<CloudPage> {
     webDAV.login(webDAVInfo["uri"], webDAVInfo["user"], webDAVInfo["password"]).then((result) => {
       if (result) {
         webDAV.getAllBooks().then((books) => {
-          bookNameList = books,
+          setState(() {
+            bookNameList = books;
+          }),
         })
       }
     });
@@ -64,7 +66,7 @@ class _CloudPageState extends State<CloudPage> {
             ),
             child: Column(
               children: [
-                Text("云端存储时间版本："),
+                Text("云端存储时间版本：${bookInfo["time"]}"),
               ],
             )
           ),
@@ -133,6 +135,26 @@ class _CloudPageState extends State<CloudPage> {
         ),
         centerTitle: true,
         title: const Text("云端书籍存储"),
+        actions: [
+          TextButton(
+            child: const Text("上传书籍"),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => SelectToastDialog(
+                  items: ioBase.getAllBooks(),
+                  title: '选择上传至云端的书籍',
+                  callBack: (uploadBookName) async => {
+                    if (uploadBookName.isNotEmpty) {
+                      await exportIOBase.exportZip(uploadBookName),
+                      await webDAV.uploadBook(uploadBookName),
+                    },
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: bookNameList.length,

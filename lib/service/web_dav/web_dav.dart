@@ -1,7 +1,20 @@
-import 'package:dio/dio.dart';
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:webdav_client/webdav_client.dart' as webdav;
 
+import '../file/file_configure.dart';
+
 class WebDAV {
+  /// 电脑文档目录路径
+  late final String _appDocPath;
+
+  WebDAV() {
+    getApplicationDocumentsDirectory().then((appDocDir) => {
+      _appDocPath = appDocDir.path,
+    });
+  }
+
   late webdav.Client _client;
 
   /// webDAV 登录
@@ -12,6 +25,7 @@ class WebDAV {
       uri,
       user: user,
       password: password,
+      debug: true,
     );
     try {
       await _client.ping();
@@ -52,15 +66,16 @@ class WebDAV {
 
   /// 上传更新书籍到云端
   Future<void> uploadBook(String bookName) async {
-    // upload local file 2 remote file with stream
-    CancelToken cancelToken = CancelToken();
+    _client.setHeaders({"content-type" : "application/zip"});
+
     await _client.writeFromFile(
-      'C:/Users/xxx/vpn.exe',
-      '/f/vpn2.exe',
+      "$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookZipFilePath(bookName)}",
+      FileConfig.webDAVBookFilePath(bookName),
       onProgress: (c, t) {
+        print(c);
+        print(t);
         print(c / t);
       },
-      cancelToken: cancelToken,
     );
   }
 

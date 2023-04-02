@@ -119,6 +119,16 @@ class FileConfig {
   static String configUserFilePath() {
     return configRootDirPath() + Platform.pathSeparator + configUserFileName + jsonFilePostfix;
   }
+
+  /// webDAV部分
+  /// /wWriter
+  static String webDAVRootDirPath() {
+    return "/${rootDirPath()}";
+  }
+  /// /wWriter/${bookName}.zip
+  static String webDAVBookFilePath(String bookName) {
+    return "${webDAVRootDirPath()}/$bookName$zipFilePostfix";
+  }
 }
 /// 书籍结构实例：
 /// 书名：西游记
