@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:event_bus/event_bus.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -7,6 +10,7 @@ import '../../../components/common/dialog/select_toast_dialog.dart';
 import '../../../components/common/dialog/text_toast_dialog.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../service/file/config_IOBase.dart';
+import '../../../state_machine/event_bus/webDAV_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
 class CloudPage extends StatefulWidget {
@@ -21,30 +25,47 @@ class CloudPage extends StatefulWidget {
 class _CloudPageState extends State<CloudPage> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
+
   /// 全局单例-文件导出操作工具类
   final ExportIOBase exportIOBase = appGetIt.get(instanceName: "ExportIOBase");
+
   /// 全局单例-用户配置文件操作工具类
   final ConfigIOBase configIOBase = appGetIt.get(instanceName: "ConfigIOBase");
 
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
+  late StreamSubscription subscription_1;
+
   /// webDAV 信息
   late Map<String, dynamic> webDAVInfo;
-  WebDAV webDAV = WebDAV();
+  late WebDAV webDAV;
 
-  List<Map<String, dynamic>> bookNameList = [];
+  /// webDAV 登录状态标志flag,避免刷新重新创建连接
+  bool linking = true;
+  bool linkFailed = true;
 
   @override
   void initState() {
     super.initState();
+    webDAV = WebDAV(eventBus);
     webDAVInfo = configIOBase.getWevDAVInfo();
     webDAV.login(webDAVInfo["uri"], webDAVInfo["user"], webDAVInfo["password"]).then((result) => {
-      if (result) {
-        webDAV.getAllBooks().then((books) => {
-          setState(() {
-            bookNameList = books;
-          }),
-        })
-      }
+      setState(() {
+        linkFailed = !result;
+        linking = false;
+      })
     });
+    subscription_1 = eventBus.on<WebDavUploadBookDoneEvent>().listen((event) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print('dispose');
+    subscription_1.cancel();
+    webDAV.close();
   }
 
   ExpansionTileCard getCard(Map<String, dynamic> bookInfo) {
@@ -60,16 +81,15 @@ class _CloudPageState extends State<CloudPage> {
         Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 8.0,
-            ),
-            child: Column(
-              children: [
-                Text("云端存储时间版本：${bookInfo["time"]}"),
-              ],
-            )
-          ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
+              child: Column(
+                children: [
+                  Text("云端存储时间版本：${bookInfo["time"]}"),
+                ],
+              )),
         ),
         ButtonBar(
           alignment: MainAxisAlignment.spaceAround,
@@ -77,8 +97,7 @@ class _CloudPageState extends State<CloudPage> {
           buttonMinWidth: 90.0,
           children: <Widget>[
             TextButton(
-              onPressed: () {
-              },
+              onPressed: () {},
               child: Column(
                 children: const [
                   Icon(Icons.arrow_downward),
@@ -90,9 +109,7 @@ class _CloudPageState extends State<CloudPage> {
               ),
             ),
             TextButton(
-              onPressed: () {
-
-              },
+              onPressed: () {},
               child: Column(
                 children: const [
                   Icon(Icons.arrow_upward),
@@ -104,9 +121,7 @@ class _CloudPageState extends State<CloudPage> {
               ),
             ),
             TextButton(
-              onPressed: () {
-
-              },
+              onPressed: () {},
               child: Column(
                 children: const [
                   Icon(Icons.delete_forever_rounded),
@@ -145,10 +160,11 @@ class _CloudPageState extends State<CloudPage> {
                   items: ioBase.getAllBooks(),
                   title: '选择上传至云端的书籍',
                   callBack: (uploadBookName) async => {
-                    if (uploadBookName.isNotEmpty) {
-                      await exportIOBase.exportZip(uploadBookName),
-                      await webDAV.uploadBook(uploadBookName),
-                    },
+                    if (uploadBookName.isNotEmpty)
+                      {
+                        await exportIOBase.exportZip(uploadBookName),
+                        await webDAV.uploadBook(uploadBookName),
+                      },
                   },
                 ),
               );
@@ -156,12 +172,31 @@ class _CloudPageState extends State<CloudPage> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: bookNameList.length,
-        itemBuilder: (context, index) {
-          return getCard(bookNameList[index]);
-        },
-      ),
+      body: linking
+          ? const Center(child: CircularProgressIndicator())
+          : linkFailed
+              ? const Center(child: Text('Error: 登录WebDAV失败'))
+              : FutureBuilder(
+                  future: webDAV.getAllBooks(),
+                  builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                      case ConnectionState.active:
+                      case ConnectionState.waiting:
+                        return const Center(child: CircularProgressIndicator());
+                      case ConnectionState.done:
+                        if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        }
+                        return ListView.builder(
+                          itemCount: snapshot.data?.length,
+                          itemBuilder: (context, index) {
+                            return getCard(snapshot.data![index]);
+                          },
+                        );
+                    }
+                  },
+                ),
     );
   }
 }
