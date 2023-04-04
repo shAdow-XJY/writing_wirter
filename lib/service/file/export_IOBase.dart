@@ -82,6 +82,13 @@ class ExportIOBase
     encoder.close();
   }
 
+  /// 导出可移植.zip, wWriter/webdav/${bookName}.zip
+  Future<void> exportZipForWebDAV(String bookName) async {
+    var encoder = ZipFileEncoder();
+    encoder.create("$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}");
+    await encoder.addDirectory(Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookDirPath(bookName)}"));
+    encoder.close();
+  }
   /////////////////////////////////////////////////////////////////////////////
   //                                导出文件                                  //
   ////////////////////////////////////////////////////////////////////////////

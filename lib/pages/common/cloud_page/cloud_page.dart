@@ -177,7 +177,7 @@ class _CloudPageState extends State<CloudPage> {
                   callBack: (uploadBookName) async => {
                     if (uploadBookName.isNotEmpty)
                       {
-                        await exportIOBase.exportZip(uploadBookName),
+                        await exportIOBase.exportZipForWebDAV(uploadBookName),
                         await webDAV.uploadBook(uploadBookName),
                       },
                   },

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
@@ -81,14 +80,16 @@ class WebDAV {
     debugPrint("webDAV uploadBook()");
 
     _client.setHeaders({"content-type" : "application/zip"});
-    await _client.writeFromFile("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookZipFilePath(bookName)}",
+    await _client.writeFromFile("$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}",
       FileConfig.webDAVBookFilePath(bookName),
       onProgress: (c, t) {
-        if (!((c/t) < 0.0)) {
-          _eventBus.fire(WebDavUploadBookDoneEvent());
-        }
+        // if (!((c/t) < 0.0)) {
+        //   _eventBus.fire(WebDavUploadBookDoneEvent());
+        // }
       },
     );
+    _eventBus.fire(WebDavUploadBookDoneEvent());
+
   }
 
 /// 书籍下载覆盖
