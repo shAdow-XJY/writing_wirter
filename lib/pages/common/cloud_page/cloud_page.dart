@@ -3,11 +3,9 @@ import 'dart:async';
 import 'package:event_bus/event_bus.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:writing_writer/service/file/export_IOBase.dart';
 import 'package:writing_writer/service/web_dav/web_dav.dart';
 import '../../../components/common/dialog/select_toast_dialog.dart';
-import '../../../components/common/dialog/text_toast_dialog.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../service/file/config_IOBase.dart';
 import '../../../state_machine/event_bus/webDAV_events.dart';
@@ -44,6 +42,10 @@ class _CloudPageState extends State<CloudPage> {
   bool linking = true;
   bool linkFailed = true;
 
+  /// 书籍名称列表
+  List<Map<String, dynamic>> webDAVBookList = [];
+  List<String> uploadBookList = [];
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +57,7 @@ class _CloudPageState extends State<CloudPage> {
         linking = false;
       })
     });
+    uploadBookList = ioBase.getAllBooks();
     subscription_1 = eventBus.on<WebDavUploadBookDoneEvent>().listen((event) {
       setState(() {});
     });
@@ -63,15 +66,27 @@ class _CloudPageState extends State<CloudPage> {
   @override
   void dispose() {
     super.dispose();
-    print('dispose');
     subscription_1.cancel();
     webDAV.close();
   }
 
+  List<String> getUploadBookList() {
+    for (var element in webDAVBookList) {
+      String name = element["name"];
+      name = name.substring(0, name.length - 4);
+      if (uploadBookList.contains(name)) {
+        uploadBookList.remove(name);
+      }
+    }
+    return uploadBookList;
+  }
+
   ExpansionTileCard getCard(Map<String, dynamic> bookInfo) {
+    String name = bookInfo["name"];
+    name = name.substring(0, name.length - 4);
     return ExpansionTileCard(
-      leading: CircleAvatar(child: Text(bookInfo["name"][0])),
-      title: Text(bookInfo["name"]),
+      leading: CircleAvatar(child: Text(name[0])),
+      title: Text(name),
       initialPadding: const EdgeInsets.only(top: 6.0),
       children: [
         const Divider(
@@ -157,7 +172,7 @@ class _CloudPageState extends State<CloudPage> {
               showDialog(
                 context: context,
                 builder: (context) => SelectToastDialog(
-                  items: ioBase.getAllBooks(),
+                  items: getUploadBookList(),
                   title: '选择上传至云端的书籍',
                   callBack: (uploadBookName) async => {
                     if (uploadBookName.isNotEmpty)
@@ -188,10 +203,11 @@ class _CloudPageState extends State<CloudPage> {
                         if (snapshot.hasError) {
                           return Center(child: Text('Error: ${snapshot.error}'));
                         }
+                        webDAVBookList = snapshot.data ?? [];
                         return ListView.builder(
-                          itemCount: snapshot.data?.length,
+                          itemCount: webDAVBookList.length,
                           itemBuilder: (context, index) {
-                            return getCard(snapshot.data![index]);
+                            return getCard(webDAVBookList[index]);
                           },
                         );
                     }
