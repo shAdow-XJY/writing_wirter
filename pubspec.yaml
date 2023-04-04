@@ -48,6 +48,8 @@ dependencies:
   file_picker: ^5.2.6
   # item component
   expansion_tile_card: ^2.0.0
+  # theme switch
+  animated_theme_switcher: ^2.0.8
 
   ## pc pack use ##
   circular_menu: ^2.0.1

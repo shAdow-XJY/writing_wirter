@@ -1,3 +1,4 @@
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -18,14 +19,19 @@ class MobileApp extends StatelessWidget {
       /// 为了能直接在child使用store，我们这里要继续包裹一层StoreBuilder
       child: StoreBuilder<AppState>(
         builder: (context, store) {
-          return MaterialApp(
-              title: 'Writing Writer',
-              theme: ThemeData(
-                brightness: Brightness.dark,
-              ),
-              debugShowCheckedModeBanner: false,
-              initialRoute: '/',
-              onGenerateRoute: mobileGenerateRoute
+          return ThemeProvider(
+            initTheme: ThemeData(
+              brightness: Brightness.dark,
+            ),
+            builder: (context, myTheme) {
+              return MaterialApp(
+                  title: 'Writing Writer',
+                  theme: myTheme,
+                  debugShowCheckedModeBanner: false,
+                  initialRoute: '/',
+                  onGenerateRoute: mobileGenerateRoute
+              );
+            },
           );
         },
       ),

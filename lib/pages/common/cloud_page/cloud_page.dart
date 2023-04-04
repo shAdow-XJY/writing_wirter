@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:event_bus/event_bus.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +75,7 @@ class _CloudPageState extends State<CloudPage> {
   }
 
   List<String> getUploadBookList() {
-    print("getUploadBookList");
+    debugPrint("getUploadBookList");
     List<String> uploadBookList = ioBase.getAllBooks();
     for (var element in webDAVBookList) {
       String name = element["name"];
