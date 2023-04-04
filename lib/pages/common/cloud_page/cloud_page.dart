@@ -76,12 +76,13 @@ class _CloudPageState extends State<CloudPage> {
   }
 
   List<String> getUploadBookList() {
-    List<String> uploadBookList = [];
+    print("getUploadBookList");
+    List<String> uploadBookList = ioBase.getAllBooks();
     for (var element in webDAVBookList) {
       String name = element["name"];
       name = name.substring(0, name.length - 4);
-      if (localBookList.contains(name)) {
-        uploadBookList.add(name);
+      if (uploadBookList.contains(name)) {
+        uploadBookList.remove(name);
       }
     }
     return uploadBookList;
