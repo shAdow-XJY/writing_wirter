@@ -33,6 +33,7 @@ class _CloudPageState extends State<CloudPage> {
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
 
   /// webDAV 信息
   late Map<String, dynamic> webDAVInfo;
@@ -44,7 +45,7 @@ class _CloudPageState extends State<CloudPage> {
 
   /// 书籍名称列表
   List<Map<String, dynamic>> webDAVBookList = [];
-  List<String> uploadBookList = [];
+  List<String> localBookList = [];
 
   @override
   void initState() {
@@ -57,8 +58,11 @@ class _CloudPageState extends State<CloudPage> {
         linking = false;
       })
     });
-    uploadBookList = ioBase.getAllBooks();
+    localBookList = ioBase.getAllBooks();
     subscription_1 = eventBus.on<WebDavUploadBookDoneEvent>().listen((event) {
+      setState(() {});
+    });
+    subscription_2 = eventBus.on<WebDavRemoveBookDoneEvent>().listen((event) {
       setState(() {});
     });
   }
@@ -67,26 +71,32 @@ class _CloudPageState extends State<CloudPage> {
   void dispose() {
     super.dispose();
     subscription_1.cancel();
+    subscription_2.cancel();
     webDAV.close();
   }
 
   List<String> getUploadBookList() {
+    List<String> uploadBookList = [];
     for (var element in webDAVBookList) {
       String name = element["name"];
       name = name.substring(0, name.length - 4);
-      if (uploadBookList.contains(name)) {
-        uploadBookList.remove(name);
+      if (localBookList.contains(name)) {
+        uploadBookList.add(name);
       }
     }
     return uploadBookList;
   }
 
   ExpansionTileCard getCard(Map<String, dynamic> bookInfo) {
-    String name = bookInfo["name"];
-    name = name.substring(0, name.length - 4);
+    // 书籍名字处理，去除".zip"后缀
+    String bookName = bookInfo["name"];
+    bookName = bookName.substring(0, bookName.length - 4);
+    // 云端书籍是否在本地也有同名书籍
+    bool inLocal = localBookList.contains(bookName);
+
     return ExpansionTileCard(
-      leading: CircleAvatar(child: Text(name[0])),
-      title: Text(name),
+      leading: CircleAvatar(child: Text(bookName[0])),
+      title: Text(bookName),
       initialPadding: const EdgeInsets.only(top: 6.0),
       children: [
         const Divider(
@@ -101,7 +111,9 @@ class _CloudPageState extends State<CloudPage> {
                 vertical: 8.0,
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text("书籍在本地：${inLocal ? "书籍存在本地" : "书籍不存在本地"}",),
                   Text("云端存储时间版本：${bookInfo["time"]}"),
                 ],
               )),
@@ -112,40 +124,75 @@ class _CloudPageState extends State<CloudPage> {
           buttonMinWidth: 90.0,
           children: <Widget>[
             TextButton(
-              onPressed: () {},
               child: Column(
-                children: const [
-                  Icon(Icons.arrow_downward),
-                  Padding(
+                children: [
+                  const Icon(
+                    Icons.arrow_downward,
+                    color: Colors.blueAccent,
+                  ),
+                  const Padding(
                     padding: EdgeInsets.symmetric(vertical: 2.0),
                   ),
-                  Text('导入本地'),
+                  Text(
+                    inLocal ? "覆盖本地" : "导入本地",
+                    style: const TextStyle(
+                      color: Colors.blueAccent,
+                    ),
+                  ),
                 ],
               ),
+              onPressed: () async {
+                await webDAV.downloadBook(bookName);
+                await exportIOBase.importZipFromWebDAV(bookName);
+              },
             ),
             TextButton(
-              onPressed: () {},
               child: Column(
-                children: const [
-                  Icon(Icons.arrow_upward),
-                  Padding(
+                children: [
+                  Icon(
+                    Icons.arrow_upward,
+                    color: inLocal ? Colors.blueAccent : Colors.blueGrey,
+                  ),
+                  const Padding(
                     padding: EdgeInsets.symmetric(vertical: 2.0),
                   ),
-                  Text('同步云端'),
+                  Text(
+                    '同步云端',
+                    style: TextStyle(
+                      color: inLocal ? Colors.blueAccent : Colors.blueGrey,
+                    ),
+                  ),
                 ],
               ),
+              onPressed: () async {
+                if (!inLocal) {
+                  return;
+                }
+                await exportIOBase.exportZipForWebDAV(bookName);
+                await webDAV.uploadBook(bookName);
+              },
             ),
             TextButton(
-              onPressed: () {},
               child: Column(
                 children: const [
-                  Icon(Icons.delete_forever_rounded),
+                  Icon(
+                    Icons.delete_forever_rounded,
+                    color: Colors.redAccent,
+                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 2.0),
                   ),
-                  Text('云端删除'),
+                  Text(
+                    '云端删除',
+                    style: TextStyle(
+                      color: Colors.redAccent,
+                    ),
+                  ),
                 ],
               ),
+              onPressed: () async {
+                await webDAV.removeBook(bookName);
+              },
             ),
           ],
         ),

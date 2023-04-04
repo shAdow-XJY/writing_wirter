@@ -80,7 +80,8 @@ class WebDAV {
     debugPrint("webDAV uploadBook()");
 
     _client.setHeaders({"content-type" : "application/zip"});
-    await _client.writeFromFile("$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}",
+    await _client.writeFromFile(
+      "$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}",
       FileConfig.webDAVBookFilePath(bookName),
       onProgress: (c, t) {
         // if (!((c/t) < 0.0)) {
@@ -89,10 +90,25 @@ class WebDAV {
       },
     );
     _eventBus.fire(WebDavUploadBookDoneEvent());
-
   }
 
-/// 书籍下载覆盖
+  /// 云端书籍下载到本地
+  Future<void> downloadBook(String bookName) async {
+    debugPrint("webDAV downloadBook()");
 
-/// 书籍删除
+    _client.setHeaders({"content-type" : "application/zip"});
+    await _client.read2File(
+        FileConfig.webDAVBookFilePath(bookName),
+        "$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}",
+        onProgress: (c, t) {}
+    );
+  }
+
+  /// 云端书籍删除
+  Future<void> removeBook(String bookName) async {
+    debugPrint("webDAV removeBook()");
+
+    await _client.remove(FileConfig.webDAVBookFilePath(bookName));
+    _eventBus.fire(WebDavRemoveBookDoneEvent());
+  }
 }

@@ -82,13 +82,6 @@ class ExportIOBase
     encoder.close();
   }
 
-  /// 导出可移植.zip, wWriter/webdav/${bookName}.zip
-  Future<void> exportZipForWebDAV(String bookName) async {
-    var encoder = ZipFileEncoder();
-    encoder.create("$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}");
-    await encoder.addDirectory(Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookDirPath(bookName)}"));
-    encoder.close();
-  }
   /////////////////////////////////////////////////////////////////////////////
   //                                导出文件                                  //
   ////////////////////////////////////////////////////////////////////////////
@@ -120,17 +113,39 @@ class ExportIOBase
 
     String bookName = "";
     if (result != null) {
-      bookName = result.files.single.name.split(".").first;
+      // 去掉".zip"后缀
+      bookName = result.files.single.name;
+      bookName = bookName.substring(0, bookName.length - 4);
       // Use an InputFileStream to access the zip file without storing it in memory.
       final inputStream = InputFileStream(result.files.single.path??"");
       // Decode the zip from the InputFileStream. The archive will have the contents of the
       // zip, without having stored the data in memory.
       final archive = ZipDecoder().decodeBuffer(inputStream);
       extractArchiveToDisk(archive, "$_appDocPath${Platform.pathSeparator}${FileConfig.writeRootDirPath()}");
+      inputStream.close();
     } else {
       // User canceled the picker
     }
 
     return bookName;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                          webDAV导出导入                                  //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 导出可移植.zip, wWriter/webdav/${bookName}.zip
+  Future<void> exportZipForWebDAV(String bookName) async {
+    var encoder = ZipFileEncoder();
+    encoder.create("$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}");
+    await encoder.addDirectory(Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookDirPath(bookName)}"));
+    encoder.close();
+  }
+
+  /// 导入可移植.zip, wWriter/webdav/${bookName}.zip
+  Future<void> importZipFromWebDAV(String bookName) async {
+    final inputStream = InputFileStream("$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}");
+    final archive = ZipDecoder().decodeBuffer(inputStream);
+    extractArchiveToDisk(archive, "$_appDocPath${Platform.pathSeparator}${FileConfig.writeRootDirPath()}");
+    inputStream.close();
   }
 }
