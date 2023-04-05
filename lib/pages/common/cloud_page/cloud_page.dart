@@ -95,6 +95,8 @@ class _CloudPageState extends State<CloudPage> {
     bool inLocal = localBookList.contains(bookName);
 
     return ExpansionTileCard(
+      baseColor: Theme.of(context).primaryColorLight,
+      expandedColor: Theme.of(context).primaryColor.withOpacity(0.3),
       leading: CircleAvatar(child: Text(bookName[0])),
       title: Text(bookName),
       initialPadding: const EdgeInsets.only(top: 6.0),
