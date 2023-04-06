@@ -143,6 +143,12 @@ class _ChapterEditPageBodyState extends State<PCChapterEditPageBody> {
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none,
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
               );

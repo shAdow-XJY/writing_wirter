@@ -1,5 +1,4 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -21,7 +20,7 @@ class PcApp extends StatelessWidget {
       child: StoreBuilder<AppState>(
         builder: (context, store) {
           return ThemeProvider(
-            initTheme: blueTheme,
+            initTheme: amberTheme,
             builder: (context, myTheme) {
               return MaterialApp(
                   title: 'Writing Writer',
