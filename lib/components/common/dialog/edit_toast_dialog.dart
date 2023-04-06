@@ -29,29 +29,27 @@ class _EditToastDialogState extends State<EditToastDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent.withOpacity(0.5),
-      body: CupertinoAlertDialog(
-        title: Text(widget.title,),
-        content: TextField(
-          controller: textEditingController,
-        ),
-        actions: <Widget>[
-          CupertinoButton(
-            child: const Text("取消"),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoButton(
-            child: const Text("确定"),
-            onPressed: () {
-              widget.callBack(textEditingController.text);
-              Navigator.pop(context);
-            },
-          ),
-        ],
+    return AlertDialog(
+      shadowColor: Colors.transparent.withOpacity(0.5),
+      title: Text(widget.title,),
+      content: TextField(
+        controller: textEditingController,
       ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text("取消"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        TextButton(
+          child: const Text("确定"),
+          onPressed: () {
+            widget.callBack(textEditingController.text);
+            Navigator.pop(context);
+          },
+        ),
+      ],
     );
   }
 }

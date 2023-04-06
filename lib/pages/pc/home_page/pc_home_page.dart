@@ -52,6 +52,14 @@ class _PCHomePageState extends State<PCHomePage>{
                 },
               ),
             ),
+            RotatedBox(
+              quarterTurns: 1,
+              child: Divider(
+                height: 2,
+                thickness: 2,
+                color: Theme.of(context).primaryColorDark,
+              ),
+            ),
             openSettingPage
                 ? const Expanded(flex: 9, child: PCSettingEditPage(),)
                 : const SizedBox(height: double.infinity,)

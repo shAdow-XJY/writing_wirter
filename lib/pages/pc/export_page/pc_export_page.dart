@@ -17,10 +17,11 @@ class PCExportPage extends StatefulWidget {
 class _PCExportPageState extends State<PCExportPage> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
+
   /// 全局单例-文件导出操作工具类
   final ExportIOBase exportIOBase = appGetIt.get(instanceName: "ExportIOBase");
 
-  List<String> bookNameList= [];
+  List<String> bookNameList = [];
 
   @override
   void initState() {
@@ -30,72 +31,135 @@ class _PCExportPageState extends State<PCExportPage> {
 
   Card getCard(String bookName) {
     return Card(
-      child: Column(
-        children: [
-          Text(bookName),
-          TextButton(
-            child: const Text("导出某一章节"),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => SelectToastDialog(
-                  items: ioBase.getAllChapters(bookName),
-                  title: '选择导出的章节',
-                  callBack: (exportChapterName) => {
-                    if (exportChapterName.isNotEmpty) {
-                      exportIOBase.exportChapter(bookName, exportChapterName),
-                    },
-                  },
-                ),
-              );
-            },
+      elevation: 4.0,
+      margin: const EdgeInsets.all(16.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Theme.of(context).primaryColor.withOpacity(0.5), Theme.of(context).primaryColor],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          TextButton(
-            child: const Text("导出全部章节"),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => TextToastDialog(
-                  title: '导出书籍',
-                  text: '确定导出书籍$bookName',
-                  callBack: () => {
-                    exportIOBase.exportBook(bookName, ioBase.getAllChapters(bookName)),
-                  },
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                bookName,
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
                 ),
-              );
-            },
-          ),
-          TextButton(
-            child: const Text("导出.zip可移植文件"),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => TextToastDialog(
-                  title: '导出.zip可移植文件',
-                  text: '确定导出书籍$bookName.zip可移植文件',
-                  callBack: () => {
-                    exportIOBase.exportZip(bookName),
-                  },
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.article_outlined),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => SelectToastDialog(
+                            items: ioBase.getAllChapters(bookName),
+                            title: '选择导出的章节',
+                            callBack: (exportChapterName) => {
+                              if (exportChapterName.isNotEmpty)
+                                {
+                                  exportIOBase.exportChapter(
+                                      bookName, exportChapterName),
+                                },
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 4),
+                    const Text("导出章节"),
+                  ],
                 ),
-              );
-            },
-          ),
-          TextButton(
-            child: const Text("打开导出文件位置"),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => TextToastDialog(
-                  title: '导出.zip可移植文件',
-                  text: '确定书籍$bookName导出文件位置',
-                  callBack: () => {
-                  exportIOBase.openFileManager(bookName),
-                },
+                Column(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.book_outlined),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => TextToastDialog(
+                            title: '导出书籍',
+                            text: '确定导出书籍$bookName',
+                            callBack: () => {
+                              exportIOBase.exportBook(
+                                  bookName, ioBase.getAllChapters(bookName)),
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 4),
+                    const Text("导出书籍"),
+                  ],
                 ),
-              );
-            },
-          ),
-        ],
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.archive_outlined),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => TextToastDialog(
+                            title: '导出.zip可移植文件',
+                            text: '确定导出书籍$bookName.zip可移植文件',
+                            callBack: () => {
+                              exportIOBase.exportZip(bookName),
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 4),
+                    const Text("导出.zip"),
+                  ],
+                ),
+                Column(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.folder_open_outlined),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => TextToastDialog(
+                            title: '导出.zip可移植文件',
+                            text: '确定书籍$bookName导出文件位置',
+                            callBack: () => {
+                              exportIOBase.openFileManager(bookName),
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 4),
+                    const Text("打开本地"),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -123,7 +187,7 @@ class _PCExportPageState extends State<PCExportPage> {
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 5,
+          crossAxisCount: 4,
         ),
         itemCount: bookNameList.length,
         itemBuilder: (context, index) {

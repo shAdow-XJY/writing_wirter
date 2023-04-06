@@ -95,11 +95,13 @@ class _CloudPageState extends State<CloudPage> {
     bool inLocal = localBookList.contains(bookName);
 
     return ExpansionTileCard(
-      baseColor: Theme.of(context).primaryColorLight,
-      expandedColor: Theme.of(context).primaryColor.withOpacity(0.3),
+      baseColor: Theme.of(context).primaryColor.withOpacity(0.3),
+      expandedColor: Theme.of(context).primaryColor,
+      expandedTextColor: Theme.of(context).textSelectionTheme.selectionColor,
       leading: CircleAvatar(child: Text(bookName[0])),
-      title: Text(bookName),
-      initialPadding: const EdgeInsets.only(top: 6.0),
+      title: Text(bookName,),
+      initialPadding: const EdgeInsets.only(top: 12.0),
+      finalPadding: const EdgeInsets.only(top:6.0, bottom: 6.0),
       children: [
         const Divider(
           thickness: 1.0,
@@ -119,6 +121,10 @@ class _CloudPageState extends State<CloudPage> {
                   Text("云端存储时间版本：${bookInfo["time"]}"),
                 ],
               )),
+        ),
+        const Divider(
+          thickness: 1.0,
+          height: 1.0,
         ),
         ButtonBar(
           alignment: MainAxisAlignment.spaceAround,
