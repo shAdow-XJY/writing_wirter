@@ -3,9 +3,9 @@ import 'package:writing_writer/state_machine/get_it/app_get_it.dart';
 
 /// pc 端
 import 'entry/pc/pc_main.dart';
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupAppGetIt();
+  await setupAppGetIt();
   runApp(PcApp());
 }
 

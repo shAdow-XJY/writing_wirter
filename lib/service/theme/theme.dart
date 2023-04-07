@@ -1,18 +1,69 @@
 import 'package:flutter/material.dart';
 
 class ThemeUtil {
-  /// 预设主题色调
-  static List<ColorSwatch> colors = [
-    Colors.amber,
-    Colors.blueGrey,
-    Colors.lightGreen,
-    Colors.pink,
-    Colors.deepPurple,
-    Colors.red,
-    Colors.yellow,
-  ];
+  /// 搭配sharedPreferences缓存中的key
+  /// themeName: red/pink/blueGrey
+  /// isDarkMode: true/false
 
-  /// 夜间模式
+  /// 默认主题
+  static String defaultTheme = "blueGrey";
+  static ColorSwatch defaultColor = Colors.blueGrey;
+
+  /// 预设主题色调
+  static Map<String, ColorSwatch> colorsMap = {
+    "red": Colors.red,
+    "pink": Colors.pink,
+    "amber": Colors.amber,
+    "yellow": Colors.yellow,
+    "blueGrey": Colors.blueGrey,
+    "lightGreen": Colors.lightGreen,
+    "deepPurple": Colors.deepPurple,
+  };
+
+  /// 预设主题色调: key
+  static String getThemeName(ColorSwatch? selectedColor) {
+    String key = defaultTheme;
+    if (selectedColor != null) {
+      for (var color in colorsMap.entries) {
+        if (color.value.value.compareTo(selectedColor.value) == 0) {
+          key = color.key;
+          break;
+        }
+      }
+    }
+    return key;
+  }
+
+  /// 预设主题色调: value
+  static Color? getColor(String? themeName) {
+    if (colorsMap.containsKey(themeName)) {
+      return colorsMap[themeName];
+    }
+    return defaultColor;
+  }
+
+  /// 预设主题色调: values 数组
+  static List<ColorSwatch> getColorsList() {
+    return colorsMap.values.toList();
+  }
+
+  /// 获取初始主题
+  static ThemeData getInitTheme({String? themeName, bool? isDarkMode}) {
+    if (isDarkMode == true) {
+      return getDarkTheme();
+    }
+    return getPreSetTheme(themeName);
+  }
+
+  /// 获取预设主题色调主题
+  static ThemeData getPreSetTheme(String? themeName) {
+    if (colorsMap.containsKey(themeName)) {
+      return generateTheme(colorsMap[themeName]!);
+    }
+    return generateTheme(defaultColor);
+  }
+
+  /// 获取预设夜间模式主题
   static ThemeData getDarkTheme() {
     return ThemeData(
       brightness: Brightness.dark,
@@ -41,7 +92,6 @@ class ThemeUtil {
       },
     );
   }
-
 
   /// ThemeData 生成函数
   static ThemeData generateTheme(ColorSwatch color) {

@@ -1,11 +1,13 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:writing_writer/components/common/transparent_bar_scroll_view.dart';
-import 'package:writing_writer/pages/common/setting_page/temp.dart';
 import 'package:writing_writer/service/theme/theme.dart';
 import '../../../components/pc/pc_border_container.dart';
 import '../../../service/file/config_IOBase.dart';
+import '../../../state_machine/event_bus/theme_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
 class SettingPage extends StatefulWidget {
@@ -15,10 +17,13 @@ class SettingPage extends StatefulWidget {
   State<SettingPage> createState() => _SettingPageState();
 }
 
-class _SettingPageState extends State<SettingPage>
-    with TickerProviderStateMixin {
+class _SettingPageState extends State<SettingPage> with TickerProviderStateMixin {
   /// 全局单例-用户配置操作工具类
   final ConfigIOBase configIOBase = appGetIt.get(instanceName: "ConfigIOBase");
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
+  /// 全局单例-缓存读取工具类
+  final SharedPreferences sharedPreferences = appGetIt.get(instanceName: "SharedPreferences");
 
   /// 用户配置属性
   late Map<String, dynamic> userJson;
@@ -35,9 +40,12 @@ class _SettingPageState extends State<SettingPage>
   void initState() {
     super.initState();
     userJson = configIOBase.getUserJsonContent();
+    /// webDAV
     uriController.text = userJson["webDAV"]["uri"];
     userController.text = userJson["webDAV"]["user"];
     passwordController.text = userJson["webDAV"]["password"];
+    /// theme
+    selectedColor = ThemeUtil.getColor(sharedPreferences.getString("themeName"));
   }
 
   @override
@@ -106,13 +114,19 @@ class _SettingPageState extends State<SettingPage>
                     builder: (BuildContext context) {
                       return MaterialColorPicker(
                         onMainColorChange: (color) {
-                          selectedColor = Color(color!.value);
-                          ThemeSwitcher.of(context).changeTheme(
-                            theme: ThemeUtil.generateTheme(color),
-                          );
+                          String themeName = ThemeUtil.getThemeName(color);
+                          /// 缓存标志变量
+                          sharedPreferences.setBool("isDarkMode", false);
+                          sharedPreferences.setString("themeName", themeName);
+                          /// 修改被选中的颜色
+                          selectedColor = ThemeUtil.getColor(themeName);
+                          /// 动态切换主题
+                          ThemeSwitcher.of(context).changeTheme(theme: ThemeUtil.getPreSetTheme(themeName),);
+                          /// 触发切换主题事件
+                          eventBus.fire(ChangeThemeEvent());
                         },
                         selectedColor: selectedColor,
-                        colors: ThemeUtil.colors,
+                        colors: ThemeUtil.getColorsList(),
                         allowShades: false,
                       );
                     },
