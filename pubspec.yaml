@@ -52,6 +52,8 @@ dependencies:
   animated_theme_switcher: ^2.0.8
   # 虚线边框
   dotted_border: ^2.0.0+3
+  # 颜色选择器
+  flutter_material_color_picker: ^1.1.0+2
 
   ## pc pack use ##
   circular_menu: ^2.0.1

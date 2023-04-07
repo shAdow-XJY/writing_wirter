@@ -20,7 +20,7 @@ class PcApp extends StatelessWidget {
       child: StoreBuilder<AppState>(
         builder: (context, store) {
           return ThemeProvider(
-            initTheme: amberTheme,
+            initTheme: ThemeUtil.getDarkTheme(),
             builder: (context, myTheme) {
               return MaterialApp(
                   title: 'Writing Writer',
