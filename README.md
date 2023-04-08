@@ -16,6 +16,11 @@ added lines: 30282, removed lines: 4403, total lines: 25879
 v5.0.0:
 files number in /lib：102
 lines number in /lib：4994
+
+v6.0.0:
+files number in /lib：114
+lines number in /lib：6257
+added lines: 34667, removed lines: 6394, total lines: 28273
 ```
 
 ---
@@ -78,3 +83,7 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 17. [share_plus](https://pub.dev/packages/share_plus)
 18. [file_picker](https://pub.dev/packages/file_picker)
 19. [shared_preferences](https://pub.dev/packages/shared_preferences)
+20. [string_scanner](https://pub.dev/packages/string_scanner)
+21. [animated_theme_switcher](https://pub.dev/packages/animated_theme_switcher)
+22. [flutter_material_color_picker](https://pub.dev/packages/flutter_material_color_picker)
+23. [expansion_tile_card](https://pub.dev/packages/expansion_tile_card)
