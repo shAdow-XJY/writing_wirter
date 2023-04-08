@@ -6,7 +6,6 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import '../../../components/common/transparent_bar_scroll_view.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../service/parser/Parser.dart';
 import '../../../service/web_socket/web_socket_msg_type.dart';
@@ -184,6 +183,12 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
               decoration: const InputDecoration(
                 /// 消除下边框
                 border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide.none,
                 ),
               ),
