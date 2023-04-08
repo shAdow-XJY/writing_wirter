@@ -48,12 +48,7 @@ class _BookListViewState extends State<BookListView> {
   }
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      separatorBuilder: (context, index) => Divider(
-        thickness: 1,
-        height: 1,
-        color: Theme.of(context).colorScheme.inversePrimary,
-      ),
+    return ListView.builder(
       controller: ScrollController(),
       itemCount: bookNameList.length,
       itemBuilder: (context, index) => BookListViewItem(
@@ -124,8 +119,9 @@ class _BookListViewItemState extends State<BookListViewItem> {
           mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
-              child: SizedBox(
+              child: Container(
                 height: height / 15.0,
+                color: Theme.of(context).primaryColorDark.withOpacity(0.8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -210,6 +206,11 @@ class _BookListViewItemState extends State<BookListViewItem> {
                     bookName: widget.bookName,
                   )
                 : const SizedBox(),
+            Divider(
+              thickness: 1,
+              height: 1,
+              color: Theme.of(context).dividerColor.withOpacity(0.6),
+            ),
           ],
         );
       },

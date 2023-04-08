@@ -17,6 +17,14 @@ class FileConfig {
   static String exportBookDirName = "bok";
   static String exportZipDirName = "zip";
 
+  /// writing writer 应用配置根文件夹名称
+  static String configRootName = "config";
+  /// writing writer 应用配置内容子文件名称
+  static String configUserFileName = "user";
+
+  /// writing writer webdav内容中间站根文件夹名称
+  static String webDAVRootName = "webdav";
+
   /// 文件格式后缀
   static String chsFilePostfix = ".txt";
   static String jsonFilePostfix = ".json";
@@ -27,6 +35,7 @@ class FileConfig {
   static String rootDirPath() {
     return rootName;
   }
+
   /// 写作部分
   /// wWriter/write
   static String writeRootDirPath() {
@@ -66,6 +75,7 @@ class FileConfig {
   static String writeBookChapterFilePath(String bookName, String chapterName) {
     return writeBookChapterDirPath(bookName) + Platform.pathSeparator + chapterName + chsFilePostfix;
   }
+
   /// 导出部分
   /// wWriter/export
   static String exportRootDirPath() {
@@ -101,6 +111,34 @@ class FileConfig {
   /// wWriter/export/${bookName}/zip/${bookName}.zip
   static String exportBookZipFilePath(String bookName) {
     return exportBookZipDirPath(bookName) + Platform.pathSeparator + bookName + zipFilePostfix;
+  }
+
+  /// 用户配置部分
+  /// wWriter/user
+  static String configRootDirPath() {
+    return rootDirPath() + Platform.pathSeparator + configRootName;
+  }
+  /// wWriter/user/userConfigFileName.json
+  static String configUserFilePath() {
+    return configRootDirPath() + Platform.pathSeparator + configUserFileName + jsonFilePostfix;
+  }
+
+  /// webDAV部分
+  /// 云端网盘路径：/wWriter
+  static String webDAVRootDirPath() {
+    return "/${rootDirPath()}";
+  }
+  /// 云端网盘路径：/wWriter/${bookName}.zip
+  static String webDAVBookFilePath(String bookName) {
+    return "${webDAVRootDirPath()}/$bookName$zipFilePostfix";
+  }
+  /// 本地暂时路径：wWriter/webdav
+  static String webDAVLocalRootDirPath() {
+    return rootDirPath() + Platform.pathSeparator + webDAVRootName;
+  }
+  /// 本地暂时路径：wWriter/webdav/${bookName}.zip
+  static String webDAVLocalBookFilePath(String bookName) {
+    return webDAVLocalRootDirPath() + Platform.pathSeparator + bookName + zipFilePostfix;
   }
 }
 /// 书籍结构实例：

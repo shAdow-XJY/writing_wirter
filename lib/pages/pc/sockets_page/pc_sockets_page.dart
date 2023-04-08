@@ -49,29 +49,58 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: Colors.transparent.withOpacity(0.8),
       insetPadding: const EdgeInsets.symmetric(vertical: 150.0, horizontal: 220.0),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("点击手机端的同步写作，将显示的ip地址输入在下方："),
-            TextField(
-              controller: ipTextController,
-              textAlign: TextAlign.center,
-            ),
-            TextButton(
-              child: const Text("确定"),
-              onPressed: () {
-                webSocketClient.clientConnect(ipTextController.text);
-              },
-            ),
-            TextButton(
-              child: const Text("取消"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [Theme.of(context).primaryColor.withOpacity(0.5), Theme.of(context).primaryColorDark],
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("点击手机端的同步写作，将显示的ip地址输入在下方："),
+              TextFormField(
+                controller: ipTextController,
+                decoration: const InputDecoration(
+                  labelText: "IP地址",
+                  hintText: "请输入移动端显示的IP地址",
+                  icon: Icon(Icons.wifi),
+                ),
+              ),
+              const SizedBox(height: 16.0,),
+              Row(
+                children: [
+                  const Expanded(child: SizedBox()),
+                  Expanded(
+                      child: TextButton(
+                        child: const Text("确定"),
+                        onPressed: () {
+                          webSocketClient.clientConnect(ipTextController.text);
+                        },
+                      ),
+                  ),
+                  const Expanded(flex: 2 ,child: SizedBox()),
+                  Expanded(
+                      child: TextButton(
+                        child: const Text("取消"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                  ),
+                  const Expanded(child: SizedBox()),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

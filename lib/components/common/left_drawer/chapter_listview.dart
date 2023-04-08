@@ -89,11 +89,11 @@ class ChapterListViewItem extends StatelessWidget {
           child: Container(
             height: height / 18.0,
             decoration: BoxDecoration(
-              color: Theme.of(context).highlightColor,
+              color: Theme.of(context).primaryColorDark.withOpacity(0.5),
               border: Border(
                 bottom: BorderSide(
                   width: 1.0,
-                  color: Theme.of(context).colorScheme.inversePrimary,
+                  color: Theme.of(context).dividerColor,
                 )
               )
             ),

@@ -51,12 +51,7 @@ class _SetListViewState extends State<SetListView> {
         return ioBase.getAllSetMap(store.state.textModel.currentBook)["setList"];
       },
       builder: (BuildContext context, List<dynamic> setList) {
-        return ListView.separated(
-          separatorBuilder: (context, index) => Divider(
-            thickness: 1,
-            height: 1,
-            color: Theme.of(context).colorScheme.inversePrimary,
-          ),
+        return ListView.builder(
           controller: ScrollController(),
           itemCount: setList.length,
           itemBuilder: (context, index) => SetListViewItem(
@@ -159,8 +154,9 @@ class _SetListViewItemState extends State<SetListViewItem> {
           mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
-              child: SizedBox(
+              child: Container(
                 height: height / 15.0,
+                color: Theme.of(context).primaryColorDark.withOpacity(0.8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   mainAxisSize: MainAxisSize.max,
@@ -260,6 +256,11 @@ class _SetListViewItemState extends State<SetListViewItem> {
                     settingsList: map["settingsList"],
                   )
                 : const SizedBox(),
+            Divider(
+              thickness: 1,
+              height: 1,
+              color: Theme.of(context).dividerColor.withOpacity(0.6),
+            ),
           ],
         );
       },

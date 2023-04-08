@@ -34,34 +34,32 @@ class _SelectToastDialogState extends State<SelectToastDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent.withOpacity(0.5),
-      body: CupertinoAlertDialog(
-        title: Text(widget.title,),
-        content: DropDownButton(
-          initIndex: widget.initIndex,
-          hintText: widget.hintText,
-          items: widget.items,
-          onChanged: (String selected) {
-            selectedValue = selected;
+    return AlertDialog(
+      shadowColor: Colors.transparent.withOpacity(0.5),
+      title: Text(widget.title,),
+      content: DropDownButton(
+        initIndex: widget.initIndex,
+        hintText: widget.hintText,
+        items: widget.items,
+        onChanged: (String selected) {
+          selectedValue = selected;
+        },
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text("取消"),
+          onPressed: () {
+            Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          CupertinoButton(
-            child: const Text("取消"),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoButton(
-            child: const Text("确定"),
-            onPressed: () {
-              widget.callBack(selectedValue);
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
+        TextButton(
+          child: const Text("确定"),
+          onPressed: () {
+            widget.callBack(selectedValue);
+            Navigator.pop(context);
+          },
+        ),
+      ],
     );
   }
 }

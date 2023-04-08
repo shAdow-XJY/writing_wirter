@@ -23,8 +23,7 @@ class _ChapterEditPageBodyState extends State<PCChapterEditPageBody> {
   final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
 
   /// 章节内容输入框控制器
-  final ClickTextEditingController textEditingController =
-      ClickTextEditingController();
+  final ClickTextEditingController textEditingController = ClickTextEditingController();
 
   /// 输入框的内容
   String currentText = "";
@@ -141,6 +140,12 @@ class _ChapterEditPageBodyState extends State<PCChapterEditPageBody> {
                   decoration: const InputDecoration(
                     /// 消除下边框
                     border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide.none,
                     ),
                   ),

@@ -20,27 +20,25 @@ class _TextToastDialogState extends State<TextToastDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent.withOpacity(0.5),
-      body: CupertinoAlertDialog(
-        title: Text(widget.title,),
-        content: Text(widget.text),
-        actions: <Widget>[
-          CupertinoButton(
-            child: const Text("取消"),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoButton(
-            child: const Text("确定"),
-            onPressed: () {
-              widget.callBack();
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
+    return AlertDialog(
+      title: Text(widget.title,),
+      content: Text(widget.text),
+      shadowColor: Colors.transparent.withOpacity(0.5),
+      actions: <Widget>[
+        TextButton(
+          child: const Text("取消"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        TextButton(
+          child: const Text("确定"),
+          onPressed: () {
+            widget.callBack();
+            Navigator.pop(context);
+          },
+        ),
+      ],
     );
   }
 }

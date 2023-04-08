@@ -16,6 +16,11 @@ added lines: 30282, removed lines: 4403, total lines: 25879
 v5.0.0:
 files number in /lib：102
 lines number in /lib：4994
+
+v6.0.0:
+files number in /lib：114
+lines number in /lib：6257
+added lines: 34667, removed lines: 6394, total lines: 28273
 ```
 
 ---
@@ -53,6 +58,8 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 24. [flutter 打包与apk网络问题处理](https://blog.csdn.net/qq_36723759/article/details/117379990)
 25. [动画切换组件（AnimatedSwitcher）](https://book.flutterchina.club/chapter9/animated_switcher.html#_9-6-3-slidetransitionx)
 26. [Flutter 动画曲线Curves 效果一览](https://blog.csdn.net/qq_17766199/article/details/95632571)
+27. [InputDecoration](https://book.flutterchina.club/chapter3/input_and_form.html#_3-5-1-textfield)
+28. [【文件上传下载】各种类型文件对应的content-type的值](https://blog.csdn.net/zzddada/article/details/123005455)
 
 ---
 
@@ -62,14 +69,21 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 3. [path_provider](https://pub.dev/packages/path_provider/score)
 4. [flutter_redux](https://pub.dev/packages/flutter_redux)
 5. [redux](https://pub.dev/packages/redux)
-6. [web_socket_channel](https://pub.dev/packages/web_socket_channel)
-7. [lottie](https://pub.dev/packages/lottie)
-8. [click_text_field](https://pub.dev/packages/click_text_field)
-9. [event_bus](https://pub.dev/packages/event_bus)
-10. [get_it](https://pub.dev/packages/get_it/example)
-11. [circular_menu](https://pub.dev/packages/circular_menu/example)
-12. [animated_stack](https://pub.dev/packages/animated_stack)
-13. [archive](https://pub.dev/packages/archive/example)
-14. [flutter_slidable](https://pub.dev/packages/flutter_slidable)
-15. [share_plus](https://pub.dev/packages/share_plus)
-16. [file_picker](https://pub.dev/packages/file_picker)
+6. [dio](https://pub.dev/packages/dio)
+7. [webdav_client](https://pub.dev/packages/webdav_client)
+8. [web_socket_channel](https://pub.dev/packages/web_socket_channel)
+9. [lottie](https://pub.dev/packages/lottie)
+10. [click_text_field](https://pub.dev/packages/click_text_field)
+11. [event_bus](https://pub.dev/packages/event_bus)
+12. [get_it](https://pub.dev/packages/get_it/example)
+13. [circular_menu](https://pub.dev/packages/circular_menu/example)
+14. [animated_stack](https://pub.dev/packages/animated_stack)
+15. [archive](https://pub.dev/packages/archive/example)
+16. [flutter_slidable](https://pub.dev/packages/flutter_slidable)
+17. [share_plus](https://pub.dev/packages/share_plus)
+18. [file_picker](https://pub.dev/packages/file_picker)
+19. [shared_preferences](https://pub.dev/packages/shared_preferences)
+20. [string_scanner](https://pub.dev/packages/string_scanner)
+21. [animated_theme_switcher](https://pub.dev/packages/animated_theme_switcher)
+22. [flutter_material_color_picker](https://pub.dev/packages/flutter_material_color_picker)
+23. [expansion_tile_card](https://pub.dev/packages/expansion_tile_card)

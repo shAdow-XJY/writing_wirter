@@ -53,8 +53,21 @@ class _DropDownButtonState extends State<DropDownButton> {
         buttonWidth: 140,
         itemHeight: 40,
         focusColor: Colors.transparent,
+        selectedItemHighlightColor: Theme.of(context).primaryColorDark,
+        dropdownDecoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [Theme.of(context).primaryColor.withOpacity(0.5), Theme.of(context).primaryColorDark],
+          ),
+          borderRadius: BorderRadius.circular(0),
+        ),
         buttonDecoration: BoxDecoration(
-          color: Theme.of(context).focusColor
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [Theme.of(context).primaryColor.withOpacity(0.5), Theme.of(context).primaryColorDark],
+          ),
         ),
         hint: Text(
           widget.hintText??'Select Item',

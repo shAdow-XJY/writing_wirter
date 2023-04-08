@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../pages/common/cloud_page/cloud_page.dart';
 import '../../pages/common/pre_page/pre_page.dart';
+import '../../pages/common/setting_page/setting_page.dart';
 import '../../pages/mobile/export_page/mobile_export_page.dart';
 import '../../pages/mobile/home_page/mobile_home_page.dart';
 /// 需要引入跳转页面地址
@@ -12,6 +14,8 @@ final routes = {
   '/': (context) => const PrePage(),
   '/home': (context) => const MobileHomePage(),
   '/export': (context) => const MobileExportPage(),
+  '/cloud': (context) => const CloudPage(),
+  '/setting': (context) => const SettingPage(),
 };
 
 /// 固定写法，统一处理，无需更改

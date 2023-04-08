@@ -178,7 +178,6 @@ class _SettingEditPageState extends State<PCSettingEditPage> {
       builder: (BuildContext context, Map<String, dynamic> map) {
         return map["currentSetting"].toString().isEmpty
             ? Scaffold(
-                backgroundColor: Theme.of(context).colorScheme.background,
                 appBar: AppBar(
                   automaticallyImplyLeading: false,
                   centerTitle: true,
@@ -186,7 +185,6 @@ class _SettingEditPageState extends State<PCSettingEditPage> {
                 ),
               )
             : Scaffold(
-                backgroundColor: Theme.of(context).colorScheme.background,
                 appBar: AppBar(
                   automaticallyImplyLeading: false,
                   centerTitle: true,

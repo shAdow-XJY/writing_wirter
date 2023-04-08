@@ -25,7 +25,7 @@ class _SemicircleButtonState extends State<SemicircleButton>{
         onPressed: () {
           widget.callback();
         },
-        color: Theme.of(context).focusColor,
+        color: Theme.of(context).primaryColorDark,
         height: 60.0,
         minWidth: 15.0,
         child: SizedBox(
