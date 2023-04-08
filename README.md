@@ -77,3 +77,4 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 16. [flutter_slidable](https://pub.dev/packages/flutter_slidable)
 17. [share_plus](https://pub.dev/packages/share_plus)
 18. [file_picker](https://pub.dev/packages/file_picker)
+19. [shared_preferences](https://pub.dev/packages/shared_preferences)

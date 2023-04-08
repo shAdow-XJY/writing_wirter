@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../pages/mobile/sockets_page/mobile_sockets_page.dart';
 import '../common/buttons/transparent_text_button.dart';
+import 'mobile_dark_mode_button.dart';
 
 class MobileFloatButton extends StatefulWidget {
   final Widget mainPage;
@@ -21,28 +22,14 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
       foregroundWidget: widget.mainPage,
       scaleHeight: 80.0,
       scaleWidth: 65.0,
-      fabBackgroundColor: Theme.of(context).highlightColor,
-      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      fabBackgroundColor: Theme.of(context).primaryColorLight,
+      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.5),
       columnWidget: Column(
         children: [
+          const MobileDarkModeButton(),
           TransTextButton(
-            child: Row(
-              children: const [
-                Expanded(
-                  flex: 1,
-                  child: Text("通知"),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Icon(Icons.notifications,),
-                )
-              ],
-            ),
-            onPressed: () {},
-          ),
-          TransTextButton(
-            child: Row(
-              children: const [
+            child: const Row(
+              children: [
                 Expanded(
                   flex: 1,
                   child: Text("设置"),
@@ -53,15 +40,17 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
                 )
               ],
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/setting');
+            },
           ),
         ],
       ),
       bottomWidget: Row(
         children: [
           TransTextButton(
-            child: Column(
-              children: const [
+            child: const Column(
+              children: [
                 Expanded(
                   flex: 1,
                   child: Text("分享"),
@@ -77,8 +66,8 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
             },
           ),
           TransTextButton(
-            child: Column(
-              children: const [
+            child: const Column(
+              children: [
                 Expanded(
                   flex: 1,
                   child: Text("云端"),
@@ -89,11 +78,13 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
                 )
               ],
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/cloud');
+            },
           ),
           TransTextButton(
-            child: Column(
-              children: const [
+            child: const Column(
+              children: [
                 Expanded(
                   flex: 1,
                   child: Text("同步"),

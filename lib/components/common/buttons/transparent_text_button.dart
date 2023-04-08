@@ -12,16 +12,23 @@ class TransTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.labelLarge!.copyWith(
+      color: Theme.of(context).iconTheme.color,
+    );
     return TextButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.transparent),
         foregroundColor: MaterialStateProperty.all(Theme.of(context).iconTheme.color),
         overlayColor: MaterialStateProperty.all(Theme.of(context).focusColor),
+        textStyle: MaterialStateProperty.all(textStyle),
       ),
       onPressed: () {
         onPressed();
       },
-      child: child,
+      child: DefaultTextStyle(
+        style: textStyle,
+        child: child,
+      ),
     );
   }
 }
