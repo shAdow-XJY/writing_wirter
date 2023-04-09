@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../components/common/dialog/global_toast.dart';
+import '../../../components/common/toast/global_toast.dart';
 
 class PrePage extends StatefulWidget {
   const PrePage({Key? key}) : super(key: key);

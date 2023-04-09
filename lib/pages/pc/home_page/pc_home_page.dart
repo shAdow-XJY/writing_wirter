@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../components/common/dialog/global_toast.dart';
+import 'package:writing_writer/components/common/toast/toast_widget.dart';
+import '../../../components/common/toast/global_toast.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
 import '../../../components/common/buttons/semicircle_button.dart';
@@ -54,7 +55,11 @@ class _PCHomePageState extends State<PCHomePage>{
                 icon: openSettingPage ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                 callback: () {
                   setState(() {
-                    GlobalToast.show('This is a toast!');
+                    GlobalToast.show(
+                      'asdasd',
+                      type: ToastType.warning,
+                      position: ToastPosition.top
+                    );
                     openSettingPage = !openSettingPage;
                   });
                 },
