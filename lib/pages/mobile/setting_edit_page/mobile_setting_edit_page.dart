@@ -259,11 +259,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
                               map["renameSetting"](),
                               Navigator.pop(context),
                             } else {
-                              GlobalToast.show(
-                                '设定名字不能为空',
-                                type: ToastType.error,
-                                position: ToastPosition.top,
-                              ),
+                              GlobalToast.showErrorTop('设定名字不能为空',),
                             },
                           },
                         ),
@@ -302,11 +298,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
                                     }),
                                     Navigator.pop(context),
                                   } else {
-                                    GlobalToast.show(
-                                      '设定节点不能为空',
-                                      type: ToastType.error,
-                                      position: ToastPosition.top,
-                                    ),
+                                    GlobalToast.showErrorTop('设定节点不能为空',),
                                   },
                                 },
                               ),

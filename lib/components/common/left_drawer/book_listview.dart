@@ -146,11 +146,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                         eventBus.fire(RenameBookNameEvent()),
                                         Navigator.pop(context),
                                       } else {
-                                        GlobalToast.show(
-                                          '书籍名字不能为空',
-                                          type: ToastType.error,
-                                          position: ToastPosition.top,
-                                        ),
+                                        GlobalToast.showErrorTop('书籍名字不能为空',),
                                       },
                                     },
                                   ),
@@ -187,11 +183,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                           eventBus.fire(CreateNewChapterEvent(widget.bookName)),
                                           Navigator.pop(context),
                                         } else {
-                                          GlobalToast.show(
-                                            '章节名字不能为空',
-                                            type: ToastType.error,
-                                            position: ToastPosition.top,
-                                          ),
+                                          GlobalToast.showErrorTop('章节名字不能为空',),
                                         },
                                       },
                                     ),

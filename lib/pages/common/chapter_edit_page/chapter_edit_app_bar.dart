@@ -81,11 +81,7 @@ class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
                     map["renameChapter"](),
                     Navigator.pop(context),
                   } else {
-                    GlobalToast.show(
-                      '章节名字不能为空',
-                      type: ToastType.error,
-                      position: ToastPosition.top,
-                    ),
+                    GlobalToast.showErrorTop('章节名字不能为空',),
                   },
                 },
               ),

@@ -57,4 +57,44 @@ class GlobalToast {
       _isVisible = false;
     }
   }
+
+  static void showErrorTop(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.error, position: ToastPosition.top,);
+  }
+  static void showErrorCenter(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.error, position: ToastPosition.center,);
+  }
+  static void showErrorBottom(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.error, position: ToastPosition.bottom,);
+  }
+
+  static void showSuccessTop(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.success, position: ToastPosition.top,);
+  }
+  static void showSuccessCenter(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.success, position: ToastPosition.center,);
+  }
+  static void showSuccessBottom(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.success, position: ToastPosition.bottom,);
+  }
+
+  static void showWarningTop(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.warning, position: ToastPosition.top,);
+  }
+  static void showWarningCenter(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.warning, position: ToastPosition.center,);
+  }
+  static void showWarningBottom(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.warning, position: ToastPosition.bottom,);
+  }
+
+  static void showNormalTop(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.normal, position: ToastPosition.top,);
+  }
+  static void showNormalCenter(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.normal, position: ToastPosition.center,);
+  }
+  static void showNormalBottom(String message, {Duration duration = const Duration(seconds: 2),}) {
+    show(message, duration: duration, type: ToastType.normal, position: ToastPosition.bottom,);
+  }
 }

@@ -65,11 +65,7 @@ class _LeftDrawerState extends State<LeftDrawer> {
                           eventBus.fire(CreateNewBookEvent()),
                           Navigator.pop(context),
                         } else {
-                          GlobalToast.show(
-                            '书籍名字不能为空',
-                            type: ToastType.error,
-                            position: ToastPosition.top,
-                          ),
+                          GlobalToast.showErrorTop('书籍名字不能为空',),
                         },
                       },
                     ),

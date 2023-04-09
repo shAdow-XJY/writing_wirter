@@ -88,11 +88,7 @@ class _RightDrawerState extends State<RightDrawer> {
                                         eventBus.fire(CreateNewSetEvent()),
                                         Navigator.pop(context),
                                       } else {
-                                        GlobalToast.show(
-                                          '设定集名字不能为空',
-                                          type: ToastType.error,
-                                          position: ToastPosition.top,
-                                        ),
+                                        GlobalToast.showErrorTop('设定集名字不能为空',),
                                       },
                                     },
                                   ),

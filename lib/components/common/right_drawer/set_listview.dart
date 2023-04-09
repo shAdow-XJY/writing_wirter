@@ -182,11 +182,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                       eventBus.fire(RenameSetEvent()),
                                       Navigator.pop(context),
                                     } else {
-                                      GlobalToast.show(
-                                        '设定集名字不能为空',
-                                        type: ToastType.error,
-                                        position: ToastPosition.top,
-                                      ),
+                                      GlobalToast.showErrorTop('设定集名字不能为空',),
                                     },
                                   },
                                 ),
@@ -236,11 +232,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                         eventBus.fire(CreateNewSettingEvent()),
                                         Navigator.pop(context),
                                       } else {
-                                        GlobalToast.show(
-                                          '设定名字不能为空',
-                                          type: ToastType.error,
-                                          position: ToastPosition.top,
-                                        ),
+                                        GlobalToast.showErrorTop('设定名字不能为空',),
                                       },
                                     },
                                   ),
