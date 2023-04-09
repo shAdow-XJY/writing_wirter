@@ -39,21 +39,6 @@ class GlobalToast {
 
     _toastOverlayEntry = OverlayEntry(
       builder: (BuildContext context) => ToastWidget(message: message, type: type, position: position,),
-      //     Positioned(
-      //   child: Container(
-      //     alignment: Alignment.center,
-      //     width: MediaQuery.of(context).size.width,
-      //     child: Card(
-      //       child: Padding(
-      //         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-      //         child: Text(
-      //           message,
-      //           style: const TextStyle(fontSize: 16.0),
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      // ),
     );
 
     _overlayState!.insert(_toastOverlayEntry);

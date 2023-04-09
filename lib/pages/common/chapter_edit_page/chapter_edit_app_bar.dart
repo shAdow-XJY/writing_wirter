@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import '../../../components/common/dialog/edit_toast_dialog.dart';
+import '../../../components/common/toast/global_toast.dart';
+import '../../../components/common/toast/toast_widget.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/text_action.dart';
@@ -74,11 +76,17 @@ class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
                 title: '章节重命名',
                 init: currentChapter,
                 callBack: (strBack) => {
-                  if (strBack.isNotEmpty)
-                    {
-                      changeChapterName(strBack),
-                      map["renameChapter"](),
-                    },
+                  if (strBack.isNotEmpty) {
+                    changeChapterName(strBack),
+                    map["renameChapter"](),
+                    Navigator.pop(context),
+                  } else {
+                    GlobalToast.show(
+                      '章节名字不能为空',
+                      type: ToastType.error,
+                      position: ToastPosition.top,
+                    ),
+                  },
                 },
               ),
             );

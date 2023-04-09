@@ -4,6 +4,8 @@ import '../../../service/file/IOBase.dart';
 import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../dialog/edit_toast_dialog.dart';
+import '../toast/global_toast.dart';
+import '../toast/toast_widget.dart';
 import 'book_listview.dart';
 
 class LeftDrawer extends StatefulWidget {
@@ -61,6 +63,13 @@ class _LeftDrawerState extends State<LeftDrawer> {
                         if (bookName.isNotEmpty) {
                           ioBase.createBook(bookName),
                           eventBus.fire(CreateNewBookEvent()),
+                          Navigator.pop(context),
+                        } else {
+                          GlobalToast.show(
+                            '书籍名字不能为空',
+                            type: ToastType.error,
+                            position: ToastPosition.top,
+                          ),
                         },
                       },
                     ),

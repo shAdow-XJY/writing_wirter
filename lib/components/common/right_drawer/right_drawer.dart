@@ -8,6 +8,8 @@ import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
+import '../toast/global_toast.dart';
+import '../toast/toast_widget.dart';
 
 class RightDrawer extends StatefulWidget {
   final double? widthFactor;
@@ -81,11 +83,17 @@ class _RightDrawerState extends State<RightDrawer> {
                                     title: '新建设定集',
                                     callBack: (setName) => {
                                       if (setName.isNotEmpty)
-                                        {
-                                          ioBase.createSet(
-                                              map['currentBookName'], setName),
-                                          eventBus.fire(CreateNewSetEvent()),
-                                        },
+                                      {
+                                        ioBase.createSet(map['currentBookName'], setName),
+                                        eventBus.fire(CreateNewSetEvent()),
+                                        Navigator.pop(context),
+                                      } else {
+                                        GlobalToast.show(
+                                          '设定集名字不能为空',
+                                          type: ToastType.error,
+                                          position: ToastPosition.top,
+                                        ),
+                                      },
                                     },
                                   ),
                                 );

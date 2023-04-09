@@ -9,6 +9,8 @@ import 'package:writing_writer/components/common/buttons/transparent_icon_button
 import 'dart:convert' as convert;
 import '../../../components/common/buttons/drop_down_button.dart';
 import '../../../components/common/dialog/edit_toast_dialog.dart';
+import '../../../components/common/toast/global_toast.dart';
+import '../../../components/common/toast/toast_widget.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../service/web_socket/web_socket_msg_type.dart';
 import '../../../service/web_socket/web_socket_server.dart';
@@ -252,11 +254,17 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
                           title: '设定重命名',
                           init: currentSetting,
                           callBack: (strBack) => {
-                            if (strBack.isNotEmpty)
-                              {
-                                changeSettingName(strBack),
-                                map["renameSetting"](),
-                              },
+                            if (strBack.isNotEmpty) {
+                              changeSettingName(strBack),
+                              map["renameSetting"](),
+                              Navigator.pop(context),
+                            } else {
+                              GlobalToast.show(
+                                '设定名字不能为空',
+                                type: ToastType.error,
+                                position: ToastPosition.top,
+                              ),
+                            },
                           },
                         ),
                       );
@@ -292,6 +300,13 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
                                       saveSetting();
                                       currentFlagIndexChange(flagChapter, insertNewFlag: true);
                                     }),
+                                    Navigator.pop(context),
+                                  } else {
+                                    GlobalToast.show(
+                                      '设定节点不能为空',
+                                      type: ToastType.error,
+                                      position: ToastPosition.top,
+                                    ),
                                   },
                                 },
                               ),

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:writing_writer/components/common/toast/toast_widget.dart';
-import '../../../components/common/toast/global_toast.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
 import '../../../components/common/buttons/semicircle_button.dart';
@@ -23,12 +21,6 @@ class _PCHomePageState extends State<PCHomePage>{
 
   /// 侧边按钮
   bool openSettingPage = false;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +47,6 @@ class _PCHomePageState extends State<PCHomePage>{
                 icon: openSettingPage ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                 callback: () {
                   setState(() {
-                    GlobalToast.show(
-                      'asdasd',
-                      type: ToastType.warning,
-                      position: ToastPosition.top
-                    );
                     openSettingPage = !openSettingPage;
                   });
                 },

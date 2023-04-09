@@ -10,6 +10,8 @@ import '../../../state_machine/redux/app_state/state.dart';
 import '../../../state_machine/event_bus/events.dart';
 import '../dialog/edit_toast_dialog.dart';
 import '../buttons/transparent_icon_button.dart';
+import '../toast/global_toast.dart';
+import '../toast/toast_widget.dart';
 import 'chapter_listview.dart';
 
 class BookListView extends StatefulWidget {
@@ -142,6 +144,13 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                         ioBase.renameBook(widget.bookName, newBookName),
                                         widget.bookName = newBookName,
                                         eventBus.fire(RenameBookNameEvent()),
+                                        Navigator.pop(context),
+                                      } else {
+                                        GlobalToast.show(
+                                          '书籍名字不能为空',
+                                          type: ToastType.error,
+                                          position: ToastPosition.top,
+                                        ),
                                       },
                                     },
                                   ),
@@ -176,6 +185,13 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                         if (chapterName.isNotEmpty) {
                                           ioBase.createChapter(widget.bookName, chapterName),
                                           eventBus.fire(CreateNewChapterEvent(widget.bookName)),
+                                          Navigator.pop(context),
+                                        } else {
+                                          GlobalToast.show(
+                                            '章节名字不能为空',
+                                            type: ToastType.error,
+                                            position: ToastPosition.top,
+                                          ),
                                         },
                                       },
                                     ),

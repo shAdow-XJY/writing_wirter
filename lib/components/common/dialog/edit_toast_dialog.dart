@@ -46,7 +46,7 @@ class _EditToastDialogState extends State<EditToastDialog> {
           child: const Text("确定"),
           onPressed: () {
             widget.callBack(textEditingController.text);
-            Navigator.pop(context);
+            // Navigator.pop(context);
           },
         ),
       ],

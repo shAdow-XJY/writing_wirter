@@ -12,6 +12,8 @@ import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
+import '../toast/global_toast.dart';
+import '../toast/toast_widget.dart';
 import '../transparent_checkbox.dart';
 import '../buttons/transparent_icon_button.dart';
 
@@ -172,12 +174,19 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                 context: context,
                                 builder: (context) => EditToastDialog(
                                   init: widget.setName,
-                                  title: '重命名设定类',
+                                  title: '重命名设定集',
                                   callBack: (newSetName) => {
                                     if (newSetName.isNotEmpty) {
                                       map["renameSet"](widget.setName, newSetName),
                                       widget.setName = newSetName,
                                       eventBus.fire(RenameSetEvent()),
+                                      Navigator.pop(context),
+                                    } else {
+                                      GlobalToast.show(
+                                        '设定集名字不能为空',
+                                        type: ToastType.error,
+                                        position: ToastPosition.top,
+                                      ),
                                     },
                                   },
                                 ),
@@ -225,6 +234,13 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                       if (settingName.isNotEmpty) {
                                         map["createSetting"](settingName),
                                         eventBus.fire(CreateNewSettingEvent()),
+                                        Navigator.pop(context),
+                                      } else {
+                                        GlobalToast.show(
+                                          '设定名字不能为空',
+                                          type: ToastType.error,
+                                          position: ToastPosition.top,
+                                        ),
                                       },
                                     },
                                   ),
