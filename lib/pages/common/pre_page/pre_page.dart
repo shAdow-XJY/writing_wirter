@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../components/common/dialog/global_toast.dart';
+
 class PrePage extends StatefulWidget {
   const PrePage({Key? key}) : super(key: key);
 
@@ -14,8 +16,8 @@ class _PrePageState extends State<PrePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-        duration: const Duration(milliseconds: 2500), vsync: this);
+    _controller = AnimationController(duration: const Duration(milliseconds: 2500), vsync: this);
+    GlobalToast.init(context);
   }
 
   @override

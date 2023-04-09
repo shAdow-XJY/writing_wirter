@@ -9,7 +9,7 @@ import '../../state_machine/get_it/app_get_it.dart';
 import '../../state_machine/redux/app_state/state.dart';
 
 class PcApp extends StatelessWidget {
-  PcApp({Key? key}) : super(key: key);
+  PcApp({Key? key,}) : super(key: key);
 
   final store = Store<AppState>(appReducer, initialState: AppState.initialState());
 

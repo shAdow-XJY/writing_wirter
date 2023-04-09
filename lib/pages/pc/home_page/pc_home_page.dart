@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../components/common/dialog/global_toast.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
 import '../../../components/common/buttons/semicircle_button.dart';
@@ -23,6 +24,12 @@ class _PCHomePageState extends State<PCHomePage>{
   bool openSettingPage = false;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: const ChapterEditPageAppBar(),
@@ -30,12 +37,12 @@ class _PCHomePageState extends State<PCHomePage>{
         endDrawer: const RightDrawer(widthFactor: 0.3,),
         body: Row(
           children: [
-            Expanded(
+            const Expanded(
               flex: 20,
               child: TransBarScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: const <Widget>[
+                  children: <Widget>[
                     PCChapterEditPageBody(),
                   ],
                 ),
@@ -47,6 +54,7 @@ class _PCHomePageState extends State<PCHomePage>{
                 icon: openSettingPage ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                 callback: () {
                   setState(() {
+                    GlobalToast.show('This is a toast!');
                     openSettingPage = !openSettingPage;
                   });
                 },
