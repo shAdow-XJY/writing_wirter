@@ -77,11 +77,11 @@ class ChapterListViewItem extends StatelessWidget {
         }
         return () => {
           if (store.state.textModel.currentBook.toString().compareTo(bookName) != 0){
+            store.dispatch(SetTextDataAction(currentBook: bookName, currentChapter: chapterName, currentChapterNumber: chapterNumber),),
             clickAnotherBook(),
+          } else {
+            store.dispatch(SetTextDataAction(currentBook: bookName, currentChapter: chapterName, currentChapterNumber: chapterNumber),),
           },
-          store.dispatch(
-            SetTextDataAction(currentBook: bookName, currentChapter: chapterName, currentChapterNumber: chapterNumber),
-          ),
         };
       },
       builder: (BuildContext context, VoidCallback clickChapter) {

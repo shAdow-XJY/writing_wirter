@@ -132,27 +132,25 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
       builder: (BuildContext context, Map<String, dynamic> map) {
         return currentChapter.isEmpty
             ? const SizedBox()
-            : Scaffold(
-          body: BlurGlass(
-            outBorderRadius: 0.0,
-            child: ClickTextField(
-              focusNode: focusNode,
-              controller: clickTextEditingController,
-              regExp: Parser.generateRegExp(currentParserObj),
-              onTapText: (String clickText) {
-                map["clickHighLightSetting"](clickText);
-              },
-              decoration: const InputDecoration(
-                /// 消除下边框
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                ),
+            : BlurGlass(
+          outBorderRadius: 0.0,
+          child: ClickTextField(
+            focusNode: focusNode,
+            controller: clickTextEditingController,
+            regExp: Parser.generateRegExp(currentParserObj),
+            onTapText: (String clickText) {
+              map["clickHighLightSetting"](clickText);
+            },
+            decoration: const InputDecoration(
+              /// 消除下边框
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
               ),
             ),
           ),

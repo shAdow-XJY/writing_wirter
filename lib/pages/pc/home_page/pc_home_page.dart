@@ -35,7 +35,7 @@ class _PCHomePageState extends State<PCHomePage>{
               child: TransBarScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
+                  children: [
                     PCChapterEditPageBody(),
                   ],
                 ),

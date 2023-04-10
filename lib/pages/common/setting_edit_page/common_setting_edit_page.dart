@@ -156,7 +156,7 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, Map<String, dynamic>>(
+    return StoreConnector<AppState, Map<String, dynamic>> (
       converter: (Store store) {
         debugPrint("store in mobile_setting_edit_page");
         saveSetting();

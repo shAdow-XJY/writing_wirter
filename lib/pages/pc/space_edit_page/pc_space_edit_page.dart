@@ -74,6 +74,7 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
       body: BlurGlass(
         child: TextField(
           controller: textEditingController,
+          maxLines: null,
           decoration: const InputDecoration(
             /// 消除下边框
             border: OutlineInputBorder(
