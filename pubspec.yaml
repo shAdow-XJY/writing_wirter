@@ -39,7 +39,7 @@ dependencies:
   # websockets
   web_socket_channel: ^2.3.0
   # webdav
-  webdav_client: ^1.2.0
+  webdav_client: ^1.2.1
   # zip io
   archive: ^3.3.6
   # share file

@@ -13,20 +13,3 @@
         defaultTargetPlatform != TargetPlatform.macOS) {
       // assert(readOnly && !obscureText);
 ```
-
-```
-    C:\Users\12902\AppData\Local\Pub\Cache\hosted\pub.dev\webdav_client-1.2.0\lib\src\webdav_dio.dart
-    
-    completer.completeError(DioMixin.assureDioError(
-        e,
-        resp.requestOptions,
-        trace,
-    ));
-    
-    =>
-    
-    completer.completeError(DioMixin.assureDioError(
-        e,
-        resp.requestOptions,
-    ));
-```
