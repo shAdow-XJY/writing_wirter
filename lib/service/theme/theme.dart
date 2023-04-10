@@ -4,6 +4,9 @@ class ThemeUtil {
   /// 搭配sharedPreferences缓存中的key
   /// themeName: red/pink/blueGrey
   /// isDarkMode: true/false
+  /// 缓存中的变量如果为空，即之前没有赋过值，初始化为下面的变量
+  /// themeName = "blueGrey"
+  /// isDarkMode = false
 
   /// 默认主题
   static String defaultTheme = "blueGrey";
@@ -49,6 +52,8 @@ class ThemeUtil {
 
   /// 获取初始主题
   static ThemeData getInitTheme({String? themeName, bool? isDarkMode}) {
+    debugPrint(themeName);
+    debugPrint(isDarkMode.toString());
     if (isDarkMode == true) {
       return getDarkTheme();
     }

@@ -5,6 +5,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:writing_writer/service/file/export_IOBase.dart';
 
 import '../../service/file/config_IOBase.dart';
+import '../../service/my_share_preferences/my_share_preferences.dart';
 
 /// get_it to easy make Singleton Class
 GetIt appGetIt = GetIt.instance;
@@ -22,8 +23,8 @@ Future<void> setupAppGetIt({bool test = false}) async {
   /// tool four -- ConfigIOBase : Config file IO tool class register
   appGetIt.registerSingleton<ConfigIOBase>(ConfigIOBase(), instanceName: "ConfigIOBase");
 
-  /// tool five -- Shared preferences plugin
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  appGetIt.registerSingleton<SharedPreferences>(sharedPreferences, instanceName: "SharedPreferences");
+  /// tool five -- LocalStorage
+  await MySharedPreferences.init();
+  appGetIt.registerSingleton<SharedPreferences>(MySharedPreferences.prefs, instanceName: "SharedPreferences");
 
 }

@@ -3,5 +3,13 @@
 /// <!-- Theme -->
 
 /// ChangeThemeEvent
-class ChangeThemeEvent {}
+class ChangeThemeEvent {
+  bool isDarkMode;
+  String themeName;
+
+  ChangeThemeEvent({
+    required this.isDarkMode,
+    required this.themeName,
+  });
+}
 
