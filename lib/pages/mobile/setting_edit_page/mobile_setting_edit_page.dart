@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:writing_writer/pages/common/setting_edit_page/common_setting_edit_page.dart';
 import '../../../service/web_socket/web_socket_msg_type.dart';
 import '../../../service/web_socket/web_socket_server.dart';
-import '../../../state_machine/event_bus/mobile_events.dart';
+import '../../../state_machine/event_bus/ws_server_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
 class MobileSettingEditPage extends StatefulWidget {
@@ -69,7 +69,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
       addWebSocketToListener();
       isAddWebSocketToListener = true;
     }
-    subscription_1 = eventBus.on<MobileStartWebSocketEvent>().listen((event) {
+    subscription_1 = eventBus.on<WSServerStartWebSocketEvent>().listen((event) {
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
       addWebSocketToListener();
     });

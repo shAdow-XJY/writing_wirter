@@ -181,8 +181,8 @@ class _CloudPageState extends State<CloudPage> {
               },
             ),
             TextButton(
-              child: Column(
-                children: const [
+              child: const Column(
+                children: [
                   Icon(
                     Icons.delete_forever_rounded,
                     color: Colors.redAccent,
@@ -229,6 +229,7 @@ class _CloudPageState extends State<CloudPage> {
                 builder: (context) => SelectToastDialog(
                   items: getUploadBookList(),
                   title: '选择上传至云端的书籍',
+                  hintText: '选择未上传云端的本地书籍',
                   callBack: (uploadBookName) async => {
                     if (uploadBookName.isNotEmpty)
                       {

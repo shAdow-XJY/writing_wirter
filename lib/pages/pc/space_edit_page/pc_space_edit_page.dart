@@ -1,5 +1,6 @@
 import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
+import 'package:writing_writer/components/common/toast/global_toast.dart';
 
 import '../../../service/web_socket/web_socket_client.dart';
 import '../../../service/web_socket/web_socket_msg_type.dart';
@@ -31,6 +32,7 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
       isWebSocketReceive = true,
       msgMap = WebSocketMsg.msgStringToMap(msg),
       if (msgMap["msgCode"] == 2) {
+        GlobalToast.showWarningTop('移动端断开连接'),
         Navigator.pop(context),
       } else {
         textEditingController.value = TextEditingValue(

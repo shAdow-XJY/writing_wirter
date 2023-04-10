@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';

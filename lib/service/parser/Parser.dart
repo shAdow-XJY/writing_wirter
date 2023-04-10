@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:collection/collection.dart';
 import 'package:writing_writer/service/file/IOBase.dart';
 

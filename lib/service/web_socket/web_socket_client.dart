@@ -3,7 +3,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:web_socket_channel/io.dart';
 
-import '../../state_machine/event_bus/pc_events.dart';
+import '../../state_machine/event_bus/ws_client_events.dart';
 
 class WebSocketClient {
   /// 客户端 webSocketChannel
@@ -25,22 +25,22 @@ class WebSocketClient {
     try {
       _clientSocketChannel =  IOWebSocketChannel.connect(
         Uri.parse('ws://$ip:${_serverPort.toString()}'),
-        connectTimeout: const Duration(seconds: 3),
+        connectTimeout: const Duration(milliseconds: 150),
       );
 
-      Timer(const Duration(seconds: 3), () {
+      Timer(const Duration(milliseconds: 150), () {
         if (_clientSocketChannel.innerWebSocket == null) {
-          _eventBus.fire(PCConnectServerErrorEvent());
+          _eventBus.fire(WSClientConnectServerErrorEvent());
         }
         else {
-          _eventBus.fire(PCConnectServerSuccessEvent());
+          _eventBus.fire(WSClientConnectServerSuccessEvent());
           _clientSocketChannel.stream.listen((msg){
             _handleMsg(msg);
           });
         }
       });
     } catch (e,s) {
-      _eventBus.fire(PCConnectServerErrorEvent());
+      _eventBus.fire(WSClientConnectServerErrorEvent());
     }
   }
 
