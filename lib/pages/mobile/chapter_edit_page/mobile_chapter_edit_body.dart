@@ -63,6 +63,7 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   @override
   void dispose() {
     subscription_1.cancel();
+    clickTextEditingController.dispose();
     super.dispose();
   }
 

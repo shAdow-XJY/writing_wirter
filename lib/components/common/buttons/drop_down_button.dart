@@ -6,6 +6,7 @@ class DropDownButton extends StatefulWidget {
   final Function(String) onChanged;
   final String? hintText;
   final int? initIndex;
+  final double buttonWidth;
 
   const DropDownButton({
     Key? key,
@@ -13,6 +14,7 @@ class DropDownButton extends StatefulWidget {
     required this.onChanged,
     this.hintText,
     this.initIndex,
+    this.buttonWidth = 140,
   }) : super(key: key);
 
   @override
@@ -50,7 +52,7 @@ class _DropDownButtonState extends State<DropDownButton> {
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
         buttonHeight: 40,
-        buttonWidth: 140,
+        buttonWidth: widget.buttonWidth,
         itemHeight: 40,
         focusColor: Colors.transparent,
         selectedItemHighlightColor: Theme.of(context).primaryColorDark,

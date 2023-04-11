@@ -27,6 +27,12 @@ class _EditToastDialogState extends State<EditToastDialog> {
   }
 
   @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       shadowColor: Colors.transparent.withOpacity(0.5),

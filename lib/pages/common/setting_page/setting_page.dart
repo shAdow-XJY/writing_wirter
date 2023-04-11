@@ -51,6 +51,9 @@ class _SettingPageState extends State<SettingPage> with TickerProviderStateMixin
   @override
   void dispose() {
     saveAll();
+    uriController.dispose();
+    userController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 

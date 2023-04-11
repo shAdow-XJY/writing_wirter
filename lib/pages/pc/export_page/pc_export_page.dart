@@ -97,8 +97,8 @@ class _PCExportPageState extends State<PCExportPage> {
                             title: '导出书籍',
                             text: '确定导出书籍$bookName',
                             callBack: () => {
-                              exportIOBase.exportBook(
-                                  bookName, ioBase.getAllChapters(bookName)),
+                              exportIOBase.exportBook(bookName, ioBase.getAllChapters(bookName)),
+                              Navigator.pop(context),
                             },
                           ),
                         );
@@ -126,6 +126,7 @@ class _PCExportPageState extends State<PCExportPage> {
                             text: '确定导出书籍$bookName.zip可移植文件',
                             callBack: () => {
                               exportIOBase.exportZip(bookName),
+                              Navigator.pop(context),
                             },
                           ),
                         );
@@ -147,6 +148,7 @@ class _PCExportPageState extends State<PCExportPage> {
                             text: '确定书籍$bookName导出文件位置',
                             callBack: () => {
                               exportIOBase.openFileManager(bookName),
+                              Navigator.pop(context),
                             },
                           ),
                         );

@@ -103,7 +103,12 @@ class ChapterListViewItem extends StatelessWidget {
                 const SizedBox(width: 20,),
                 Text('第$chapterNumber章'),
                 const SizedBox(width: 20,),
-                Text(chapterName),
+                Flexible(
+                  child: Text(
+                    chapterName,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
           ),

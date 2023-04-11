@@ -50,6 +50,7 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
   void dispose() {
     subscription_1.cancel();
     subscription_2.cancel();
+    ipTextController.dispose();
     super.dispose();
   }
 

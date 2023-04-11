@@ -34,7 +34,7 @@ class _TextToastDialogState extends State<TextToastDialog> {
           child: const Text("确定"),
           onPressed: () {
             widget.callBack();
-            Navigator.pop(context);
+            // Navigator.pop(context);
           },
         ),
       ],

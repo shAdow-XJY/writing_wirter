@@ -73,7 +73,7 @@ class ThemeUtil {
     return ThemeData(
       brightness: Brightness.dark,
       textSelectionTheme: const TextSelectionThemeData(
-        selectionColor: Colors.white,
+        selectionColor: Colors.blueGrey,
       ),
     );
   }

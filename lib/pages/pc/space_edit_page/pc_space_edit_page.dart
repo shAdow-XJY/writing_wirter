@@ -59,6 +59,7 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
   @override
   void dispose() {
     webSocketClient.clientClose();
+    textEditingController.dispose();
     super.dispose();
   }
 

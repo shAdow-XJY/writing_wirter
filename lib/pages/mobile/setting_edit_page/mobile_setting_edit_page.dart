@@ -78,6 +78,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
   @override
   void dispose() {
     subscription_1.cancel();
+    textEditingController.dispose();
     super.dispose();
   }
 

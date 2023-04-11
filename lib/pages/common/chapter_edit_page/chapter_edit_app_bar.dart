@@ -49,8 +49,7 @@ class _ChapterEditPageAppBarState extends State<ChapterEditPageAppBar> {
       currentBook = store.state.textModel.currentBook;
       currentChapter = store.state.textModel.currentChapter;
       void renameChapter() {
-        store.dispatch(SetTextDataAction(
-            currentBook: currentBook, currentChapter: currentChapter));
+        store.dispatch(SetTextDataAction(currentBook: currentBook, currentChapter: currentChapter));
       }
 
       return {

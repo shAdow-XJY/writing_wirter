@@ -16,6 +16,11 @@ class _PCChapterEditPageBodyState extends State<PCChapterEditPageBody> {
   /// 章节内容输入框控制器
   final ClickTextEditingController clickTextEditingController = ClickTextEditingController();
 
+  @override
+  void dispose() {
+    clickTextEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

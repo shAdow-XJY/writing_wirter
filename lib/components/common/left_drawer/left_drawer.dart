@@ -5,7 +5,6 @@ import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../dialog/edit_toast_dialog.dart';
 import '../toast/global_toast.dart';
-import '../toast/toast_widget.dart';
 import 'book_listview.dart';
 
 class LeftDrawer extends StatefulWidget {
@@ -27,6 +26,8 @@ class _LeftDrawerState extends State<LeftDrawer> {
 
   /// 抽屉的宽度因子
   double widthFactor = 0.9;
+  /// 是否删除模式
+  bool allowDelete = false;
 
   @override
   void initState() {
@@ -46,9 +47,11 @@ class _LeftDrawerState extends State<LeftDrawer> {
             centerTitle: true,
             title: const Text('目录'),
             leading: IconButton(
-              icon: const Icon(Icons.file_open),
+              icon: Icon(allowDelete ? Icons.lock : Icons.delete),
               onPressed: () {
-                ioBase.openRootDirectory();
+                setState(() {
+                  allowDelete = !allowDelete;
+                });
               },
             ),
             actions: [
@@ -75,7 +78,7 @@ class _LeftDrawerState extends State<LeftDrawer> {
             ],
           ),
           /// 不加const ，setStateful 可以刷新到
-          body: const BookListView(),
+          body: BookListView(allowDelete: allowDelete,),
         )
     );
   }
