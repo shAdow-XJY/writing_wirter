@@ -13,7 +13,6 @@ import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
 import '../toast/global_toast.dart';
-import '../toast/toast_widget.dart';
 import '../transparent_checkbox.dart';
 import '../buttons/transparent_icon_button.dart';
 
@@ -133,13 +132,9 @@ class _SetListViewItemState extends State<SetListViewItem> {
           store.dispatch(SetParserDataAction(parserObj: newParserModel));
         }
         /// 重命名设定集
-        void renameSet(String oldSetName, String newSetName) => {
-          ioBase.renameSet(store.state.textModel.currentBook, oldSetName, newSetName),
-        };
+        void renameSet(String oldSetName, String newSetName) => ioBase.renameSet(store.state.textModel.currentBook, oldSetName, newSetName);
         /// 新建设定
-        void createSetting(String settingName) => {
-          ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName),
-        };
+        void createSetting(String settingName) => ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName);
         /// 修改设定集是否加入解析
         void changeParserOfBookSetJson(bool isParsed) {
           ioBase.changeParserOfBookSetJson(store.state.textModel.currentBook, widget.setName, isParsed);

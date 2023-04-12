@@ -1,12 +1,16 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 int fileCount = 0;
 int lineCount = 0;
 /// 读取lib目录文件，统计代码行数脚本
 Future<void> main() async {
   recursionFile("E:\\AndroidStudioProjects\\writing_writer\\lib");
-  print("files number in /lib：$fileCount");
-  print("lines number in /lib：$lineCount");
+  if (kDebugMode) {
+    print("files number in /lib：$fileCount");
+    print("lines number in /lib：$lineCount");
+  }
 }
 void recursionFile(String pathName) {
   Directory dir = Directory(pathName);

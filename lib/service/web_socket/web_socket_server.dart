@@ -59,12 +59,14 @@ class WebSocketServer {
       _serverSocket.close();
       debugPrint('webSocket 连接断开');
     } catch (e,s) {
+      debugPrintStack(stackTrace: s);
       debugPrint('webSocket 不存在');
     }
     try {
       _server.close();
       debugPrint('http 连接断开');
     } catch (e,s) {
+      debugPrintStack(stackTrace: s);
       debugPrint('http 不存在');
     }
   }
@@ -80,6 +82,7 @@ class WebSocketServer {
     try {
       _serverSocket.add(msg);
     } catch (e,s) {
+      debugPrintStack(stackTrace: s);
       debugPrint('webSocket 不存在');
     }
   }

@@ -56,7 +56,7 @@ class ConfigIOBase
       jsonContent = userJsonFile.readAsStringSync();
     } on Exception catch (e, s) {
       debugPrint("user.json读取");
-      print(s);
+      debugPrintStack(stackTrace: s);
     }
     return convert.jsonDecode(jsonContent);
   }
@@ -71,7 +71,7 @@ class ConfigIOBase
       userJsonFile.writeAsStringSync(convert.jsonEncode(userJson));
     } on Exception catch (e, s) {
       debugPrint("/// user.json保存");
-      print(s);
+      debugPrintStack(stackTrace: s);
     }
   }
 

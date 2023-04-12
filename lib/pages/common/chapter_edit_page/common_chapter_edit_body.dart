@@ -100,7 +100,7 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        debugPrint('store in mobile_chapter_edit_page');
+        debugPrint('store in common_chapter_edit_page');
         // 文本编辑
         saveText();
         currentBook = store.state.textModel.currentBook;

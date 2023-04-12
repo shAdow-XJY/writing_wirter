@@ -9,6 +9,11 @@ class RenameBookNameEvent {
   String newBookName;
   RenameBookNameEvent({required this.oldBookName, required this.newBookName});
 }
+/// RemoveBook
+class RemoveBookEvent {
+  String bookName;
+  RemoveBookEvent({required this.bookName});
+}
 
 /// <!-- Chapter -->
 /// CreateNewChapter
@@ -22,6 +27,12 @@ class RenameChapterNameEvent {
   String oldChapterName;
   String newChapterName;
   RenameChapterNameEvent({required this.bookName, required this.oldChapterName, required this.newChapterName});
+}
+/// RenameChapterNameEvent
+class RemoveChapterEvent {
+  String bookName;
+  String chapterName;
+  RemoveChapterEvent({required this.bookName, required this.chapterName});
 }
 
 /// <!-- Set -->

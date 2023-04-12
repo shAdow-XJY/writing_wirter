@@ -9,7 +9,6 @@ import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
 import '../toast/global_toast.dart';
-import '../toast/toast_widget.dart';
 
 class RightDrawer extends StatefulWidget {
   final double? widthFactor;

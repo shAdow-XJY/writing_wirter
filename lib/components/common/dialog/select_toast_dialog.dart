@@ -28,7 +28,7 @@ class _SelectToastDialogState extends State<SelectToastDialog> {
   @override
   void initState() {
     super.initState();
-    print(widget.items);
+    debugPrint(widget.items.toString());
   }
 
   @override

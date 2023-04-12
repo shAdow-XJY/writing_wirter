@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -64,6 +65,7 @@ class ExportIOBase
       GlobalToast.showSuccessTop('导出章节成功');
     } on Exception catch (e, s) {
       GlobalToast.showErrorTop('导出章节失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
@@ -85,6 +87,7 @@ class ExportIOBase
       GlobalToast.showSuccessTop('导出书籍成功');
     } on Exception catch (e, s) {
       GlobalToast.showErrorTop('导出书籍失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
@@ -99,6 +102,7 @@ class ExportIOBase
       GlobalToast.showSuccessTop('导出可移植.zip文件成功');
     } on Exception catch (e, s) {
       GlobalToast.showErrorTop('导出可移植.zip文件失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
@@ -148,6 +152,7 @@ class ExportIOBase
         GlobalToast.showSuccessTop('导入书籍：《$bookName》 成功');
       } on Exception catch (e, s) {
         GlobalToast.showErrorTop('导入书籍：《$bookName》 失败');
+        debugPrintStack(stackTrace: s);
       }
     }
 

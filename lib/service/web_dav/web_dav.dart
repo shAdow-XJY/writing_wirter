@@ -42,7 +42,7 @@ class WebDAV {
     } catch (e) {
       debugPrint("login failed");
       // _eventBus.fire(WebDavLoginFailedEvent());
-      print('$e');
+      debugPrint(e.toString());
     }
 
     return result;
@@ -75,6 +75,7 @@ class WebDAV {
         }
       }
     } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
       GlobalToast.showErrorTop('获取云端的书籍失败');
     }
     // _eventBus.fire(WebDavGetAllBooksEvent());
@@ -99,6 +100,7 @@ class WebDAV {
 
       GlobalToast.showSuccessTop('更新云端书籍成功');
     } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
       GlobalToast.showErrorTop('更新云端书籍失败');
     }
   }
@@ -116,6 +118,7 @@ class WebDAV {
 
       GlobalToast.showSuccessTop('云端书籍导入本地成功');
     } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
       GlobalToast.showErrorTop('云端书籍导入本地失败');
     }
   }
@@ -129,6 +132,7 @@ class WebDAV {
 
       GlobalToast.showSuccessTop('云端书籍删除成功');
     } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
       GlobalToast.showErrorTop('云端书籍删除失败');
     }
   }

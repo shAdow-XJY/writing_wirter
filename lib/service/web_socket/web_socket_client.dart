@@ -40,6 +40,7 @@ class WebSocketClient {
         }
       });
     } catch (e,s) {
+      debugPrintStack(stackTrace: s);
       _eventBus.fire(WSClientConnectServerErrorEvent());
     }
   }

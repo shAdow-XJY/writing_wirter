@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 /// 文件脚本
 Future<void> main() async {
   /// 对static/《西游记》.txt 文件操作的脚本，生成每一章节的文件
@@ -44,7 +46,9 @@ Future<void> readOriginTxt(String path, RegExp regExp) async {
 /// 根据名字生成文件夹
 Future<void> createDir(String path) async {
   Directory dir = Directory(path);
-  print(dir.path);
+  if (kDebugMode) {
+    print(dir.path);
+  }
   if(!dir.existsSync()){
     dir.create();
   }

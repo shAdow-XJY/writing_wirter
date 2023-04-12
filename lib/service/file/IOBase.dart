@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, unused_element
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -146,8 +148,8 @@ class IOBase
         }
       });
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('获取书籍失败',);
-      print(s);
+      GlobalToast.showErrorTop('获取书籍失败');
+      debugPrintStack(stackTrace: s);
     }
     bookNames.sort();
     return bookNames;
@@ -164,13 +166,27 @@ class IOBase
         /// 创建该书对应Set：文件夹
         createBookNameSetDir(bookName);
       }
-      GlobalToast.showSuccessTop('创建书籍成功',);
+      GlobalToast.showSuccessTop('创建书籍成功');
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('创建书籍失败',);
-      print(s);
+      GlobalToast.showErrorTop('创建书籍失败');
+      debugPrintStack(stackTrace: s);
     }
   }
-
+  
+  /// 书籍删除
+  void removeBook(String bookName) {
+    try {
+      Directory dir = Directory(_dirPath(bookName: bookName));
+      if (dir.existsSync()) {
+        dir.deleteSync(recursive: true);
+      }
+      GlobalToast.showSuccessTop('删除书籍成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('删除书籍失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  
   /// 书籍重命名
   void renameBook(String oldBookName, String newBookName) {
     try {
@@ -182,13 +198,13 @@ class IOBase
         /// Set.json操作：书籍重命名
         renameBookInSetJson(newBookName);
       }
-      GlobalToast.showSuccessTop('重命名书籍成功',);
+      GlobalToast.showSuccessTop('重命名书籍成功');
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('重命名书籍失败',);
-      print(s);
+      GlobalToast.showErrorTop('重命名书籍失败');
+      debugPrintStack(stackTrace: s);
     }
   }
-
+  
   /////////////////////////////////////////////////////////////////////////////
   //                             章节                                        //
   ////////////////////////////////////////////////////////////////////////////
@@ -213,8 +229,8 @@ class IOBase
         chapterNames = getBookChapterJsonContent(bookName)["chapterList"].cast<String>();
       }
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('获取书籍章节失败',);
-      print(s);
+      GlobalToast.showErrorTop('获取书籍章节失败');
+      debugPrintStack(stackTrace: s);
     }
     return chapterNames;
   }
@@ -227,13 +243,28 @@ class IOBase
         file.createSync(recursive: true);
       }
       addNewChapterInChapterJson(bookName, chapterName);
-      GlobalToast.showSuccessTop('创建章节成功',);
+      GlobalToast.showSuccessTop('创建章节成功');
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('创建章节失败',);
-      print(s);
+      GlobalToast.showErrorTop('创建章节失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
+  /// 删除一章节：文件
+  void removeChapter(String bookName, String chapterName) {
+    try {
+      File file = File(_chsFilePath(bookName: bookName, chapterName: chapterName));
+      if (file.existsSync()) {
+        file.deleteSync(recursive: true);
+      }
+      removeChapterInChapterJson(bookName, chapterName);
+      GlobalToast.showSuccessTop('删除章节成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('删除章节失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  
   /// 章节重命名
   void renameChapter(String bookName, String oldChapterName, String newChapterName) {
     try {
@@ -243,10 +274,10 @@ class IOBase
       }
       /// chapter.json 章节重命名
       renameChapterInChapterJson(bookName, oldChapterName, newChapterName);
-      GlobalToast.showSuccessTop('重命名章节成功',);
+      GlobalToast.showSuccessTop('重命名章节成功');
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('重命名章节失败',);
-      print(s);
+      GlobalToast.showErrorTop('重命名章节失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
@@ -266,8 +297,8 @@ class IOBase
       content = file.readAsStringSync();
       // debugPrint(file.readAsStringSync());
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('获取章节文字内容失败',);
-      print(s);
+      GlobalToast.showErrorTop('获取章节文字内容失败');
+      debugPrintStack(stackTrace: s);
     }
     return content;
   }
@@ -296,8 +327,8 @@ class IOBase
       bookSetJson = getBookSetJsonContent(bookName);
     } on Exception catch (e, s) {
       debugPrint("/// 遍历书下所有设定集：该书对应Set.json：json文件");
-      GlobalToast.showErrorTop('获取书籍设定集失败',);
-      print(s);
+      GlobalToast.showErrorTop('获取书籍设定集失败');
+      debugPrintStack(stackTrace: s);
     }
     return bookSetJson;
   }
@@ -311,10 +342,10 @@ class IOBase
       }
       /// Set.json添加（新建设定类）
       addNewSetInSetJson(bookName, setName);
-      GlobalToast.showSuccessTop('创建设定集成功',);
+      GlobalToast.showSuccessTop('创建设定集成功');
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('创建设定集失败',);
-      print(s);
+      GlobalToast.showErrorTop('创建设定集失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
@@ -327,10 +358,10 @@ class IOBase
       }
       /// Set.json操作：设定集重命名
       renameSetInSetJson(bookName, oldSetName, newSetName);
-      GlobalToast.showSuccessTop('重命名设定集成功',);
+      GlobalToast.showSuccessTop('重命名设定集成功');
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('重命名设定集失败',);
-      print(s);
+      GlobalToast.showErrorTop('重命名设定集失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
@@ -350,8 +381,8 @@ class IOBase
       }
     } on Exception catch (e, s) {
       debugPrint("/// 遍历指定设定集下所有设定：遍历设定（.json文件）");
-      GlobalToast.showErrorTop('获取设定集的设定失败',);
-      print(s);
+      GlobalToast.showErrorTop('获取设定集的设定失败');
+      debugPrintStack(stackTrace: s);
     }
     return settingNames;
   }
@@ -375,10 +406,10 @@ class IOBase
       );
       /// Set.json添加设定（新建设定）
       addNewSettingInSetJson(bookName, setName, settingName);
-      GlobalToast.showSuccessTop('创建设定成功',);
+      GlobalToast.showSuccessTop('创建设定成功');
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('创建设定失败',);
-      print(s);
+      GlobalToast.showErrorTop('创建设定失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
@@ -398,10 +429,10 @@ class IOBase
       if (file.existsSync()) {
         file.renameSync(_jsonFilePath(bookName: bookName, setName: setName, settingName: newSettingName));
       }
-      GlobalToast.showSuccessTop('重命名设定成功',);
+      GlobalToast.showSuccessTop('重命名设定成功');
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('重命名设定失败',);
-      print(s);
+      GlobalToast.showErrorTop('重命名设定失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
@@ -420,8 +451,8 @@ class IOBase
       bookSettingContent = file2.readAsStringSync();
       debugPrint(file2.readAsStringSync());
     } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('获取设定的内容失败',);
-      print(s);
+      GlobalToast.showErrorTop('获取设定的内容失败');
+      debugPrintStack(stackTrace: s);
     }
     return convert.jsonDecode(bookSettingContent);
   }
@@ -447,7 +478,7 @@ class IOBase
       jsonContent = file.readAsStringSync();
     } on Exception catch (e, s) {
       debugPrint("/// Chapter.json读取");
-      print(s);
+      debugPrintStack(stackTrace: s);
     }
     return convert.jsonDecode(jsonContent);
   }
@@ -465,6 +496,15 @@ class IOBase
   void addNewChapterInChapterJson(String bookName, String chapterName) {
     Map<String, dynamic> bookChapterJson = getBookChapterJsonContent(bookName);
     bookChapterJson["chapterList"].add(chapterName);
+    saveBookChapterJson(bookName, convert.jsonEncode(bookChapterJson));
+  }
+
+  /// Chapter.json操作：删除已有章节
+  void removeChapterInChapterJson(String bookName, String chapterName) {
+    Map<String, dynamic> bookChapterJson = getBookChapterJsonContent(bookName);
+    List<String> bookList = bookChapterJson["chapterList"].cast<String>();
+    bookList.removeAt(bookList.indexOf(chapterName));
+    bookChapterJson["chapterList"] = bookList;
     saveBookChapterJson(bookName, convert.jsonEncode(bookChapterJson));
   }
   
@@ -502,7 +542,7 @@ class IOBase
       jsonContent = file.readAsStringSync();
     } on Exception catch (e, s) {
       debugPrint("Set.json读取");
-      print(s);
+      debugPrintStack(stackTrace: s);
     }
     return convert.jsonDecode(jsonContent);
   }
@@ -517,7 +557,7 @@ class IOBase
       file.writeAsStringSync(content);
     } on Exception catch (e, s) {
       debugPrint("/// Set.json保存");
-      print(s);
+      debugPrintStack(stackTrace: s);
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
@@ -42,13 +43,13 @@ class _DropDownButtonState extends State<DropDownButton> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.initIndex != null) {
-      if (initIndex != widget.initIndex || !widget.items.contains(selectedValue!)) {
-        initIndex = widget.initIndex;
-        selectedValue = widget.items[initIndex as int];
-      }
+    if (widget.initIndex != null &&
+        (initIndex != widget.initIndex || !widget.items.contains(selectedValue))) {
+      initIndex = widget.initIndex!;
+      selectedValue = widget.items.elementAtOrNull(initIndex!);
+    } else if (selectedValue != null && !widget.items.contains(selectedValue)) {
+      selectedValue = widget.items.elementAtOrNull(0);
     }
-
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
         buttonHeight: 40,

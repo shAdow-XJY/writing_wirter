@@ -12,15 +12,12 @@ import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
 import '../buttons/transparent_icon_button.dart';
 import '../dialog/rename_or_dialog.dart';
-import '../dialog/text_toast_dialog.dart';
 import '../toast/global_toast.dart';
 import 'chapter_listview.dart';
 
 class BookListView extends StatefulWidget {
-  final bool allowDelete;
   const BookListView({
     Key? key,
-    required this.allowDelete,
   }) : super(key: key);
 
   @override
@@ -34,6 +31,7 @@ class _BookListViewState extends State<BookListView> {
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
 
   List<String> bookNameList = [];
 
@@ -46,11 +44,18 @@ class _BookListViewState extends State<BookListView> {
         bookNameList = ioBase.getAllBooks();
       });
     });
+    subscription_2 = eventBus.on<RemoveBookEvent>().listen((event) {
+      setState(() {
+        bookNameList.remove(event.bookName);
+        bookNameList;
+      });
+    });
   }
 
   @override
   void dispose() {
     subscription_1.cancel();
+    subscription_2.cancel();
     super.dispose();
   }
 
@@ -61,7 +66,6 @@ class _BookListViewState extends State<BookListView> {
       itemCount: bookNameList.length,
       itemBuilder: (context, index) => BookListViewItem(
         bookName: bookNameList[index],
-        allowDelete: widget.allowDelete,
       ),
     );
   }
@@ -69,12 +73,10 @@ class _BookListViewState extends State<BookListView> {
 
 class BookListViewItem extends StatefulWidget {
   final String bookName;
-  final bool allowDelete;
 
   const BookListViewItem({
     Key? key,
     required this.bookName,
-    required this.allowDelete,
   }) : super(key: key);
 
   @override
@@ -89,7 +91,6 @@ class _BookListViewItemState extends State<BookListViewItem> {
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
-  late StreamSubscription subscription_3;
 
   /// 书籍名称
   late String bookName;
@@ -117,20 +118,12 @@ class _BookListViewItemState extends State<BookListViewItem> {
         });
       }
     });
-    subscription_3 = eventBus.on<RenameChapterNameEvent>().listen((event) {
-      if (event.bookName.compareTo(bookName) == 0) {
-        setState(() {
-          bookName;
-        });
-      }
-    });
   }
 
   @override
   void dispose() {
     subscription_1.cancel();
     subscription_2.cancel();
-    subscription_3.cancel();
     super.dispose();
   }
 
@@ -139,18 +132,24 @@ class _BookListViewItemState extends State<BookListViewItem> {
     final height = MediaQuery.of(context).size.height;
     return StoreConnector<AppState, Map<String, dynamic>>(
         converter: (Store store) {
-          void renameBook(String oldBookName, String newBookName) {
-            if (oldBookName.compareTo(store.state.textModel.currentBook) == 0) {
-              store.dispatch(SetTextDataAction(currentBook: newBookName, currentChapter: store.state.textModel.currentChapter,));
-            }
+      void renameBook(String oldBookName, String newBookName) {
+        if (oldBookName.compareTo(store.state.textModel.currentBook) == 0) {
+          store.dispatch(SetTextDataAction(
+            currentBook: newBookName,
+            currentChapter: store.state.textModel.currentChapter,
+          ));
+        }
+      }
+
+      void renameChapter(String bookName, String oldChapterName, String newChapterName) {
+        if (bookName.compareTo(store.state.textModel.currentBook) == 0) {
+          if (oldChapterName.compareTo(store.state.textModel.currentChapter) ==
+              0) {
+            store.dispatch(SetTextDataAction(
+                currentBook: bookName, currentChapter: newChapterName));
           }
-          void renameChapter(String bookName, String oldChapterName, String newChapterName) {
-            if (bookName.compareTo(store.state.textModel.currentBook) == 0) {
-              if (oldChapterName.compareTo(store.state.textModel.currentChapter) == 0) {
-                store.dispatch(SetTextDataAction(currentBook: bookName, currentChapter: newChapterName));
-              }
-            }
-          }
+        }
+      }
 
       return {
         "renameBook": renameBook,
@@ -186,9 +185,13 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   if (map.isChooseOne) {
                                     // 重命名书籍
                                     if (map.inputString.isNotEmpty) {
-                                      ioBase.renameBook(bookName, map.inputString);
-                                      storeMap["renameBook"](bookName, map.inputString);
-                                      eventBus.fire(RenameBookNameEvent(oldBookName: bookName, newBookName: map.inputString));
+                                      ioBase.renameBook(
+                                          bookName, map.inputString);
+                                      storeMap["renameBook"](
+                                          bookName, map.inputString);
+                                      eventBus.fire(RenameBookNameEvent(
+                                          oldBookName: bookName,
+                                          newBookName: map.inputString));
                                       Navigator.pop(context);
                                     } else {
                                       GlobalToast.showErrorTop('新书籍的名字不能为空');
@@ -197,33 +200,29 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                     // 重命名章节
                                     if (map.selectedString.isNotEmpty) {
                                       if (map.inputString.isNotEmpty) {
-                                        ioBase.renameChapter(bookName, map.selectedString, map.inputString);
-                                        storeMap["renameChapter"](bookName, map.selectedString, map.inputString);
-                                        eventBus.fire(RenameChapterNameEvent(bookName: bookName, oldChapterName: map.selectedString, newChapterName: map.inputString));
+                                        ioBase.renameChapter(
+                                            bookName,
+                                            map.selectedString,
+                                            map.inputString);
+                                        storeMap["renameChapter"](
+                                            bookName,
+                                            map.selectedString,
+                                            map.inputString);
+                                        eventBus.fire(RenameChapterNameEvent(
+                                            bookName: bookName,
+                                            oldChapterName: map.selectedString,
+                                            newChapterName: map.inputString));
                                         Navigator.pop(context);
                                       } else {
                                         GlobalToast.showErrorTop('新章节的名字不能为空');
                                       }
                                     } else {
-                                      GlobalToast.showErrorTop('没有选中要重新命名的旧章节名称');
+                                      GlobalToast.showErrorTop(
+                                          '没有选中要重新命名的旧章节名称');
                                     }
                                   }
                                 },
                               ),
-                              //     EditToastDialog(
-                              //   init: bookName,
-                              //   title: '重命名书籍',
-                              //   callBack: (newBookName) => {
-                              //     if (newBookName.isNotEmpty) {
-                              //       ioBase.renameBook(bookName, newBookName),
-                              //       bookName = newBookName,
-                              //       eventBus.fire(RenameBookNameEvent()),
-                              //       Navigator.pop(context),
-                              //     } else {
-                              //       GlobalToast.showErrorTop('书籍名字不能为空',),
-                              //     },
-                              //   },
-                              // ),
                             );
                           },
                         ),
@@ -257,8 +256,10 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   callBack: (chapterName) => {
                                     if (chapterName.isNotEmpty)
                                       {
-                                        ioBase.createChapter(bookName, chapterName),
-                                        eventBus.fire(CreateNewChapterEvent(bookName)),
+                                        ioBase.createChapter(
+                                            bookName, chapterName),
+                                        eventBus.fire(
+                                            CreateNewChapterEvent(bookName)),
                                         Navigator.pop(context),
                                       }
                                     else
@@ -273,29 +274,6 @@ class _BookListViewItemState extends State<BookListViewItem> {
                             },
                           ),
                         ),
-                        if (widget.allowDelete)
-                          Expanded(
-                            flex: 1,
-                            child: TransIconButton(
-                              icon: Icon(
-                                Icons.delete_outline,
-                                color: Theme.of(context)
-                                    .textSelectionTheme
-                                    .selectionColor,
-                              ),
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => RenameOrDialog(
-                                    dialogTitle: '重命名',
-                                    titleOne: '',
-                                    titleTwo: '',
-                                    callBack: (RenameDialogMap map) {},
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
                         Expanded(
                           flex: 1,
                           child: Icon(isExpanded
