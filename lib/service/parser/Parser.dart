@@ -69,7 +69,7 @@ class Parser
   /// parser 对象: 整本书最开始的parserModel获取（在点击另一本书的章节时调用）
   static Map<String, Set<String>> getBookInitParserModel(IOBase ioBase, String bookName) {
     Map<String, Set<String>> newParserModel = {};
-    Map<String, dynamic> setJson = ioBase.getAllSetJsonMap(bookName);
+    Map<String, dynamic> setJson = ioBase.getBookSetJsonContent(bookName);
     List<String> setList = setJson["setList"].cast<String>() ?? [];
     for (var setName in setList) {
       if (setJson[setName]["isParsed"]) {

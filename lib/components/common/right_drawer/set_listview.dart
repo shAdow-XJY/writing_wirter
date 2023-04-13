@@ -32,33 +32,52 @@ class _SetListViewState extends State<SetListView> {
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
+
+  /// 书籍名称
+  String currentBook = '';
+  Map<String, dynamic> setJson = {};
 
   @override
   void initState() {
     super.initState();
     subscription_1 = eventBus.on<CreateNewSetEvent>().listen((event) {
-      setState(() {});
+      setState(() {
+        setJson.clear();
+        setJson.addAll(ioBase.getBookSetJsonContent(currentBook));
+      });
+    });
+    subscription_2 = eventBus.on<RemoveSetEvent>().listen((event) {
+      setState(() {
+        setJson["setList"].remove(event.setName);
+        setJson.remove(event.setName);
+      });
     });
   }
 
   @override
   void dispose() {
     subscription_1.cancel();
+    subscription_2.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, Map<String, dynamic>>(
+    return StoreConnector<AppState, VoidCallback>(
       converter: (Store store) {
-        return ioBase.getAllSetJsonMap(store.state.textModel.currentBook);
+        debugPrint("store in SetListView");
+        currentBook = store.state.textModel.currentBook;
+        setJson = ioBase.getBookSetJsonContent(currentBook);
+        return () => {};
       },
-      builder: (BuildContext context, Map<String, dynamic> setJsonMap) {
+      builder: (BuildContext context, VoidCallback voidCallback) {
         return ListView.builder(
           controller: ScrollController(),
-          itemCount: setJsonMap["setList"].length,
+          itemCount: setJson["setList"].length,
           itemBuilder: (context, index) => SetListViewItem(
-              setName: setJsonMap["setList"][index],
-              isParsed: setJsonMap[setJsonMap["setList"][index]]["isParsed"],
+              setName: setJson["setList"][index],
+              isParsed: setJson[setJson["setList"][index]]["isParsed"],
           ),
         );
       },
@@ -87,6 +106,8 @@ class _SetListViewItemState extends State<SetListViewItem> {
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
+  late StreamSubscription subscription_3;
+  late StreamSubscription subscription_4;
 
   /// 设定集名称
   late String setName;
@@ -115,10 +136,25 @@ class _SetListViewItemState extends State<SetListViewItem> {
       }
     });
     subscription_2 = eventBus.on<CreateNewSettingEvent>().listen((event) {
-      setState(() {
-        settingsList.clear();
-        settingsList.addAll(ioBase.getAllSettings(currentBook, setName));
-      });
+      if (event.setName.compareTo(setName) == 0){
+        setState(() {
+          settingsList = ioBase.getAllSettings(currentBook, setName);
+        });
+      }
+    });
+    subscription_3 = eventBus.on<RemoveSettingEvent>().listen((event) {
+      if (event.setName.compareTo(setName) == 0){
+        setState(() {
+          settingsList.remove(event.settingName);
+        });
+      }
+    });
+    subscription_4 = eventBus.on<RenameSettingEvent>().listen((event) {
+      if (event.setName.compareTo(setName) == 0) {
+        setState(() {
+          settingsList[settingsList.indexOf(event.oldSettingName)] = event.newSettingName;
+        });
+      }
     });
   }
 
@@ -126,6 +162,8 @@ class _SetListViewItemState extends State<SetListViewItem> {
   void dispose() {
     subscription_1.cancel();
     subscription_2.cancel();
+    subscription_3.cancel();
+    subscription_4.cancel();
     super.dispose();
   }
 
@@ -270,7 +308,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                     callBack: (settingName) => {
                                       if (settingName.isNotEmpty) {
                                         ioBase.createSetting(currentBook, setName, settingName),
-                                        eventBus.fire(CreateNewSettingEvent()),
+                                        eventBus.fire(CreateNewSettingEvent(setName: setName, settingName: settingName)),
                                         Navigator.pop(context),
                                       } else {
                                         GlobalToast.showErrorTop('设定名字不能为空',),

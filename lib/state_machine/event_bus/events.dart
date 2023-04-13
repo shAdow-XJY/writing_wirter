@@ -45,14 +45,29 @@ class RenameSetEvent {
   String newSetName;
   RenameSetEvent({required this.oldSetName, required this.newSetName});
 }
+/// RemoveSetEvent
+class RemoveSetEvent {
+  String setName;
+  RemoveSetEvent({required this.setName});
+}
 
 /// <!-- Setting -->
 /// createSetting
-class CreateNewSettingEvent {}
+class CreateNewSettingEvent {
+  String setName;
+  String settingName;
+  CreateNewSettingEvent({required this.setName, required this.settingName});
+}
 /// RenameSetting
 class RenameSettingEvent {
   String setName;
   String oldSettingName;
   String newSettingName;
   RenameSettingEvent({required this.setName, required this.oldSettingName, required this.newSettingName});
+}
+/// RemoveSettingEvent
+class RemoveSettingEvent {
+  String setName;
+  String settingName;
+  RemoveSettingEvent({required this.setName, required this.settingName});
 }

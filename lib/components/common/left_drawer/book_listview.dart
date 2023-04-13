@@ -125,6 +125,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
     final height = MediaQuery.of(context).size.height;
     return StoreConnector<AppState, Map<String, dynamic>>(
         converter: (Store store) {
+      debugPrint("store in BookListViewItem");
       void renameBook(String oldBookName, String newBookName) {
         if (oldBookName.compareTo(store.state.textModel.currentBook) == 0) {
           bookName = newBookName;
@@ -143,11 +144,13 @@ class _BookListViewItemState extends State<BookListViewItem> {
         }
       }
 
-      void renameChapter(String bookName, String oldChapterName, String newChapterName) {
+      void renameChapter(
+          String bookName, String oldChapterName, String newChapterName) {
         if (bookName.compareTo(store.state.textModel.currentBook) == 0) {
           if (oldChapterName.compareTo(store.state.textModel.currentChapter) ==
               0) {
-            store.dispatch(SetTextDataAction(currentBook: bookName, currentChapter: newChapterName));
+            store.dispatch(SetTextDataAction(
+                currentBook: bookName, currentChapter: newChapterName));
           }
         }
       }
@@ -186,9 +189,13 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   if (map.isChooseOne) {
                                     // 重命名书籍
                                     if (map.inputString.isNotEmpty) {
-                                      ioBase.renameBook(bookName, map.inputString);
-                                      storeMap["renameBook"](bookName, map.inputString);
-                                      eventBus.fire(RenameBookNameEvent(oldBookName: bookName, newBookName: map.inputString));
+                                      ioBase.renameBook(
+                                          bookName, map.inputString);
+                                      storeMap["renameBook"](
+                                          bookName, map.inputString);
+                                      eventBus.fire(RenameBookNameEvent(
+                                          oldBookName: bookName,
+                                          newBookName: map.inputString));
                                       Navigator.pop(context);
                                     } else {
                                       GlobalToast.showErrorTop('新书籍的名字不能为空');
@@ -253,8 +260,11 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   callBack: (chapterName) => {
                                     if (chapterName.isNotEmpty)
                                       {
-                                        ioBase.createChapter(bookName, chapterName),
-                                        eventBus.fire(CreateNewChapterEvent(bookName: bookName, chapterName: chapterName)),
+                                        ioBase.createChapter(
+                                            bookName, chapterName),
+                                        eventBus.fire(CreateNewChapterEvent(
+                                            bookName: bookName,
+                                            chapterName: chapterName)),
                                         Navigator.pop(context),
                                       }
                                     else
@@ -288,7 +298,9 @@ class _BookListViewItemState extends State<BookListViewItem> {
             },
           ),
           isExpanded
-              ? ChapterListView(bookName: bookName,)
+              ? ChapterListView(
+                  bookName: bookName,
+                )
               : const SizedBox(),
           Divider(
             thickness: 1,

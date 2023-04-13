@@ -1,11 +1,6 @@
-import 'dart:async';
-
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import '../../../state_machine/event_bus/events.dart';
-import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
@@ -24,32 +19,6 @@ class SettingsListView extends StatefulWidget {
 }
 
 class _SettingsListViewState extends State<SettingsListView> {
-  /// 全局单例-事件总线工具类
-  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
-  late StreamSubscription subscription_1;
-
-  List<String> settingsList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    settingsList = widget.settingsList;
-
-    subscription_1 = eventBus.on<RenameSettingEvent>().listen((event) {
-      if (event.setName.compareTo(widget.setName) == 0) {
-        setState(() {
-          settingsList[settingsList.indexOf(event.oldSettingName)] = event.newSettingName;
-          // settingsList;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    subscription_1.cancel();
-    super.dispose();
-  }
 
   /// 列表项组件
   List<Widget> createChapterList(List<String> settingsList) {
@@ -66,7 +35,7 @@ class _SettingsListViewState extends State<SettingsListView> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: createChapterList(settingsList),
+      children: createChapterList(widget.settingsList),
     );
   }
 }
