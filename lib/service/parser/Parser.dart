@@ -35,6 +35,21 @@ class Parser
     return newObj;
   }
 
+  /// parser 对象: 替换元素
+  static Map<String, Set<String>> replaceSetInParser(Map<String, Set<String>> currentParser, String oldSetName, String newSetName) {
+    Map<String, Set<String>> newObj = deepClone(currentParser);
+    newObj[newSetName] = newObj.remove(oldSetName)!;
+    return newObj;
+  }
+
+  /// parser 对象: 替换元素
+  static Map<String, Set<String>> replaceSettingInParser(Map<String, Set<String>> currentParser, String setName, String oldSettingName, String newSettingName) {
+    Map<String, Set<String>> newObj = deepClone(currentParser);
+    newObj[setName]?.remove(oldSettingName);
+    newObj[setName]?.add(newSettingName);
+    return newObj;
+  }
+
   /// parser 对象变量比较
   /// equals : true
   static bool compareParser(Map<String, Set<String>> parserOne, Map<String, Set<String>> parserTwo) {
@@ -54,17 +69,14 @@ class Parser
   /// parser 对象: 整本书最开始的parserModel获取（在点击另一本书的章节时调用）
   static Map<String, Set<String>> getBookInitParserModel(IOBase ioBase, String bookName) {
     Map<String, Set<String>> newParserModel = {};
-    Map<String, dynamic> setJson = ioBase.getAllSetMap(bookName);
-    List<dynamic> setObjList = setJson["setList"] ?? [];
-    List<String> setList = [];
-    for (var setObj in setObjList) {
-      if (setObj["isParsed"]) {
-        setList.add(setObj["setName"].toString());
+    Map<String, dynamic> setJson = ioBase.getAllSetJsonMap(bookName);
+    List<String> setList = setJson["setList"].cast<String>() ?? [];
+    for (var setName in setList) {
+      if (setJson[setName]["isParsed"]) {
+        newParserModel = addSetToParser(newParserModel, setName, ioBase.getAllSettings(bookName, setName));
       }
     }
-    for (var setName in setList) {
-      newParserModel = addSetToParser(newParserModel, setName, ioBase.getAllSettings(bookName, setName));
-    }
+    // print(newParserModel);
     return newParserModel;
   }
 }

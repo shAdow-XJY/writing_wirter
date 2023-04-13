@@ -31,6 +31,7 @@ class _ChapterListViewState extends State<ChapterListView> {
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
+  late StreamSubscription subscription_3;
 
   List<String> chapterList = [];
 
@@ -38,14 +39,21 @@ class _ChapterListViewState extends State<ChapterListView> {
   void initState() {
     super.initState();
     chapterList = ioBase.getAllChapters(widget.bookName);
-    subscription_1  = eventBus.on<RenameChapterNameEvent>().listen((event) {
+    subscription_1 = eventBus.on<CreateNewChapterEvent>().listen((event) {
+      if (event.bookName.compareTo(widget.bookName) == 0) {
+        setState(() {
+          chapterList = ioBase.getAllChapters(widget.bookName);
+        });
+      }
+    });
+    subscription_2  = eventBus.on<RenameChapterNameEvent>().listen((event) {
       if (event.bookName.compareTo(widget.bookName) == 0) {
         setState(() {
           chapterList[chapterList.indexOf(event.oldChapterName)] = event.newChapterName;
         });
       }
     });
-    subscription_2  = eventBus.on<RemoveChapterEvent>().listen((event) {
+    subscription_3  = eventBus.on<RemoveChapterEvent>().listen((event) {
       if (event.bookName.compareTo(widget.bookName) == 0) {
         setState(() {
           chapterList.remove(event.chapterName);
@@ -58,6 +66,7 @@ class _ChapterListViewState extends State<ChapterListView> {
   void dispose() {
     subscription_1.cancel();
     subscription_2.cancel();
+    subscription_3.cancel();
     super.dispose();
   }
 

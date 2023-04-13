@@ -1,10 +1,10 @@
 import 'dart:async';
-
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/components/common/right_drawer/settings_listview.dart';
+import 'package:writing_writer/state_machine/redux/action/set_action.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../service/parser/Parser.dart';
 import '../../../state_machine/event_bus/events.dart';
@@ -12,6 +12,7 @@ import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
+import '../dialog/rename_or_dialog.dart';
 import '../toast/global_toast.dart';
 import '../transparent_checkbox.dart';
 import '../buttons/transparent_icon_button.dart';
@@ -47,17 +48,17 @@ class _SetListViewState extends State<SetListView> {
   }
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, List<dynamic>>(
+    return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
-        return ioBase.getAllSetMap(store.state.textModel.currentBook)["setList"];
+        return ioBase.getAllSetJsonMap(store.state.textModel.currentBook);
       },
-      builder: (BuildContext context, List<dynamic> setList) {
+      builder: (BuildContext context, Map<String, dynamic> setJsonMap) {
         return ListView.builder(
           controller: ScrollController(),
-          itemCount: setList.length,
+          itemCount: setJsonMap["setList"].length,
           itemBuilder: (context, index) => SetListViewItem(
-              setName: setList[index]["setName"],
-              isParsed: setList[index]["isParsed"],
+              setName: setJsonMap["setList"][index],
+              isParsed: setJsonMap[setJsonMap["setList"][index]]["isParsed"],
           ),
         );
       },
@@ -66,10 +67,10 @@ class _SetListViewState extends State<SetListView> {
 }
 
 class SetListViewItem extends StatefulWidget {
-  String setName;
+  final String setName;
   final bool isParsed;
 
-  SetListViewItem({
+  const SetListViewItem({
     Key? key,
     required this.setName,
     required this.isParsed,
@@ -87,23 +88,36 @@ class _SetListViewItemState extends State<SetListViewItem> {
   late StreamSubscription subscription_1;
   late StreamSubscription subscription_2;
 
+  /// 设定集名称
+  late String setName;
   /// 设定集是否加入文本解析
-  bool addTextParser = false;
+  late bool addTextParser;
   /// 列表展开
   bool isExpanded = false;
+
+  /// 设定列表
+  List<String> settingsList = [];
+  /// 当前的书籍
+  String currentBook = '';
+  /// 被解析的对象构造
+  Map<String, Set<String>> newParserObj = {};
 
   @override
   void initState() {
     super.initState();
+    setName = widget.setName;
     addTextParser = widget.isParsed;
     subscription_1 = eventBus.on<RenameSetEvent>().listen((event) {
-      setState(() {
-        widget.setName;
-      });
+      if (event.oldSetName.compareTo(setName) == 0){
+        setState(() {
+          setName = event.newSetName;
+        });
+      }
     });
     subscription_2 = eventBus.on<CreateNewSettingEvent>().listen((event) {
       setState(() {
-        widget.setName;
+        settingsList.clear();
+        settingsList.addAll(ioBase.getAllSettings(currentBook, setName));
       });
     });
   }
@@ -121,32 +135,44 @@ class _SetListViewItemState extends State<SetListViewItem> {
     return StoreConnector<AppState, Map<String, dynamic>>(
       converter: (Store store) {
         debugPrint('store in set_listview');
-        List<String> settingsList = ioBase.getAllSettings(store.state.textModel.currentBook, widget.setName);
-        Map<String, Set<String>> newParserModel = {};
+        currentBook = store.state.textModel.currentBook;
+        settingsList = ioBase.getAllSettings(currentBook, setName);
+        newParserObj = {};
         if (addTextParser) {
-          newParserModel = Parser.addSetToParser(store.state.parserModel.parserObj, widget.setName, settingsList);
+          newParserObj = Parser.addSetToParser(store.state.parserModel.parserObj, setName, settingsList);
         } else {
-          newParserModel = Parser.removeSetFromParser(store.state.parserModel.parserObj, widget.setName);
+          newParserObj = Parser.removeSetFromParser(store.state.parserModel.parserObj, setName);
         }
-        if (!Parser.compareParser(newParserModel, store.state.parserModel.parserObj)) {
-          store.dispatch(SetParserDataAction(parserObj: newParserModel));
+        if (!Parser.compareParser(newParserObj, store.state.parserModel.parserObj)) {
+          store.dispatch(SetParserDataAction(parserObj: newParserObj));
         }
         /// 重命名设定集
-        void renameSet(String oldSetName, String newSetName) => ioBase.renameSet(store.state.textModel.currentBook, oldSetName, newSetName);
-        /// 新建设定
-        void createSetting(String settingName) => ioBase.createSetting(store.state.textModel.currentBook, widget.setName, settingName);
-        /// 修改设定集是否加入解析
-        void changeParserOfBookSetJson(bool isParsed) {
-          ioBase.changeParserOfBookSetJson(store.state.textModel.currentBook, widget.setName, isParsed);
+        void renameSet(String oldSetName, String newSetName) {
+          if (oldSetName.compareTo(store.state.setModel.currentSet) == 0) {
+            setName = newSetName;
+            store.dispatch(SetSetDataAction(currentSet: newSetName, currentSetting: store.state.setModel.currentSetting));
+          }
+          if (addTextParser) {
+            newParserObj = Parser.replaceSetInParser(store.state.parserModel.parserObj, oldSetName, newSetName);
+            store.dispatch(SetParserDataAction(parserObj: newParserObj));
+          }
+        }
+        /// 重命名设定
+        void renameSetting(String oldSettingName, String newSettingName) {
+          if (setName.compareTo(store.state.setModel.currentSet) == 0 && oldSettingName.compareTo(store.state.setModel.currentSetting) == 0) {
+            store.dispatch(SetSetDataAction(currentSet: setName, currentSetting: newSettingName));
+          }
+          if (addTextParser) {
+            newParserObj = Parser.replaceSettingInParser(store.state.parserModel.parserObj, setName, oldSettingName, newSettingName);
+            store.dispatch(SetParserDataAction(parserObj: newParserObj));
+          }
         }
         return {
-          "settingsList": settingsList,
           "renameSet": renameSet,
-          "createSetting": createSetting,
-          "changeParserOfBookSetJson": changeParserOfBookSetJson,
+          "renameSetting": renameSetting,
         };
       },
-      builder: (BuildContext context, Map<String, dynamic> map) {
+      builder: (BuildContext context, Map<String, dynamic> storeMap) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -167,18 +193,38 @@ class _SetListViewItemState extends State<SetListViewItem> {
                             onPressed: () {
                               showDialog(
                                 context: context,
-                                builder: (context) => EditToastDialog(
-                                  init: widget.setName,
-                                  title: '重命名设定集',
-                                  callBack: (newSetName) => {
-                                    if (newSetName.isNotEmpty) {
-                                      map["renameSet"](widget.setName, newSetName),
-                                      widget.setName = newSetName,
-                                      eventBus.fire(RenameSetEvent()),
-                                      Navigator.pop(context),
+                                builder: (context) => RenameOrDialog(
+                                  dialogTitle: '重命名',
+                                  titleOne: '重命名设定集',
+                                  titleTwo: '重命名设定',
+                                  initInputText: setName,
+                                  items: settingsList,
+                                  callBack: (RenameDialogMap map) {
+                                    if (map.isChooseOne) {
+                                      // 重命名设定集
+                                      if (map.inputString.isNotEmpty) {
+                                        ioBase.renameSet(currentBook, setName, map.inputString);
+                                        storeMap["renameSet"](setName, map.inputString);
+                                        eventBus.fire(RenameSetEvent(oldSetName: setName, newSetName: map.inputString));
+                                        Navigator.pop(context);
+                                      } else {
+                                        GlobalToast.showErrorTop('新设定集的名字不能为空');
+                                      }
                                     } else {
-                                      GlobalToast.showErrorTop('设定集名字不能为空',),
-                                    },
+                                      // 重命名设定
+                                      if (map.selectedString.isNotEmpty) {
+                                        if (map.inputString.isNotEmpty) {
+                                          ioBase.renameSetting(currentBook, setName, map.selectedString, map.inputString);
+                                          storeMap["renameSetting"](map.selectedString, map.inputString);
+                                          eventBus.fire(RenameSettingEvent(setName: setName, oldSettingName: map.selectedString, newSettingName: map.inputString));
+                                          Navigator.pop(context);
+                                        } else {
+                                          GlobalToast.showErrorTop('新设定的名字不能为空');
+                                        }
+                                      } else {
+                                        GlobalToast.showErrorTop('没有选中要重新命名的旧设定名称');
+                                      }
+                                    }
                                   },
                                 ),
                               );
@@ -206,7 +252,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                 onChanged: (bool changedResult) {
                                   setState(() {
                                     addTextParser = changedResult;
-                                    map["changeParserOfBookSetJson"](addTextParser);
+                                    ioBase.changeParserOfBookSetJson(currentBook, setName, addTextParser);
                                   });
                                 },
                               ),
@@ -223,7 +269,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                     title: '新建设定',
                                     callBack: (settingName) => {
                                       if (settingName.isNotEmpty) {
-                                        map["createSetting"](settingName),
+                                        ioBase.createSetting(currentBook, setName, settingName),
                                         eventBus.fire(CreateNewSettingEvent()),
                                         Navigator.pop(context),
                                       } else {
@@ -255,8 +301,8 @@ class _SetListViewItemState extends State<SetListViewItem> {
             ),
             isExpanded
                 ? SettingsListView(
-                    setName: widget.setName,
-                    settingsList: map["settingsList"],
+                    setName: setName,
+                    settingsList: settingsList,
                   )
                 : const SizedBox(),
             Divider(

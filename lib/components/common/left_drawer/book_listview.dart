@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:writing_writer/state_machine/redux/action/set_action.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/event_bus/events.dart';
+import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/action/text_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
@@ -90,7 +92,6 @@ class _BookListViewItemState extends State<BookListViewItem> {
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
-  late StreamSubscription subscription_2;
 
   /// 书籍名称
   late String bookName;
@@ -111,19 +112,11 @@ class _BookListViewItemState extends State<BookListViewItem> {
         });
       }
     });
-    subscription_2 = eventBus.on<CreateNewChapterEvent>().listen((event) {
-      if (event.bookName.compareTo(bookName) == 0) {
-        setState(() {
-          bookName;
-        });
-      }
-    });
   }
 
   @override
   void dispose() {
     subscription_1.cancel();
-    subscription_2.cancel();
     super.dispose();
   }
 
@@ -134,10 +127,19 @@ class _BookListViewItemState extends State<BookListViewItem> {
         converter: (Store store) {
       void renameBook(String oldBookName, String newBookName) {
         if (oldBookName.compareTo(store.state.textModel.currentBook) == 0) {
+          bookName = newBookName;
+          Map<String, Set<String>> parserObj = store.state.parserModel.parserObj;
+          String currentSet = store.state.setModel.currentSet;
+          String currentSetting = store.state.setModel.currentSetting;
           store.dispatch(SetTextDataAction(
             currentBook: newBookName,
             currentChapter: store.state.textModel.currentChapter,
           ));
+          store.dispatch(SetSetDataAction(
+            currentSet: currentSet,
+            currentSetting: currentSetting,
+          ));
+          store.dispatch(SetParserDataAction(parserObj: parserObj));
         }
       }
 
@@ -145,8 +147,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
         if (bookName.compareTo(store.state.textModel.currentBook) == 0) {
           if (oldChapterName.compareTo(store.state.textModel.currentChapter) ==
               0) {
-            store.dispatch(SetTextDataAction(
-                currentBook: bookName, currentChapter: newChapterName));
+            store.dispatch(SetTextDataAction(currentBook: bookName, currentChapter: newChapterName));
           }
         }
       }
@@ -185,13 +186,9 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   if (map.isChooseOne) {
                                     // 重命名书籍
                                     if (map.inputString.isNotEmpty) {
-                                      ioBase.renameBook(
-                                          bookName, map.inputString);
-                                      storeMap["renameBook"](
-                                          bookName, map.inputString);
-                                      eventBus.fire(RenameBookNameEvent(
-                                          oldBookName: bookName,
-                                          newBookName: map.inputString));
+                                      ioBase.renameBook(bookName, map.inputString);
+                                      storeMap["renameBook"](bookName, map.inputString);
+                                      eventBus.fire(RenameBookNameEvent(oldBookName: bookName, newBookName: map.inputString));
                                       Navigator.pop(context);
                                     } else {
                                       GlobalToast.showErrorTop('新书籍的名字不能为空');
@@ -256,10 +253,8 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                   callBack: (chapterName) => {
                                     if (chapterName.isNotEmpty)
                                       {
-                                        ioBase.createChapter(
-                                            bookName, chapterName),
-                                        eventBus.fire(
-                                            CreateNewChapterEvent(bookName)),
+                                        ioBase.createChapter(bookName, chapterName),
+                                        eventBus.fire(CreateNewChapterEvent(bookName: bookName, chapterName: chapterName)),
                                         Navigator.pop(context),
                                       }
                                     else
@@ -293,9 +288,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
             },
           ),
           isExpanded
-              ? ChapterListView(
-                  bookName: bookName,
-                )
+              ? ChapterListView(bookName: bookName,)
               : const SizedBox(),
           Divider(
             thickness: 1,

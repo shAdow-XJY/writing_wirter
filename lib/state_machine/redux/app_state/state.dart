@@ -31,7 +31,7 @@ class AppState {
     parserModel = ParserModel(parserObj: {});
   }
 
-  AppState copyWith ({textModel, setModel, styleModel, parserModel}){
+  AppState copyWith ({textModel, setModel, parserModel}){
     return AppState(
       textModel: textModel ?? this.textModel,
       setModel: setModel ?? this.setModel,
@@ -54,6 +54,7 @@ AppState appReducer(AppState state, action) {
           parserModel: ParserModel(parserObj: {}),
         );
       }
+      // 更换章节
       return state.copyWith(textModel: textReducer(state.textModel, action));
     }
     case SetSetDataAction: {

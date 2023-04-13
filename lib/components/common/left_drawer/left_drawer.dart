@@ -113,31 +113,6 @@ class _LeftDrawerState extends State<LeftDrawer> {
                               GlobalToast.showErrorTop('没有选择指定书籍');
                             }
                           }
-                          // if (map.isChooseOne) {
-                          //   // 重命名书籍
-                          //   if (map.inputString.isNotEmpty) {
-                          //     ioBase.renameBook(bookName, map.inputString);
-                          //     storeMap["renameBook"](bookName, map.inputString);
-                          //     eventBus.fire(RenameBookNameEvent(oldBookName: bookName, newBookName: map.inputString));
-                          //     Navigator.pop(context);
-                          //   } else {
-                          //     GlobalToast.showErrorTop('新书籍的名字不能为空');
-                          //   }
-                          // } else {
-                          //   // 重命名章节
-                          //   if (map.selectedString.isNotEmpty) {
-                          //     if (map.inputString.isNotEmpty) {
-                          //       ioBase.renameChapter(bookName, map.selectedString, map.inputString);
-                          //       storeMap["renameChapter"](bookName, map.selectedString, map.inputString);
-                          //       eventBus.fire(RenameChapterNameEvent(bookName: bookName, oldChapterName: map.selectedString, newChapterName: map.inputString));
-                          //       Navigator.pop(context);
-                          //     } else {
-                          //       GlobalToast.showErrorTop('新章节的名字不能为空');
-                          //     }
-                          //   } else {
-                          //     GlobalToast.showErrorTop('没有选中要重新命名的旧章节名称');
-                          //   }
-                          // }
                         },
                       ),
                     );

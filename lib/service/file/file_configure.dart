@@ -9,6 +9,7 @@ class FileConfig {
   /// writing writer 写作内容子文件夹名称
   static String writeSetDirName = "Set";
   static String writeChapterDirName = "Chapter";
+  static String writeSettingSortFileName = "Setting";
 
   /// writing writer 导出内容根文件夹名称
   static String exportRootName = "export";
@@ -29,6 +30,7 @@ class FileConfig {
   static String chsFilePostfix = ".txt";
   static String jsonFilePostfix = ".json";
   static String zipFilePostfix = ".zip";
+  static String sortFilePostfix = ".sort";
 
   /// 文件相对路径函数
   /// wWriter
@@ -57,6 +59,10 @@ class FileConfig {
   /// wWriter/write/${bookName}/Set/${setName}
   static String writeBookSetDirPath(String bookName, String setName) {
     return writeBookSetRootDirPath(bookName) + Platform.pathSeparator + setName;
+  }
+  /// wWriter/write/${bookName}/Set/${setName}/Setting.sort
+  static String writeBookSettingSortFilePath(String bookName, String setName) {
+    return writeBookSetDirPath(bookName, setName) + Platform.pathSeparator + writeSettingSortFileName + sortFilePostfix;
   }
   /// wWriter/write/${bookName}/Set/${setName}/${settingName}.json
   static String writeBookSettingJsonFilePath(String bookName, String setName, String settingName) {
@@ -156,6 +162,7 @@ class FileConfig {
 ///         — — — — — — — — — — — —  Set.json
 ///         — — — — — — — — — — — —  人物集
 ///           — — — — — — — — — — — — — —  孙悟空.json
+///           — — — — — — — — — — — — — —  Setting.sort
 ///   — — — —  export
 ///     — — — — — —  西游记
 ///       — — — — — — — —  chs

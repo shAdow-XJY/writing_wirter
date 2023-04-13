@@ -48,10 +48,10 @@ class _RightDrawerState extends State<RightDrawer> {
           'currentBookName': store.state.textModel.currentBook,
         };
       },
-      builder: (BuildContext context, Map<String, dynamic> map) {
+      builder: (BuildContext context, Map<String, dynamic> storeMap) {
         return Drawer(
             width: MediaQuery.of(context).size.width * widthFactor,
-            child: map['currentBookName'].toString().isEmpty
+            child: storeMap['currentBookName'].toString().isEmpty
                 ? Scaffold(
                     appBar: AppBar(
                       automaticallyImplyLeading: false,
@@ -62,11 +62,11 @@ class _RightDrawerState extends State<RightDrawer> {
                 : Scaffold(
                     appBar: AppBar(
                       centerTitle: true,
-                      title: Text(map['currentBookName']),
+                      title: Text(storeMap['currentBookName']),
                       leading: IconButton(
-                        icon: const Icon(Icons.file_open),
+                        icon: const Icon(Icons.delete),
                         onPressed: () {
-                          ioBase.openSettingDirectory(map['currentBookName']);
+
                         },
                       ),
                       actions: [
@@ -83,7 +83,7 @@ class _RightDrawerState extends State<RightDrawer> {
                                     callBack: (setName) => {
                                       if (setName.isNotEmpty)
                                       {
-                                        ioBase.createSet(map['currentBookName'], setName),
+                                        ioBase.createSet(storeMap['currentBookName'], setName),
                                         eventBus.fire(CreateNewSetEvent()),
                                         Navigator.pop(context),
                                       } else {

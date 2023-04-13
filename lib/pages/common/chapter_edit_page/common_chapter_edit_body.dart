@@ -110,8 +110,7 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
           currentText = clickTextEditingController.text;
         }
         // 文本解析
-        if (!Parser.compareParser(
-            currentParserObj, store.state.parserModel.parserObj)) {
+        if (!Parser.compareParser(currentParserObj, store.state.parserModel.parserObj)) {
           currentParserObj = store.state.parserModel.parserObj;
         }
         void clickHighLightSetting(String settingClick) {

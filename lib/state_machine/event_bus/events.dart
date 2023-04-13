@@ -19,7 +19,8 @@ class RemoveBookEvent {
 /// CreateNewChapter
 class CreateNewChapterEvent {
   String bookName;
-  CreateNewChapterEvent(this.bookName);
+  String chapterName;
+  CreateNewChapterEvent({required this.bookName, required this.chapterName});
 }
 /// RenameChapterNameEvent
 class RenameChapterNameEvent {
@@ -39,8 +40,19 @@ class RemoveChapterEvent {
 /// CreateNewSet
 class CreateNewSetEvent {}
 /// RenameSet
-class RenameSetEvent {}
+class RenameSetEvent {
+  String oldSetName;
+  String newSetName;
+  RenameSetEvent({required this.oldSetName, required this.newSetName});
+}
 
 /// <!-- Setting -->
 /// createSetting
 class CreateNewSettingEvent {}
+/// RenameSetting
+class RenameSettingEvent {
+  String setName;
+  String oldSettingName;
+  String newSettingName;
+  RenameSettingEvent({required this.setName, required this.oldSettingName, required this.newSettingName});
+}

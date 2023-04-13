@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, unused_element
+// ignore_for_file: file_names
 
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -70,11 +70,20 @@ class IOBase
     return path;
   }
 
-  /// 文件路径统一生成函数
+  /// 章节文件路径统一生成函数
   String _chsFilePath({String bookName = "", String chapterName = ""}) {
     String path = _appDocPath;
     if (bookName.isNotEmpty && chapterName.isNotEmpty) {
       path += "${Platform.pathSeparator}${FileConfig.writeBookChapterFilePath(bookName, chapterName)}";
+    }
+    return path;
+  }
+
+  /// Setting.sort文件路径统一生成函数
+  String _sortFilePath({String bookName = "", String setName = ""}) {
+    String path = _appDocPath;
+    if (bookName.isNotEmpty && setName.isNotEmpty) {
+      path += "${Platform.pathSeparator}${FileConfig.writeBookSettingSortFilePath(bookName, setName)}";
     }
     return path;
   }
@@ -193,10 +202,6 @@ class IOBase
       Directory dir = Directory(_dirPath(bookName: oldBookName));
       if (dir.existsSync()) {
         dir.renameSync(_dirPath(bookName: newBookName));
-        /// Chapter.json操作：书籍重命名
-        renameBookInChapterJson(newBookName);
-        /// Set.json操作：书籍重命名
-        renameBookInSetJson(newBookName);
       }
       GlobalToast.showSuccessTop('重命名书籍成功');
     } on Exception catch (e, s) {
@@ -318,7 +323,7 @@ class IOBase
   }
 
   /// 遍历书下所有设定集：该书对应Set.json：json文件
-  Map<String, dynamic> getAllSetMap(String bookName) {
+  Map<String, dynamic> getAllSetJsonMap(String bookName) {
     Map<String, dynamic> bookSetJson = {};
     if (bookName.isEmpty) {
       return bookSetJson;
@@ -340,6 +345,8 @@ class IOBase
       if (!dir2.existsSync()) {
         dir2.createSync(recursive: true);
       }
+      /// 文件夹下初始化Setting.sort
+      createSettingSort(bookName, setName);
       /// Set.json添加（新建设定类）
       addNewSetInSetJson(bookName, setName);
       GlobalToast.showSuccessTop('创建设定集成功');
@@ -369,18 +376,18 @@ class IOBase
   //                      设定 {$settingName}.json                           //
   ////////////////////////////////////////////////////////////////////////////
 
-  /// 遍历指定设定集下所有设定：遍历设定（.json文件）
+  /// 获取指定设定集下所有设定：从Setting.sort获取设定List（.json文件）
   List<String> getAllSettings(String bookName, String setName) {
     List<String> settingNames = [];
     if (bookName.isEmpty || setName.isEmpty) {
       return settingNames;
     }
     try {
-      if (getBookSetJsonContent(bookName)[setName]["settingList"] != null) {
-        settingNames = getBookSetJsonContent(bookName)[setName]["settingList"].cast<String>();
+      if (getSettingSortMap(bookName, setName)["settingList"] != null) {
+        settingNames = getSettingSortMap(bookName, setName)["settingList"].cast<String>();
       }
     } on Exception catch (e, s) {
-      debugPrint("/// 遍历指定设定集下所有设定：遍历设定（.json文件）");
+      debugPrint("/// 获取指定设定集下所有设定：从Setting.sort获取设定List（.json文件）");
       GlobalToast.showErrorTop('获取设定集的设定失败');
       debugPrintStack(stackTrace: s);
     }
@@ -398,49 +405,16 @@ class IOBase
           bookName,
           setName,
           settingName,
-          BookConfig.getDefaultSetSettingJsonString(
-              bookName: bookName,
-              setName: setName,
-              settingName: settingName
-          )
+          BookConfig.getDefaultSetSettingJsonString(),
       );
-      /// Set.json添加设定（新建设定）
-      addNewSettingInSetJson(bookName, setName, settingName);
+
+      /// Setting.sort添加设定（新建设定）
+      addNewSettingInSort(bookName, setName, settingName);
       GlobalToast.showSuccessTop('创建设定成功');
     } on Exception catch (e, s) {
       GlobalToast.showErrorTop('创建设定失败');
       debugPrintStack(stackTrace: s);
     }
-  }
-
-  /// 保存设定(json文件)
-  void saveSetting(String bookName, String setName, String settingName, String content) {
-    File file = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: settingName));
-    if (!file.existsSync()) {
-      file.createSync(recursive: true);
-    }
-    file.writeAsStringSync(content);
-  }
-
-  /// 设定(json文件)重命名
-  void renameSetting(String bookName, String setName, String oldSettingName, String newSettingName) {
-    try {
-      File file = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: oldSettingName));
-      if (file.existsSync()) {
-        file.renameSync(_jsonFilePath(bookName: bookName, setName: setName, settingName: newSettingName));
-      }
-      GlobalToast.showSuccessTop('重命名设定成功');
-    } on Exception catch (e, s) {
-      GlobalToast.showErrorTop('重命名设定失败');
-      debugPrintStack(stackTrace: s);
-    }
-  }
-
-  /// 设定(json文件)操作： 设定Set重命名
-  void renameSetInSetting(String bookName, String newSetName, String settingName) {
-    Map<String, dynamic> settingJson = getSettingJson(bookName, newSetName, settingName);
-    settingJson.update("setName", (value) => newSetName);
-    saveSetting(bookName, newSetName, settingName, convert.jsonEncode(settingJson));
   }
 
   /// 获取设定的内容：读取设定json文件内容
@@ -457,6 +431,44 @@ class IOBase
     return convert.jsonDecode(bookSettingContent);
   }
 
+  /// 保存设定(json文件)
+  void saveSetting(String bookName, String setName, String settingName, String content) {
+    File file = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: settingName));
+    if (file.existsSync()) {
+      file.writeAsStringSync(content);
+    }
+  }
+
+  /// 设定(json文件)重命名
+  void renameSetting(String bookName, String setName, String oldSettingName, String newSettingName) {
+    try {
+      File file = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: oldSettingName));
+      if (file.existsSync()) {
+        file.renameSync(_jsonFilePath(bookName: bookName, setName: setName, settingName: newSettingName));
+      }
+      /// Setting.sort重命名设定
+      renameSettingInSort(bookName, setName, oldSettingName, newSettingName);
+      GlobalToast.showSuccessTop('重命名设定成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('重命名设定失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+
+  /// 设定(json文件)删除
+  void removeSetting(String bookName, String setName, String settingName) {
+    try {
+      File file = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: settingName));
+      file.deleteSync(recursive: true);
+      /// Setting.sort删除设定
+      removeSettingInSort(bookName, setName, settingName);
+      GlobalToast.showSuccessTop('删除设定成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('删除设定失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   //                (书籍-章节)Chapter.json                                   //
   ////////////////////////////////////////////////////////////////////////////
@@ -467,7 +479,7 @@ class IOBase
     if (!file2.existsSync()) {
       file2.createSync(recursive: true);
     }
-    saveBookChapterJson(bookName, BookConfig.getDefaultBookChapterJsonString(bookName: bookName));
+    saveBookChapterJson(bookName, BookConfig.getDefaultBookChapterJsonString());
   }
 
   /// Chapter.json读取
@@ -486,10 +498,9 @@ class IOBase
   /// Chapter.json保存（初始化、章节顺序有变化）
   void saveBookChapterJson(String bookName, String content) {
     File file = File(_jsonFilePath(bookName: bookName, isChapterJson: true));
-    if (!file.existsSync()) {
-      file.createSync(recursive: true);
+    if (file.existsSync()) {
+      file.writeAsStringSync(content);
     }
-    file.writeAsStringSync(content);
   }
 
   /// Chapter.json操作：添加新建章节
@@ -505,13 +516,6 @@ class IOBase
     List<String> bookList = bookChapterJson["chapterList"].cast<String>();
     bookList.removeAt(bookList.indexOf(chapterName));
     bookChapterJson["chapterList"] = bookList;
-    saveBookChapterJson(bookName, convert.jsonEncode(bookChapterJson));
-  }
-  
-  /// Chapter.json操作：书籍重命名
-  void renameBookInChapterJson(String bookName) {
-    Map<String, dynamic> bookChapterJson = getBookChapterJsonContent(bookName);
-    bookChapterJson["bookName"] = bookName;
     saveBookChapterJson(bookName, convert.jsonEncode(bookChapterJson));
   }
 
@@ -531,7 +535,7 @@ class IOBase
     if (!file2.existsSync()) {
       file2.createSync(recursive: true);
     }
-    saveBookSetJson(bookName, BookConfig.getDefaultBookSetJsonString(bookName: bookName));
+    saveBookSetJson(bookName, BookConfig.getDefaultBookSetJsonString());
   }
 
   /// Set.json读取
@@ -551,43 +555,22 @@ class IOBase
   void saveBookSetJson(String bookName, String content) {
     try {
       File file = File(_jsonFilePath(bookName: bookName, isSetJson: true));
-      if (!file.existsSync()) {
-        file.createSync(recursive: true);
+      if (file.existsSync()) {
+        file.writeAsStringSync(content);
       }
-      file.writeAsStringSync(content);
     } on Exception catch (e, s) {
       debugPrint("/// Set.json保存");
       debugPrintStack(stackTrace: s);
     }
   }
 
-  /// Set.json操作：书籍重命名
-  void renameBookInSetJson(String bookName) {
-    Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
-    bookSetJson["bookName"] = bookName;
-    /// 保存
-    saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
-  }
-
   /// Set.json操作：添加新建设定类
   void addNewSetInSetJson(String bookName, String setName) {
-    Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
+    Map<String, dynamic> bookSetJson = getBookSetJsonContent(bookName);
     /// setList: ["${setName}"]
-    Map<String, dynamic> newSetMap = {};
-    newSetMap["setName"] = setName;
-    newSetMap["isParsed"] = true;
-    bookSetJson["setList"].add(newSetMap);
-    /// ${setName}: {}
-    bookSetJson[setName] = {"settingList": []};
-    /// 保存
-    saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
-  }
-
-  /// Set.json操作：添加新建设定
-  void addNewSettingInSetJson(String bookName, String setName, String settingName) {
-    Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
-    Map<String, dynamic> newSetSettingMap = bookSetJson[setName];
-    newSetSettingMap["settingList"].add(settingName);
+    bookSetJson["setList"].add(setName);
+    /// ${setName}: {"isParsed": true}
+    bookSetJson[setName] = {"isParsed": true};
     /// 保存
     saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
   }
@@ -595,34 +578,111 @@ class IOBase
   /// Set.json操作：设定集重命名
   void renameSetInSetJson(String bookName, String oldSetName, String newSetName) {
     Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
-    List<dynamic> settingList = bookSetJson["setList"];
-    for (var setObj in settingList) {
-      if (setObj["setName"].toString().compareTo(oldSetName) == 0) {
-        setObj["setName"] = newSetName;
-        break;
-      }
-    }
+    List<String> settingList = bookSetJson["setList"].cast<String>();
+    settingList[settingList.indexOf(oldSetName)] = newSetName;
+    bookSetJson["setList"] = settingList;
     bookSetJson[newSetName] = bookSetJson.remove(oldSetName);
     /// 保存
     saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
-    /// set下所有${settingName}.json 的 setName 属性也修改
-    List<String> allSettings = getAllSettings(bookName, newSetName);
-    for (String settingName in allSettings) {
-      renameSetInSetting(bookName, newSetName, settingName);
-    }
+  }
+
+  /// Set.json操作：设定集重命名
+  void removeSetInSetJson(String bookName, String setName) {
+    Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
+    List<String> settingList = bookSetJson["setList"].cast<String>();
+    settingList.removeAt(settingList.indexOf(setName));
+    bookSetJson["setList"] = settingList;
+    bookSetJson.remove(setName);
+    /// 保存
+    saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
   }
 
   /// Set.json操作：修改属性值isParsed（是否加入解析）
   void changeParserOfBookSetJson(String bookName, String setName, bool isParsed) {
-    Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
-    List<dynamic> settingList = bookSetJson["setList"];
-    for (var setObj in settingList) {
-      if (setObj["setName"].toString().compareTo(setName) == 0) {
-        setObj["isParsed"] = isParsed;
-        break;
-      }
-    }
+    Map<String, dynamic> bookSetJson = getBookSetJsonContent(bookName);
+    bookSetJson[setName]["isParsed"] = isParsed;
     /// 保存
     saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                      设定 Setting.sort  (json内容)                       //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 创建Setting.sort文件
+  void createSettingSort(String bookName, String setName) {
+    File file2 = File(_sortFilePath(bookName: bookName, setName: setName));
+    if (!file2.existsSync()) {
+      file2.createSync(recursive: true);
+    }
+    file2.writeAsStringSync(BookConfig.getDefaultBookSettingSortJsonString());
+  }
+  /// Setting.sort文件: 保存内容
+  void saveSettingSort(String bookName, String setName, String content) {
+    try {
+      File file2 = File(_sortFilePath(bookName: bookName, setName: setName));
+      if (file2.existsSync()) {
+        file2.writeAsStringSync(content);
+      }
+    } on Exception catch (e, s) {
+      debugPrint("/// Setting.sort文件: 保存内容");
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// Setting.sort文件: 获取内容
+  Map<String, dynamic> getSettingSortMap(String bookName, String setName) {
+    File file = File(_sortFilePath(bookName: bookName, setName: setName));
+    String jsonContent = "";
+    try {
+      jsonContent = file.readAsStringSync();
+    } on Exception catch (e, s) {
+      debugPrint("/// Setting.sort文件: 获取内容");
+      debugPrintStack(stackTrace: s);
+    }
+    return convert.jsonDecode(jsonContent);
+  }
+  /// Setting.sort文件: 添加设定
+  void addNewSettingInSort(String bookName, String setName, String settingName) {
+    try {
+      Map<String, dynamic> sortMap = getSettingSortMap(bookName, setName);
+      List<String> settingList = sortMap["settingList"].cast<String>();
+      // 添加item
+      settingList.add(settingName);
+
+      sortMap["settingList"] = settingList;
+      saveSettingSort(bookName, setName, convert.jsonEncode(sortMap));
+    } on Exception catch (e, s) {
+      debugPrint("/// Setting.sort文件: 添加设定");
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// Setting.sort文件: 设定重命名
+  void renameSettingInSort(String bookName, String setName, String oldSettingName, String newSettingName) {
+    try {
+      Map<String, dynamic> sortMap = getSettingSortMap(bookName, setName);
+      List<String> settingList = sortMap["settingList"].cast<String>();
+      // 更换item
+      settingList[settingList.indexOf(oldSettingName)] = newSettingName;
+
+      sortMap["settingList"] = settingList;
+      saveSettingSort(bookName, setName, convert.jsonEncode(sortMap));
+    } on Exception catch (e, s) {
+      debugPrint("/// Setting.sort文件: 设定重命名");
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// Setting.sort文件: 设定重命名
+  void removeSettingInSort(String bookName, String setName, String settingName) {
+    try {
+      Map<String, dynamic> sortMap = getSettingSortMap(bookName, setName);
+      List<String> settingList = sortMap["settingList"].cast<String>();
+      // 移除item
+      settingList.removeAt(settingList.indexOf(settingName));
+
+      sortMap["settingList"] = settingList;
+      saveSettingSort(bookName, setName, convert.jsonEncode(sortMap));
+    } on Exception catch (e, s) {
+      debugPrint("/// Setting.sort文件: 设定重命名");
+      debugPrintStack(stackTrace: s);
+    }
   }
 }
