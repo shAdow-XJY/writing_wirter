@@ -122,23 +122,23 @@ class _LeftDrawerState extends State<LeftDrawer> {
                   IconButton(
                     icon: const Icon(Icons.add),
                     onPressed: () {
+                      List<String> bookList = ioBase.getAllBooks();
                       showDialog(
                         context: context,
                         builder: (context) => EditToastDialog(
                           title: '新建书籍',
                           callBack: (bookName) => {
-                            if (bookName.isNotEmpty)
-                              {
+                            if (bookName.isNotEmpty) {
+                              if (!bookList.contains(bookName)) {
                                 ioBase.createBook(bookName),
                                 eventBus.fire(CreateNewBookEvent()),
                                 Navigator.pop(context),
+                              } else {
+                                GlobalToast.showErrorTop('已存在该书名，请更改另一个名称'),
                               }
-                            else
-                              {
-                                GlobalToast.showErrorTop(
-                                  '书籍名字不能为空',
-                                ),
-                              },
+                            } else {
+                              GlobalToast.showErrorTop('书籍名字不能为空'),
+                            },
                           },
                         ),
                       );
@@ -147,7 +147,8 @@ class _LeftDrawerState extends State<LeftDrawer> {
                 ],
               ),
               body: const BookListView(),
-            ));
+            ),
+        );
       },
     );
   }

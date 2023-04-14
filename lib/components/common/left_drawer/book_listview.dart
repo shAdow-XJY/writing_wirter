@@ -15,6 +15,7 @@ import '../dialog/edit_toast_dialog.dart';
 import '../buttons/transparent_icon_button.dart';
 import '../dialog/rename_or_dialog.dart';
 import '../toast/global_toast.dart';
+import '../expandable_animated_size.dart';
 import 'chapter_listview.dart';
 
 class BookListView extends StatefulWidget {
@@ -177,6 +178,8 @@ class _BookListViewItemState extends State<BookListViewItem> {
                         TransIconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
+                            List<String> bookList = ioBase.getAllBooks();
+                            List<String> chapterList = ioBase.getAllChapters(bookName);
                             showDialog(
                               context: context,
                               builder: (context) => RenameOrDialog(
@@ -184,19 +187,23 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                 titleOne: '重命名书籍',
                                 titleTwo: '重命名章节',
                                 initInputText: bookName,
-                                items: ioBase.getAllChapters(bookName),
+                                items: chapterList,
                                 callBack: (RenameDialogMap map) {
                                   if (map.isChooseOne) {
                                     // 重命名书籍
                                     if (map.inputString.isNotEmpty) {
-                                      ioBase.renameBook(
-                                          bookName, map.inputString);
-                                      storeMap["renameBook"](
-                                          bookName, map.inputString);
-                                      eventBus.fire(RenameBookNameEvent(
-                                          oldBookName: bookName,
-                                          newBookName: map.inputString));
-                                      Navigator.pop(context);
+                                      if (bookName.compareTo(map.inputString) == 0) {
+                                        // 书名没有修改
+                                        Navigator.pop(context);
+                                      } else if (!bookList.contains(map.inputString)) {
+                                        // 不存在该书名的书籍
+                                        ioBase.renameBook(bookName, map.inputString);
+                                        storeMap["renameBook"](bookName, map.inputString);
+                                        eventBus.fire(RenameBookNameEvent(oldBookName: bookName, newBookName: map.inputString));
+                                        Navigator.pop(context);
+                                      } else {
+                                        GlobalToast.showErrorTop('已存在该书名，请更改另一个名称');
+                                      }
                                     } else {
                                       GlobalToast.showErrorTop('新书籍的名字不能为空');
                                     }
@@ -204,25 +211,23 @@ class _BookListViewItemState extends State<BookListViewItem> {
                                     // 重命名章节
                                     if (map.selectedString.isNotEmpty) {
                                       if (map.inputString.isNotEmpty) {
-                                        ioBase.renameChapter(
-                                            bookName,
-                                            map.selectedString,
-                                            map.inputString);
-                                        storeMap["renameChapter"](
-                                            bookName,
-                                            map.selectedString,
-                                            map.inputString);
-                                        eventBus.fire(RenameChapterNameEvent(
-                                            bookName: bookName,
-                                            oldChapterName: map.selectedString,
-                                            newChapterName: map.inputString));
-                                        Navigator.pop(context);
+                                        if (map.selectedString.compareTo(map.inputString) == 0) {
+                                          // 章节名没有修改
+                                          Navigator.pop(context);
+                                        } else if (!chapterList.contains(map.inputString)) {
+                                          // 不存在该章节名的章节
+                                          ioBase.renameChapter(bookName, map.selectedString, map.inputString);
+                                          storeMap["renameChapter"](bookName, map.selectedString, map.inputString);
+                                          eventBus.fire(RenameChapterNameEvent(bookName: bookName, oldChapterName: map.selectedString, newChapterName: map.inputString));
+                                          Navigator.pop(context);
+                                        } else {
+                                          GlobalToast.showErrorTop('该书下已存在该章节名，请更改另一个名称');
+                                        }
                                       } else {
                                         GlobalToast.showErrorTop('新章节的名字不能为空');
                                       }
                                     } else {
-                                      GlobalToast.showErrorTop(
-                                          '没有选中要重新命名的旧章节名称');
+                                      GlobalToast.showErrorTop('没有选中要重新命名的旧章节名称');
                                     }
                                   }
                                 },
@@ -253,26 +258,23 @@ class _BookListViewItemState extends State<BookListViewItem> {
                           child: TransIconButton(
                             icon: const Icon(Icons.add),
                             onPressed: () {
+                              List<String> chapterList = ioBase.getAllChapters(bookName);
                               showDialog(
                                 context: context,
                                 builder: (context) => EditToastDialog(
                                   title: '新建章节',
                                   callBack: (chapterName) => {
-                                    if (chapterName.isNotEmpty)
-                                      {
-                                        ioBase.createChapter(
-                                            bookName, chapterName),
-                                        eventBus.fire(CreateNewChapterEvent(
-                                            bookName: bookName,
-                                            chapterName: chapterName)),
+                                    if (chapterName.isNotEmpty) {
+                                      if (!chapterList.contains(chapterName)) {
+                                        ioBase.createChapter(bookName, chapterName),
+                                        eventBus.fire(CreateNewChapterEvent(bookName: bookName, chapterName: chapterName)),
                                         Navigator.pop(context),
+                                      } else {
+                                        GlobalToast.showErrorTop('该书下已存在该章节名，请更改另一个名称'),
                                       }
-                                    else
-                                      {
-                                        GlobalToast.showErrorTop(
-                                          '章节名字不能为空',
-                                        ),
-                                      },
+                                    } else {
+                                      GlobalToast.showErrorTop('章节名字不能为空'),
+                                    },
                                   },
                                 ),
                               );
@@ -297,11 +299,10 @@ class _BookListViewItemState extends State<BookListViewItem> {
               });
             },
           ),
-          isExpanded
-              ? ChapterListView(
-                  bookName: bookName,
-                )
-              : const SizedBox(),
+          ExpandableAnimatedSize(
+            isExpanded: isExpanded,
+            child: ChapterListView(bookName: bookName,),
+          ),
           Divider(
             thickness: 1,
             height: 1,

@@ -147,6 +147,7 @@ class _RightDrawerState extends State<RightDrawer> {
                             IconButton(
                               icon: const Icon(Icons.add),
                               onPressed: () {
+                                List<String> setList = ioBase.getAllSets(currentBook);
                                 showDialog(
                                   context: context,
                                   builder: (context) => EditToastDialog(
@@ -154,9 +155,13 @@ class _RightDrawerState extends State<RightDrawer> {
                                     callBack: (setName) => {
                                       if (setName.isNotEmpty)
                                       {
-                                        ioBase.createSet(currentBook, setName),
-                                        eventBus.fire(CreateNewSetEvent()),
-                                        Navigator.pop(context),
+                                        if (!setList.contains(setName)) {
+                                          ioBase.createSet(currentBook, setName),
+                                          eventBus.fire(CreateNewSetEvent()),
+                                          Navigator.pop(context),
+                                        } else {
+                                          GlobalToast.showErrorTop('已存在该设定集名，请更改另一个名称',),
+                                        },
                                       } else {
                                         GlobalToast.showErrorTop('设定集名字不能为空',),
                                       },

@@ -13,6 +13,7 @@ import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
 import '../dialog/rename_or_dialog.dart';
+import '../expandable_animated_size.dart';
 import '../toast/global_toast.dart';
 import '../transparent_checkbox.dart';
 import '../buttons/transparent_icon_button.dart';
@@ -229,6 +230,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                           TransIconButton(
                             icon: const Icon(Icons.drive_file_rename_outline),
                             onPressed: () {
+                              List<String> setList = ioBase.getAllSets(currentBook);
                               showDialog(
                                 context: context,
                                 builder: (context) => RenameOrDialog(
@@ -241,10 +243,17 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                     if (map.isChooseOne) {
                                       // 重命名设定集
                                       if (map.inputString.isNotEmpty) {
-                                        ioBase.renameSet(currentBook, setName, map.inputString);
-                                        storeMap["renameSet"](setName, map.inputString);
-                                        eventBus.fire(RenameSetEvent(oldSetName: setName, newSetName: map.inputString));
-                                        Navigator.pop(context);
+                                        if (setName.compareTo(map.inputString) == 0) {
+                                          // 设定集名字没有改动
+                                          Navigator.pop(context);
+                                        } else if (!setList.contains(map.inputString)) {
+                                          ioBase.renameSet(currentBook, setName, map.inputString);
+                                          storeMap["renameSet"](setName, map.inputString);
+                                          eventBus.fire(RenameSetEvent(oldSetName: setName, newSetName: map.inputString));
+                                          Navigator.pop(context);
+                                        } else {
+                                          GlobalToast.showErrorTop('该书下已存在该设定集名，请更改另一个名称');
+                                        }
                                       } else {
                                         GlobalToast.showErrorTop('新设定集的名字不能为空');
                                       }
@@ -252,10 +261,17 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                       // 重命名设定
                                       if (map.selectedString.isNotEmpty) {
                                         if (map.inputString.isNotEmpty) {
-                                          ioBase.renameSetting(currentBook, setName, map.selectedString, map.inputString);
-                                          storeMap["renameSetting"](map.selectedString, map.inputString);
-                                          eventBus.fire(RenameSettingEvent(setName: setName, oldSettingName: map.selectedString, newSettingName: map.inputString));
-                                          Navigator.pop(context);
+                                          if (map.selectedString.compareTo(map.inputString) == 0) {
+                                            // 设定名字没有改动
+                                            Navigator.pop(context);
+                                          } else if (!settingsList.contains(map.inputString)) {
+                                            ioBase.renameSetting(currentBook, setName, map.selectedString, map.inputString);
+                                            storeMap["renameSetting"](map.selectedString, map.inputString);
+                                            eventBus.fire(RenameSettingEvent(setName: setName, oldSettingName: map.selectedString, newSettingName: map.inputString));
+                                            Navigator.pop(context);
+                                          } else {
+                                            GlobalToast.showErrorTop('该设定集下已存在该设定名，请更改另一个名称');
+                                          }
                                         } else {
                                           GlobalToast.showErrorTop('新设定的名字不能为空');
                                         }
@@ -307,9 +323,13 @@ class _SetListViewItemState extends State<SetListViewItem> {
                                     title: '新建设定',
                                     callBack: (settingName) => {
                                       if (settingName.isNotEmpty) {
-                                        ioBase.createSetting(currentBook, setName, settingName),
-                                        eventBus.fire(CreateNewSettingEvent(setName: setName, settingName: settingName)),
-                                        Navigator.pop(context),
+                                        if (!settingsList.contains(settingName)) {
+                                          ioBase.createSetting(currentBook, setName, settingName),
+                                          eventBus.fire(CreateNewSettingEvent(setName: setName, settingName: settingName)),
+                                          Navigator.pop(context),
+                                        } else {
+                                          GlobalToast.showErrorTop('该设定集下已存在该设定名，请更改另一个名称',),
+                                        }
                                       } else {
                                         GlobalToast.showErrorTop('设定名字不能为空',),
                                       },
@@ -337,12 +357,10 @@ class _SetListViewItemState extends State<SetListViewItem> {
                 });
               },
             ),
-            isExpanded
-                ? SettingsListView(
-                    setName: setName,
-                    settingsList: settingsList,
-                  )
-                : const SizedBox(),
+            ExpandableAnimatedSize(
+              isExpanded: isExpanded,
+              child: SettingsListView(setName: setName, settingsList: settingsList,)
+            ),
             Divider(
               thickness: 1,
               height: 1,
