@@ -21,6 +21,10 @@ v6.0.0:
 files number in /lib：114
 lines number in /lib：6257
 added lines: 34667, removed lines: 6394, total lines: 28273
+
+v7.0.0:
+
+
 ```
 
 ---

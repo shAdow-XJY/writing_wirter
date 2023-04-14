@@ -5,11 +5,11 @@ import 'package:redux/redux.dart';
 import 'package:writing_writer/components/common/buttons/transparent_icon_button.dart';
 import 'dart:convert' as convert;
 import '../../../components/common/buttons/drop_down_button.dart';
-import '../../../components/common/dialog/edit_toast_dialog.dart';
+import '../../../components/common/dialog/number_edit_dialog.dart';
+import '../../../components/common/dialog/text_toast_dialog.dart';
 import '../../../components/common/toast/global_toast.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
-import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
 class CommonSettingEditPage extends StatefulWidget {
@@ -69,19 +69,9 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
     if (currentMap.isEmpty) {
       return;
     }
+    currentMap["chapterFlags"] = chapterFlags;
     currentMap["information"][currentFlagIndex]["description"] = currentDescription;
     ioBase.saveSetting(currentBook, currentSet, currentSetting, convert.jsonEncode(currentMap));
-  }
-
-  /// 设定json重命名
-  void changeSettingName(String newSettingName) {
-    if (newSettingName.compareTo(currentSetting) == 0) {
-      return;
-    }
-    // 先保存再重命名设定.json文件
-    ioBase.saveSetting(currentBook, currentSet, currentSetting, currentDescription);
-    ioBase.renameSetting(currentBook, currentSet, currentSetting, newSettingName);
-    currentSetting = newSettingName;
   }
 
   /// chapterFlagShow 处理
@@ -97,7 +87,7 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
     }
   }
 
-  /// currentFlagIndex 处理
+  /// currentFlagIndex 处理：初始化和新建
   void currentFlagIndexChange(String chapterNumber, {bool insertNewFlag = false}) {
     List<int> chapterNumList = [];
     for (var index = 0; index < chapterFlags.length; ++index) {
@@ -121,6 +111,15 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
     descriptionChange();
   }
 
+  /// currentFlagIndex 处理：删除
+  void currentFlagIndexRemove() {
+    chapterFlags.removeAt(currentFlagIndex);
+    currentMap["information"].removeAt(currentFlagIndex);
+    --currentFlagIndex;
+    chapterFlagShowChange();
+    descriptionChange();
+  }
+
   /// Description 处理
   void descriptionChange() {
     textEditingController.text = currentMap["information"][currentFlagIndex]["description"];
@@ -131,8 +130,8 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
   void initState() {
     super.initState();
     textEditingController = widget.textEditingController;
-    /// 添加兼听 当TextFeild 中内容发生变化时 回调 焦点变动 也会触发
-    /// onChanged 当TextFeild文本发生改变时才会回调
+    /// 添加兼听 当TextField 中内容发生变化时 回调 焦点变动 也会触发
+    /// onChanged 当TextField文本发生改变时才会回调
     textEditingController.addListener(() {
       ///获取输入的内容
       currentDescription = textEditingController.text;
@@ -167,13 +166,9 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
           currentSetting = store.state.setModel.currentSetting;
           getSetting();
         }
-        void renameSetting() {
-          store.dispatch(SetSetDataAction(currentSet: currentSet, currentSetting: currentSetting));
-        }
         return {
           "currentSet": currentSet,
           "currentSetting": currentSetting,
-          "renameSetting": renameSetting,
         };
       },
       builder: (BuildContext context, Map<String, dynamic> map) {
@@ -191,88 +186,94 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                 appBar: AppBar(
                   automaticallyImplyLeading: false,
                   centerTitle: true,
-                  title: InkWell(
-                    child: Text(map["currentSetting"]),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => EditToastDialog(
-                          title: '设定重命名',
-                          init: currentSetting,
-                          callBack: (strBack) => {
-                            if (strBack.isNotEmpty) {
-                              changeSettingName(strBack),
-                              map["renameSetting"](),
-                              Navigator.pop(context),
-                            } else {
-                              GlobalToast.showErrorTop('设定名字不能为空',),
-                            },
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                  actions: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const Text('第'),
-                        DropDownButton(
-                          initIndex: currentFlagIndex,
-                          items: chapterFlagsShow,
-                          onChanged: (String selected) {
-                            saveSetting();
-                            setState(() {
-                              currentFlagIndexChange(selected.split('~').first);
-                            });
-                          },
-                        ),
-                        const Text('章'),
-                        TransIconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => EditToastDialog(
-                                title: '新建设定节点',
-                                callBack: (flagChapter) => {
-                                  if (flagChapter.isNotEmpty)
-                                  {
-                                    setState(() {
-                                      saveSetting();
-                                      currentFlagIndexChange(flagChapter, insertNewFlag: true);
-                                    }),
-                                    Navigator.pop(context),
-                                  } else {
-                                    GlobalToast.showErrorTop('设定节点不能为空',),
-                                  },
-                                },
-                              ),
-                            );
-                          },
-                        )
-                      ],
-                    )
-                  ],
+                  title: Text(map["currentSetting"]),
                 ),
                 body: SingleChildScrollView(
-                  child: BlurGlass(
-                    marginValue: 0.0,
-                    paddingValue: 0.0,
-                    inBorderRadius: 0.0,
-                    outBorderRadius: 0.0,
-                    child: TextField(
-                      maxLines: null,
-                      focusNode: FocusNode(),
-                      controller: textEditingController,
-                      decoration: const InputDecoration(
-                        /// 消除下边框
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Text('设定结点:'),
+                          const Text('第'),
+                          DropDownButton(
+                            initIndex: currentFlagIndex,
+                            items: chapterFlagsShow,
+                            onChanged: (String selected) {
+                              saveSetting();
+                              setState(() {
+                                currentFlagIndexChange(selected.split('~').first);
+                              });
+                            },
+                          ),
+                          const Text('章'),
+                          TransIconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => NumberEditDialog(
+                                  title: '新建设定节点',
+                                  callBack: (String flagChapterNumber) => {
+                                    if (!chapterFlags.contains(flagChapterNumber))
+                                    {
+                                      setState(() {
+                                        saveSetting();
+                                        currentFlagIndexChange(flagChapterNumber, insertNewFlag: true);
+                                      }),
+                                      Navigator.pop(context),
+                                    } else {
+                                      GlobalToast.showErrorTop('该设定节点$flagChapterNumber已存在',),
+                                    },
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                          TransIconButton(
+                            icon: const Icon(Icons.delete_outline),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => TextToastDialog(
+                                  title: '删除设定节点',
+                                  text: '确定删除当前设定结点 ${chapterFlags[currentFlagIndex]} ?',
+                                  callBack: () {
+                                    if (currentFlagIndex != 0) {
+                                      setState(() {
+                                        currentFlagIndexRemove();
+                                        saveSetting();
+                                      });
+                                      Navigator.pop(context);
+                                    } else {
+                                      GlobalToast.showErrorTop('设定节点 1 不支持删除',);
+                                    }
+                                  },
+                                ),
+                              );
+                            },
+                          )
+                        ],
+                      ),
+                      BlurGlass(
+                        marginValue: 0.0,
+                        paddingValue: 0.0,
+                        inBorderRadius: 0.0,
+                        outBorderRadius: 0.0,
+                        child: TextField(
+                          maxLines: null,
+                          focusNode: FocusNode(),
+                          controller: textEditingController,
+                          decoration: const InputDecoration(
+                            /// 消除下边框
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                    ],
+                  )
                 ),
               );
       },
