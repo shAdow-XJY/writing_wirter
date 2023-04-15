@@ -15,7 +15,7 @@ import '../dialog/edit_toast_dialog.dart';
 import '../buttons/transparent_icon_button.dart';
 import '../dialog/rename_or_dialog.dart';
 import '../toast/global_toast.dart';
-import '../expandable_animated_size.dart';
+import '../vertical_expand_animated_widget.dart';
 import 'chapter_listview.dart';
 
 class BookListView extends StatefulWidget {
@@ -299,7 +299,7 @@ class _BookListViewItemState extends State<BookListViewItem> {
               });
             },
           ),
-          ExpandableAnimatedSize(
+          VerticalExpandAnimatedWidget(
             isExpanded: isExpanded,
             child: ChapterListView(bookName: bookName,),
           ),

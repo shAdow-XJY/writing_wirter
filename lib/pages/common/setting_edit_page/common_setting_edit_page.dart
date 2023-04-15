@@ -194,9 +194,15 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text('设定结点:'),
-                          const Text('第'),
-                          DropDownButton(
+                          const Flexible(
+                            child: Text('设定结点:'),
+                          ),
+                          const Flexible(
+                            child: Text('第'),
+                          ),
+                          Flexible(
+                            flex: 5,
+                            child: DropDownButton(
                             initIndex: currentFlagIndex,
                             items: chapterFlagsShow,
                             onChanged: (String selected) {
@@ -206,8 +212,12 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                               });
                             },
                           ),
-                          const Text('章'),
-                          TransIconButton(
+                          ),
+                          const Flexible(
+                            child: Text('章'),
+                          ),
+                          Flexible(
+                            child: TransIconButton(
                             icon: const Icon(Icons.add),
                             onPressed: () {
                               showDialog(
@@ -216,13 +226,13 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                                   title: '新建设定节点',
                                   callBack: (String flagChapterNumber) => {
                                     if (!chapterFlags.contains(flagChapterNumber))
-                                    {
-                                      setState(() {
-                                        saveSetting();
-                                        currentFlagIndexChange(flagChapterNumber, insertNewFlag: true);
-                                      }),
-                                      Navigator.pop(context),
-                                    } else {
+                                      {
+                                        setState(() {
+                                          saveSetting();
+                                          currentFlagIndexChange(flagChapterNumber, insertNewFlag: true);
+                                        }),
+                                        Navigator.pop(context),
+                                      } else {
                                       GlobalToast.showErrorTop('该设定节点$flagChapterNumber已存在',),
                                     },
                                   },
@@ -230,7 +240,9 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                               );
                             },
                           ),
-                          TransIconButton(
+                          ),
+                          Flexible(
+                            child: TransIconButton(
                             icon: const Icon(Icons.delete_outline),
                             onPressed: () {
                               showDialog(
@@ -252,7 +264,8 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                                 ),
                               );
                             },
-                          )
+                          ),
+                          ),
                         ],
                       ),
                       BlurGlass(

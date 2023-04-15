@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class ExpandableAnimatedSize extends StatefulWidget {
+class HorizontalExpandAnimatedWidget extends StatefulWidget {
   final bool isExpanded;
   final Widget child;
 
-  const ExpandableAnimatedSize({
-    Key? key, 
+  const HorizontalExpandAnimatedWidget({
+    Key? key,
     required this.isExpanded,
     required this.child
   }) : super(key: key);
 
   @override
-  State<ExpandableAnimatedSize> createState() => _ExpandableAnimatedSizeState();
+  State<HorizontalExpandAnimatedWidget> createState() => _HorizontalExpandAnimatedWidgetState();
 }
 
-class _ExpandableAnimatedSizeState extends State<ExpandableAnimatedSize> with SingleTickerProviderStateMixin {
+class _HorizontalExpandAnimatedWidgetState extends State<HorizontalExpandAnimatedWidget> with SingleTickerProviderStateMixin {
 
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -39,7 +39,7 @@ class _ExpandableAnimatedSizeState extends State<ExpandableAnimatedSize> with Si
   }
 
   @override
-  void didUpdateWidget(covariant ExpandableAnimatedSize oldWidget) {
+  void didUpdateWidget(covariant HorizontalExpandAnimatedWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isExpanded != oldWidget.isExpanded) {
       if (widget.isExpanded) {
@@ -47,6 +47,8 @@ class _ExpandableAnimatedSizeState extends State<ExpandableAnimatedSize> with Si
       } else {
         _controller.reverse();
       }
+    } else if (widget.isExpanded) {
+      _controller.forward(from: 0.0);
     }
   }
 

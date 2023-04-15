@@ -13,7 +13,7 @@ import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
 import '../dialog/rename_or_dialog.dart';
-import '../expandable_animated_size.dart';
+import '../vertical_expand_animated_widget.dart';
 import '../toast/global_toast.dart';
 import '../transparent_checkbox.dart';
 import '../buttons/transparent_icon_button.dart';
@@ -357,7 +357,7 @@ class _SetListViewItemState extends State<SetListViewItem> {
                 });
               },
             ),
-            ExpandableAnimatedSize(
+            VerticalExpandAnimatedWidget(
               isExpanded: isExpanded,
               child: SettingsListView(setName: setName, settingsList: settingsList,)
             ),
