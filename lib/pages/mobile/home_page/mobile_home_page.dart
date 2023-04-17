@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
 import '../../../components/common/slide_transition_x.dart';
+import '../../../components/common/transparent_bar_scroll_view.dart';
 import '../../../components/mobile/mobile_float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_app_bar.dart';
 import '../chapter_edit_page/mobile_chapter_edit_body.dart';
@@ -20,8 +21,17 @@ class _MobileHomePageState extends State<MobileHomePage> with SingleTickerProvid
   /// 页面切换初始化
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Widget> _widgetList = [
-    const MobileChapterEditPageBody(
+    const SizedBox(
       key: ValueKey("MobileChapterEditPageBody"),
+      height: double.infinity,
+      child: TransBarScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            MobileChapterEditPageBody(),
+          ],
+        ),
+      ),
     ),
     const MobileSettingEditPage(
       key: ValueKey("MobileSettingEditPage"),
