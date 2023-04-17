@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
 import '../../../components/common/buttons/semicircle_button.dart';
-import '../../../components/common/test.dart';
 import '../../../components/common/transparent_bar_scroll_view.dart';
 import '../../../components/pc/pc_float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_app_bar.dart';
@@ -25,25 +24,16 @@ class _PCHomePageState extends State<PCHomePage>{
 
   ///
   bool _isDragging = false;
-  int totalFlex = 30;
-  int leftFlex = 20;
-  int minLeftFlex = 15;
-  int maxLeftFlex = 20;
 
-  /// 比例：total 30
-  /// left ： 15~20
-  /// button: 1
-  /// right: 10~14
-  double _leftFactor = 0.6;
-  double _minLeftFactor = 0.5;
-  double _maxLeftFactor = 0.666;
-  double _buttonFactor = 0.033;
+  final double _minLeftFactor = 0.5;
+  final double _maxLeftFactor = 0.666;
+  final double _buttonFactor = 0.033;
+  /// 分割线位置
+  double _dividerPosition = 0.633;
 
-  double _totalWidth = 0;
   double _minLeftWidth = 0;
   double _maxLeftWidth = 0;
-
-  double _dividerPosition = 0.633;
+  double _totalWidth = 0;
 
   double leftWidth = 0.0;
   double rightWidth = 0.0;
@@ -122,8 +112,8 @@ class _PCHomePageState extends State<PCHomePage>{
                   onPanUpdate: (details) {
                     if (_isDragging) {
                       setState(() {
-                        _dividerPosition += details.delta.dx / _totalWidth;
-                        _dividerPosition = _dividerPosition.clamp(0, 1);
+                        _dividerPosition += details.delta.dx * 2.5 / _totalWidth;
+                        _dividerPosition = _dividerPosition.clamp(0.0, 1.0);
                       });
                     }
                   },
