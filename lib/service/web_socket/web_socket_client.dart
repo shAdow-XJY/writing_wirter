@@ -22,22 +22,19 @@ class WebSocketClient {
   /// 客户端操作
   void clientConnect(String ip) async {
     inputIp = ip;
+
     try {
-      _clientSocketChannel =  IOWebSocketChannel.connect(
+      _clientSocketChannel = IOWebSocketChannel.connect(
         Uri.parse('ws://$ip:${_serverPort.toString()}'),
-        connectTimeout: const Duration(milliseconds: 150),
+        connectTimeout: const Duration(milliseconds: 2000),
       );
 
-      Timer(const Duration(milliseconds: 150), () {
-        if (_clientSocketChannel.innerWebSocket == null) {
-          _eventBus.fire(WSClientConnectServerErrorEvent());
-        }
-        else {
-          _eventBus.fire(WSClientConnectServerSuccessEvent());
-          _clientSocketChannel.stream.listen((msg){
-            _handleMsg(msg);
-          });
-        }
+      await _clientSocketChannel.ready;
+
+      _eventBus.fire(WSClientConnectServerSuccessEvent());
+
+      _clientSocketChannel.stream.listen((msg){
+        _handleMsg(msg);
       });
     } catch (e,s) {
       debugPrintStack(stackTrace: s);

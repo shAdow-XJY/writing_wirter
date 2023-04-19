@@ -69,10 +69,10 @@ packages:
     dependency: "direct main"
     description:
       name: click_text_field
-      sha256: "62dea4a33f0a378ad0777f118b2e2b8ee7e4b0221a23f12379abb96a5bf86b6b"
+      sha256: "9ecc6804c6c47e2de430a76abffaf399f2297ac07afd749c610b6addff20a04d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.5"
+    version: "0.0.6"
   clock:
     dependency: transitive
     description:

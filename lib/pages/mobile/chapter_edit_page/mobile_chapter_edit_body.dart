@@ -31,15 +31,32 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   /// 章节内容输入框控制器
   final ClickTextEditingController clickTextEditingController = ClickTextEditingController();
 
+  /// 防抖发送数据包
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
     subscription_1 = eventBus.on<WSServerStartWebSocketEvent>().listen((event) {
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
+
       clickTextEditingController.addListener(() {
         if (!isWebSocketReceive) {
+          // 消息未发送成功
+          if (_timer != null && _timer!.isActive) {
+            // 重置定时器
+            _timer?.cancel();
+          }
+          // 发送消息
           webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 1, msgContent: clickTextEditingController.text, msgOffset: clickTextEditingController.selection.baseOffset));
+          // 设置定时器
+          _timer = Timer(const Duration(milliseconds: 500), () {
+            _timer = null;
+            // 消息发送成功，重置状态
+            isWebSocketReceive = false;
+          });
         } else {
+          // 消息已经发送成功，重置状态
           isWebSocketReceive = false;
         }
       });
@@ -62,6 +79,9 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
 
   @override
   void dispose() {
+    if (_timer != null && _timer!.isActive) {
+      _timer?.cancel();
+    }
     subscription_1.cancel();
     clickTextEditingController.dispose();
     super.dispose();

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
 import 'package:writing_writer/components/common/toast/global_toast.dart';
@@ -24,7 +26,8 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
   Map<String,dynamic> msgMap = {};
   /// 是否 webSocket 传过来导致的编辑内容改变
   bool isWebSocketReceive = false;
-
+  /// 防抖发送数据包
+  Timer? _timer;
   @override
   void initState() {
     super.initState();
@@ -49,8 +52,21 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
     /// onChanged 当TextField文本发生改变时才会回调
     textEditingController.addListener(() {
       if (!isWebSocketReceive) {
+        // 消息未发送成功
+        if (_timer != null && _timer!.isActive) {
+          // 重置定时器
+          _timer?.cancel();
+        }
+        // 发送消息
         webSocketClient.clientSendMsg(WebSocketMsg.msgString(msgCode: 0, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset));
+        // 设置定时器
+        _timer = Timer(const Duration(milliseconds: 500), () {
+          _timer = null;
+          // 消息发送成功，重置状态
+          isWebSocketReceive = false;
+        });
       } else {
+        // 消息已经发送成功，重置状态
         isWebSocketReceive = false;
       }
     });
@@ -58,6 +74,9 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
 
   @override
   void dispose() {
+    if (_timer != null && _timer!.isActive) {
+      _timer?.cancel();
+    }
     webSocketClient.clientClose();
     textEditingController.dispose();
     super.dispose();

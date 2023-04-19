@@ -1,2 +1,0 @@
-/// MobileFloatButtonChangedEvent
-class MobileFloatButtonChangedEvent {}
