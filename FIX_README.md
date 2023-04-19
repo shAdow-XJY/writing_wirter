@@ -13,3 +13,13 @@
         defaultTargetPlatform != TargetPlatform.macOS) {
       // assert(readOnly && !obscureText);
 ```
+
+```
+    \Local\Pub\Cache\hosted\pub.dev\animated_stack-0.2.0\lib\animated_stack.dart
+    
+    class AnimatedStack 
+      
+    => add onChanged Function
+    
+    widget.onChanged(opened),
+```

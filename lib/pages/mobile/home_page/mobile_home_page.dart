@@ -41,6 +41,9 @@ class _MobileHomePageState extends State<MobileHomePage> with SingleTickerProvid
   late int _currentIndex;
   late Widget _currentWidget;
 
+  /// 是否打开浮动按钮页面
+  bool isOpened = false;
+
   @override
   void initState() {
     super.initState();
@@ -51,8 +54,15 @@ class _MobileHomePageState extends State<MobileHomePage> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return MobileFloatButton(
+      onOpen: (bool opened) {
+        setState(() {
+          FocusScope.of(context).requestFocus(FocusNode());
+          isOpened = opened;
+        });
+      },
       mainPage: GestureDetector(
         onHorizontalDragEnd: (details) {
+          if (isOpened) return;
           if ((details.primaryVelocity ?? 0.0) > 0.0) {
             // 手势向左滑动
             if (scaffoldKey.currentState!.isEndDrawerOpen) {
@@ -81,7 +91,6 @@ class _MobileHomePageState extends State<MobileHomePage> with SingleTickerProvid
         },
         child: Scaffold(
           key: scaffoldKey,
-          extendBody: true,
           appBar: const ChapterEditPageAppBar(),
           drawer: const LeftDrawer(widthFactor: 0.9),
           endDrawer: const RightDrawer(widthFactor: 0.9),

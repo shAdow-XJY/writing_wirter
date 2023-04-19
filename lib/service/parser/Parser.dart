@@ -70,8 +70,9 @@ class Parser
   static Map<String, Set<String>> getBookInitParserModel(IOBase ioBase, String bookName) {
     Map<String, Set<String>> newParserModel = {};
     Map<String, dynamic> setJson = ioBase.getBookSetJsonContent(bookName);
-    List<String> setList = setJson["setList"].cast<String>() ?? [];
-    for (var setName in setList) {
+    List<dynamic> setList = setJson["setList"] ?? [];
+    List<String> setListStr = setList.map((e) => e.toString()).toList();
+    for (var setName in setListStr) {
       if (setJson[setName]["isParsed"]) {
         newParserModel = addSetToParser(newParserModel, setName, ioBase.getAllSettings(bookName, setName));
       }
