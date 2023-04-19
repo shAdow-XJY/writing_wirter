@@ -1,0 +1,2 @@
+/// MobileFloatButtonChangedEvent
+class MobileFloatButtonChangedEvent {}

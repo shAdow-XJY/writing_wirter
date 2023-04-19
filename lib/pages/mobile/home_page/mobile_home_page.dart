@@ -62,7 +62,10 @@ class _MobileHomePageState extends State<MobileHomePage> with SingleTickerProvid
       },
       mainPage: GestureDetector(
         onHorizontalDragEnd: (details) {
-          if (isOpened) return;
+          if (isOpened) {
+            FocusScope.of(context).requestFocus(FocusNode());
+            return;
+          }
           if ((details.primaryVelocity ?? 0.0) > 0.0) {
             // 手势向左滑动
             if (scaffoldKey.currentState!.isEndDrawerOpen) {
@@ -96,19 +99,31 @@ class _MobileHomePageState extends State<MobileHomePage> with SingleTickerProvid
           endDrawer: const RightDrawer(widthFactor: 0.9),
           drawerEnableOpenDragGesture: false,
           endDrawerEnableOpenDragGesture: false,
-          body: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 1000),
-            switchInCurve: Curves.decelerate,
-            switchOutCurve: _currentIndex == 0 ? Curves.decelerate : Curves.bounceIn,
-            child: _currentWidget,
-            transitionBuilder: (child, animation) {
-              return SlideTransitionX(
-                direction: _currentIndex == 0 ? AxisDirection.right : AxisDirection.left,
-                position: animation,
-                child: child,
-              );
-            },
-          ),
+          body: Stack(
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 1000),
+                switchInCurve: Curves.decelerate,
+                switchOutCurve: _currentIndex == 0 ? Curves.decelerate : Curves.bounceIn,
+                child: _currentWidget,
+                transitionBuilder: (child, animation) {
+                  return SlideTransitionX(
+                    direction: _currentIndex == 0 ? AxisDirection.right : AxisDirection.left,
+                    position: animation,
+                    child: child,
+                  );
+                },
+              ),
+              // 添加透明的组件以阻止下层的点击事件
+              if(isOpened)
+                Positioned.fill(
+                  child: GestureDetector(
+                    onTap: () {},
+                    behavior: HitTestBehavior.opaque, // 防止事件穿透
+                  ),
+                ),
+            ],
+          )
         ),
       ),
     );
