@@ -1,9 +1,13 @@
+// ignore_for_file: file_names
+
 import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import '../../components/common/toast/global_toast.dart';
 import 'file_configure.dart';
 
 class ExportIOBase
@@ -50,36 +54,56 @@ class ExportIOBase
   ////////////////////////////////////////////////////////////////////////////
   /// 导出书本某一章节
   void exportChapter(String bookName, String chapterName) {
-    /// 先创建目录chs
-    Directory dir = Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookChsDirPath(bookName)}");
-    if (!dir.existsSync()) {
-      dir.createSync(recursive: true);
+    try {
+      /// 先创建目录chs
+      Directory dir = Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookChsDirPath(bookName)}");
+      if (!dir.existsSync()) {
+        dir.createSync(recursive: true);
+      }
+      File file = File("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookChapterFilePath(bookName, chapterName)}");
+      file.copySync("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookChapterFilePath(bookName, chapterName)}");
+      GlobalToast.showSuccessTop('导出章节成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('导出章节失败');
+      debugPrintStack(stackTrace: s);
     }
-    File file = File("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookChapterFilePath(bookName, chapterName)}");
-    file.copySync("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookChapterFilePath(bookName, chapterName)}");
   }
 
   /// 导出书本全部章节
   void exportBook(String bookName, List<String> chapterList) {
-    /// 先清空原有的导出文件
-    Directory dir = Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookBokDirPath(bookName)}");
-    if (dir.existsSync()) {
-      dir.deleteSync(recursive: true);
-    }
-    dir.createSync(recursive: true);
+    try {
+      /// 先清空原有的导出文件
+      Directory dir = Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookBokDirPath(bookName)}");
+      if (dir.existsSync()) {
+        dir.deleteSync(recursive: true);
+      }
+      dir.createSync(recursive: true);
 
-    for (var index = 0; index < chapterList.length; ++index) {
-      File file = File("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookChapterFilePath(bookName, chapterList[index])}");
-      file.copySync("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookBokChapterFilePath(bookName, index+1, chapterList[index])}");
+      for (var index = 0; index < chapterList.length; ++index) {
+        File file = File("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookChapterFilePath(bookName, chapterList[index])}");
+        file.copySync("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookBokChapterFilePath(bookName, index+1, chapterList[index])}");
+      }
+
+      GlobalToast.showSuccessTop('导出书籍成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('导出书籍失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
   /// 导出可移植.zip（包含chapter 和 set）
   Future<void> exportZip(String bookName) async {
-    var encoder = ZipFileEncoder();
-    encoder.create("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookZipFilePath(bookName)}");
-    await encoder.addDirectory(Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookDirPath(bookName)}"));
-    encoder.close();
+    try {
+      var encoder = ZipFileEncoder();
+      encoder.create("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookZipFilePath(bookName)}");
+      await encoder.addDirectory(Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.writeBookDirPath(bookName)}"));
+      encoder.close();
+
+      GlobalToast.showSuccessTop('导出可移植.zip文件成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('导出可移植.zip文件失败');
+      debugPrintStack(stackTrace: s);
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -113,18 +137,23 @@ class ExportIOBase
 
     String bookName = "";
     if (result != null) {
-      // 去掉".zip"后缀
-      bookName = result.files.single.name;
-      bookName = bookName.substring(0, bookName.length - 4);
-      // Use an InputFileStream to access the zip file without storing it in memory.
-      final inputStream = InputFileStream(result.files.single.path??"");
-      // Decode the zip from the InputFileStream. The archive will have the contents of the
-      // zip, without having stored the data in memory.
-      final archive = ZipDecoder().decodeBuffer(inputStream);
-      extractArchiveToDisk(archive, "$_appDocPath${Platform.pathSeparator}${FileConfig.writeRootDirPath()}");
-      inputStream.close();
-    } else {
-      // User canceled the picker
+      try {
+        // 去掉".zip"后缀
+        bookName = result.files.single.name;
+        bookName = bookName.substring(0, bookName.length - 4);
+        // Use an InputFileStream to access the zip file without storing it in memory.
+        final inputStream = InputFileStream(result.files.single.path??"");
+        // Decode the zip from the InputFileStream. The archive will have the contents of the
+        // zip, without having stored the data in memory.
+        final archive = ZipDecoder().decodeBuffer(inputStream);
+        extractArchiveToDisk(archive, "$_appDocPath${Platform.pathSeparator}${FileConfig.writeRootDirPath()}");
+        inputStream.close();
+
+        GlobalToast.showSuccessTop('导入书籍：《$bookName》 成功');
+      } on Exception catch (e, s) {
+        GlobalToast.showErrorTop('导入书籍：《$bookName》 失败');
+        debugPrintStack(stackTrace: s);
+      }
     }
 
     return bookName;

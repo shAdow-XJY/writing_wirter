@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:webdav_client/webdav_client.dart' as webdav;
 
+import '../../components/common/toast/global_toast.dart';
 import '../../state_machine/event_bus/webDAV_events.dart';
 import '../file/file_configure.dart';
 
@@ -41,7 +42,7 @@ class WebDAV {
     } catch (e) {
       debugPrint("login failed");
       // _eventBus.fire(WebDavLoginFailedEvent());
-      print('$e');
+      debugPrint(e.toString());
     }
 
     return result;
@@ -61,15 +62,21 @@ class WebDAV {
   /// 获取所有云端的书籍：/wWriter/
   Future<List<Map<String, dynamic>>> getAllBooks() async {
     debugPrint("webDAV getAllBooks()");
-    List<webdav.File> list2 = await _client.readDir('/wWriter');
+
     List<Map<String, dynamic>> books = [];
-    for (var f in list2) {
-      if (!(f.isDir??false)) {
-        books.add({
-          "name": f.name,
-          "time": f.mTime,
-        });
+    try {
+      List<webdav.File> list2 = await _client.readDir('/wWriter');
+      for (var f in list2) {
+        if (!(f.isDir??false)) {
+          books.add({
+            "name": f.name,
+            "time": f.mTime,
+          });
+        }
       }
+    } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      GlobalToast.showErrorTop('获取云端的书籍失败');
     }
     // _eventBus.fire(WebDavGetAllBooksEvent());
     return books;
@@ -78,37 +85,55 @@ class WebDAV {
   /// 上传更新书籍到云端
   Future<void> uploadBook(String bookName) async {
     debugPrint("webDAV uploadBook()");
+    try {
+      _client.setHeaders({"content-type" : "application/zip"});
+      await _client.writeFromFile(
+        "$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}",
+        FileConfig.webDAVBookFilePath(bookName),
+        onProgress: (c, t) {
+          // if (!((c/t) < 0.0)) {
+          //   _eventBus.fire(WebDavUploadBookDoneEvent());
+          // }
+        },
+      );
+      _eventBus.fire(WebDavUploadBookDoneEvent());
 
-    _client.setHeaders({"content-type" : "application/zip"});
-    await _client.writeFromFile(
-      "$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}",
-      FileConfig.webDAVBookFilePath(bookName),
-      onProgress: (c, t) {
-        // if (!((c/t) < 0.0)) {
-        //   _eventBus.fire(WebDavUploadBookDoneEvent());
-        // }
-      },
-    );
-    _eventBus.fire(WebDavUploadBookDoneEvent());
+      GlobalToast.showSuccessTop('更新云端书籍成功');
+    } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      GlobalToast.showErrorTop('更新云端书籍失败');
+    }
   }
 
   /// 云端书籍下载到本地
   Future<void> downloadBook(String bookName) async {
     debugPrint("webDAV downloadBook()");
+    try {
+      _client.setHeaders({"content-type" : "application/zip"});
+      await _client.read2File(
+          FileConfig.webDAVBookFilePath(bookName),
+          "$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}",
+          onProgress: (c, t) {}
+      );
 
-    _client.setHeaders({"content-type" : "application/zip"});
-    await _client.read2File(
-        FileConfig.webDAVBookFilePath(bookName),
-        "$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}",
-        onProgress: (c, t) {}
-    );
+      GlobalToast.showSuccessTop('云端书籍导入本地成功');
+    } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      GlobalToast.showErrorTop('云端书籍导入本地失败');
+    }
   }
 
   /// 云端书籍删除
   Future<void> removeBook(String bookName) async {
     debugPrint("webDAV removeBook()");
+    try {
+      await _client.remove(FileConfig.webDAVBookFilePath(bookName));
+      _eventBus.fire(WebDavRemoveBookDoneEvent());
 
-    await _client.remove(FileConfig.webDAVBookFilePath(bookName));
-    _eventBus.fire(WebDavRemoveBookDoneEvent());
+      GlobalToast.showSuccessTop('云端书籍删除成功');
+    } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      GlobalToast.showErrorTop('云端书籍删除失败');
+    }
   }
 }

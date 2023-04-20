@@ -3,11 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:writing_writer/components/common/right_drawer/set_listview.dart';
+import 'package:writing_writer/service/parser/Parser.dart';
 import 'package:writing_writer/state_machine/event_bus/events.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
+import '../../../state_machine/redux/action/parser_action.dart';
+import '../../../state_machine/redux/action/set_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
+import '../dialog/remove_or_dialog.dart';
+import '../toast/global_toast.dart';
 
 class RightDrawer extends StatefulWidget {
   final double? widthFactor;
@@ -29,6 +34,9 @@ class _RightDrawerState extends State<RightDrawer> {
   /// 抽屉的宽度因子
   double widthFactor = 0.9;
 
+  /// 当前书籍
+  String currentBook = '';
+
   @override
   void initState() {
     super.initState();
@@ -40,17 +48,41 @@ class _RightDrawerState extends State<RightDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, Map<String, dynamic>>(
+    return StoreConnector<AppState, Map<String, dynamic>> (
       converter: (Store store) {
         debugPrint("store in right_drawer");
+        currentBook = store.state.textModel.currentBook;
+        void removeSet(String setName) {
+          if (setName.compareTo(store.state.setModel.currentSet) == 0) {
+            store.dispatch(SetSetDataAction(currentSet: '', currentSetting: ''));
+          }
+          Map<String, Set<String>> parserObj = Parser.deepClone(store.state.parserModel.parserObj);
+          if (parserObj.containsKey(setName)) {
+            parserObj.remove(setName);
+            store.dispatch(SetParserDataAction(parserObj: parserObj));
+          }
+        }
+        void removeSetting(String setName, String settingName) {
+          if (setName.compareTo(store.state.setModel.currentSet) == 0
+              && settingName.compareTo(store.state.setModel.currentSetting) == 0
+          ) {
+            store.dispatch(SetSetDataAction(currentSet: '', currentSetting: ''));
+          }
+          Map<String, Set<String>> parserObj = Parser.deepClone(store.state.parserModel.parserObj);
+          if (parserObj.containsKey(setName)) {
+            parserObj[setName]?.remove(settingName);
+            store.dispatch(SetParserDataAction(parserObj: parserObj));
+          }
+        }
         return {
-          'currentBookName': store.state.textModel.currentBook,
+          'removeSet': removeSet,
+          'removeSetting': removeSetting,
         };
       },
-      builder: (BuildContext context, Map<String, dynamic> map) {
+      builder: (BuildContext context, Map<String, dynamic> storeMap) {
         return Drawer(
             width: MediaQuery.of(context).size.width * widthFactor,
-            child: map['currentBookName'].toString().isEmpty
+            child: currentBook.isEmpty
                 ? Scaffold(
                     appBar: AppBar(
                       automaticallyImplyLeading: false,
@@ -61,11 +93,51 @@ class _RightDrawerState extends State<RightDrawer> {
                 : Scaffold(
                     appBar: AppBar(
                       centerTitle: true,
-                      title: Text(map['currentBookName']),
+                      title: Text(currentBook),
                       leading: IconButton(
-                        icon: const Icon(Icons.file_open),
+                        icon: const Icon(Icons.delete),
                         onPressed: () {
-                          ioBase.openSettingDirectory(map['currentBookName']);
+                          showDialog(
+                            context: context,
+                            builder: (context) => RemoveOrDialog(
+                              dialogTitle: '删除',
+                              titleOne: '删除设定集',
+                              titleTwo: '删除指定设定',
+                              hintTextOne: '请选择设定集',
+                              hintTextTwo: '请选择一个设定',
+                              itemsOne: ioBase.getAllSets(currentBook),
+                              getItemsTwo: (String selectedSetName) {
+                                return ioBase.getAllSettings(currentBook, selectedSetName);
+                              },
+                              callBack: (RemoveDialogMap map) {
+                                if (map.isChooseOne) {
+                                  // 删除设定集
+                                  if (map.selectedOne.isNotEmpty) {
+                                    ioBase.removeSet(currentBook, map.selectedOne);
+                                    storeMap["removeSet"](map.selectedOne);
+                                    eventBus.fire(RemoveSetEvent(setName: map.selectedOne));
+                                    Navigator.pop(context);
+                                  } else {
+                                    GlobalToast.showErrorTop('没有选择删除的设定集');
+                                  }
+                                } else {
+                                  // 删除设定
+                                  if (map.selectedOne.isNotEmpty) {
+                                    if (map.selectedTwo.isNotEmpty) {
+                                      ioBase.removeSetting(currentBook, map.selectedOne, map.selectedTwo);
+                                      storeMap["removeSetting"](map.selectedOne, map.selectedTwo);
+                                      eventBus.fire(RemoveSettingEvent(setName: map.selectedOne, settingName: map.selectedTwo));
+                                      Navigator.pop(context);
+                                    } else {
+                                      GlobalToast.showErrorTop('没有选择删除的设定');
+                                    }
+                                  } else {
+                                    GlobalToast.showErrorTop('没有选择指定设定集');
+                                  }
+                                }
+                              },
+                            ),
+                          );
                         },
                       ),
                       actions: [
@@ -75,17 +147,24 @@ class _RightDrawerState extends State<RightDrawer> {
                             IconButton(
                               icon: const Icon(Icons.add),
                               onPressed: () {
+                                List<String> setList = ioBase.getAllSets(currentBook);
                                 showDialog(
                                   context: context,
                                   builder: (context) => EditToastDialog(
                                     title: '新建设定集',
                                     callBack: (setName) => {
                                       if (setName.isNotEmpty)
-                                        {
-                                          ioBase.createSet(
-                                              map['currentBookName'], setName),
+                                      {
+                                        if (!setList.contains(setName)) {
+                                          ioBase.createSet(currentBook, setName),
                                           eventBus.fire(CreateNewSetEvent()),
+                                          Navigator.pop(context),
+                                        } else {
+                                          GlobalToast.showErrorTop('已存在该设定集名，请更改另一个名称',),
                                         },
+                                      } else {
+                                        GlobalToast.showErrorTop('设定集名字不能为空',),
+                                      },
                                     },
                                   ),
                                 );

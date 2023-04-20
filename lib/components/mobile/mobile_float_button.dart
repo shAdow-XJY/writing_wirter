@@ -7,9 +7,11 @@ import 'mobile_dark_mode_button.dart';
 
 class MobileFloatButton extends StatefulWidget {
   final Widget mainPage;
+  final Function(bool) onOpen;
   const MobileFloatButton({
     Key? key,
     required this.mainPage,
+    required this.onOpen,
   }) : super(key: key);
   @override
   State<MobileFloatButton> createState() => _MobileFloatButtonState();
@@ -104,6 +106,9 @@ class _MobileFloatButtonState extends State<MobileFloatButton> {
           ),
         ],
       ),
+      onChanged: (bool opened) {
+        widget.onOpen(opened);
+      },
     );
   }
 }

@@ -15,18 +15,11 @@
 ```
 
 ```
-    C:\Users\12902\AppData\Local\Pub\Cache\hosted\pub.dev\webdav_client-1.2.0\lib\src\webdav_dio.dart
+    \Local\Pub\Cache\hosted\pub.dev\animated_stack-0.2.0\lib\animated_stack.dart
     
-    completer.completeError(DioMixin.assureDioError(
-        e,
-        resp.requestOptions,
-        trace,
-    ));
+    class AnimatedStack 
+      
+    => add onChanged Function
     
-    =>
-    
-    completer.completeError(DioMixin.assureDioError(
-        e,
-        resp.requestOptions,
-    ));
+    widget.onChanged(opened),
 ```

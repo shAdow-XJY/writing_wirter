@@ -19,16 +19,10 @@ class SettingsListView extends StatefulWidget {
 }
 
 class _SettingsListViewState extends State<SettingsListView> {
-  List<Widget> settingsListViewItems = [];
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   /// 列表项组件
   List<Widget> createChapterList(List<String> settingsList) {
-    settingsListViewItems.clear();
+    List<Widget> settingsListViewItems = [];
     for (var settingName in settingsList) {
       settingsListViewItems.add(SettingsListViewItem(
         setName: widget.setName,

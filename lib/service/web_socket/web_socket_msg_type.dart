@@ -6,9 +6,10 @@ class WebSocketMsg {
     return jsonDecode(msg);
   }
 
-  static String msgString({required int msgCode, required String msgContent, required int msgOffset}) {
+  static String msgString({required int msgCode, required String msgTitle, required String msgContent, required int msgOffset}) {
     Map<String, dynamic> msg = {
       "msgCode": msgCode,
+      "msgTitle": msgTitle,
       "msgContent": msgContent,
       "msgOffset": msgOffset,
     };
@@ -20,6 +21,8 @@ class WebSocketMsg {
  * 0 : server -> client
  * 1 : client -> server
  * 2 : server 断开
+ *
+ * msgTitle : "${book}${chapter}" / "${set}${setting}"
  *
  * msgContent : 传输的字符串数据
  *

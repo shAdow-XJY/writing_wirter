@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:blur_glass/blur_glass.dart';
 import 'package:flutter/material.dart';
+import 'package:writing_writer/components/common/toast/global_toast.dart';
 
 import '../../../service/web_socket/web_socket_client.dart';
 import '../../../service/web_socket/web_socket_msg_type.dart';
@@ -23,6 +26,10 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
   Map<String,dynamic> msgMap = {};
   /// 是否 webSocket 传过来导致的编辑内容改变
   bool isWebSocketReceive = false;
+  /// 防抖发送数据包
+  Timer? _timer;
+  /// msgTitle
+  String msgTitle = '';
 
   @override
   void initState() {
@@ -30,7 +37,9 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
     webSocketClient.clientReceivedMsg((msg) => {
       isWebSocketReceive = true,
       msgMap = WebSocketMsg.msgStringToMap(msg),
+      msgTitle = msgMap['msgTitle'],
       if (msgMap["msgCode"] == 2) {
+        GlobalToast.showWarningTop('移动端断开连接'),
         Navigator.pop(context),
       } else {
         textEditingController.value = TextEditingValue(
@@ -47,8 +56,21 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
     /// onChanged 当TextField文本发生改变时才会回调
     textEditingController.addListener(() {
       if (!isWebSocketReceive) {
-        webSocketClient.clientSendMsg(WebSocketMsg.msgString(msgCode: 0, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset));
+        // 消息未发送成功
+        if (_timer != null && _timer!.isActive) {
+          // 重置定时器
+          _timer?.cancel();
+        }
+        // 发送消息
+        webSocketClient.clientSendMsg(WebSocketMsg.msgString(msgCode: 0, msgTitle: msgTitle, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset,));
+        // 设置定时器
+        _timer = Timer(const Duration(milliseconds: 500), () {
+          _timer = null;
+          // 消息发送成功，重置状态
+          isWebSocketReceive = false;
+        });
       } else {
+        // 消息已经发送成功，重置状态
         isWebSocketReceive = false;
       }
     });
@@ -56,7 +78,11 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
 
   @override
   void dispose() {
+    if (_timer != null && _timer!.isActive) {
+      _timer?.cancel();
+    }
     webSocketClient.clientClose();
+    textEditingController.dispose();
     super.dispose();
   }
 
@@ -74,6 +100,7 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
       body: BlurGlass(
         child: TextField(
           controller: textEditingController,
+          maxLines: null,
           decoration: const InputDecoration(
             /// 消除下边框
             border: OutlineInputBorder(

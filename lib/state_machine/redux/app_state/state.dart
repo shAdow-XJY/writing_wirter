@@ -31,13 +31,11 @@ class AppState {
     parserModel = ParserModel(parserObj: {});
   }
 
-  AppState copyWith ({textModel, setModel, styleModel, parserModel}){
+  AppState copyWith ({textModel, setModel, parserModel}){
     return AppState(
       textModel: textModel ?? this.textModel,
       setModel: setModel ?? this.setModel,
-      parserModel: this.textModel.currentBook.compareTo(textModel != null ? textModel!.currentBook : this.textModel.currentBook) == 0
-          ? (parserModel ?? this.parserModel)
-          : ParserModel(parserObj: {}),
+      parserModel: parserModel ?? this.parserModel,
     );
   }
 
@@ -48,6 +46,15 @@ AppState appReducer(AppState state, action) {
   debugPrint(action.runtimeType.toString());
   switch(action.runtimeType) {
     case SetTextDataAction: {
+      // 更换了另一本书
+      if (state.textModel.currentBook.compareTo(action.currentBook) != 0) {
+        return state.copyWith(
+          textModel: textReducer(state.textModel, action),
+          setModel: SetModel(currentSet: "", currentSetting: ""),
+          parserModel: ParserModel(parserObj: {}),
+        );
+      }
+      // 更换章节
       return state.copyWith(textModel: textReducer(state.textModel, action));
     }
     case SetSetDataAction: {

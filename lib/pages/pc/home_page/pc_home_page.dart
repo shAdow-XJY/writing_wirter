@@ -22,47 +22,113 @@ class _PCHomePageState extends State<PCHomePage>{
   /// 侧边按钮
   bool openSettingPage = false;
 
+  ///
+  bool _isDragging = false;
+
+  final double _minLeftFactor = 0.5;
+  final double _maxLeftFactor = 0.666;
+  final double _buttonFactor = 0.033;
+  /// 分割线位置
+  double _dividerPosition = 0.633;
+
+  double _minLeftWidth = 0;
+  double _maxLeftWidth = 0;
+  double _totalWidth = 0;
+
+  double leftWidth = 0.0;
+  double rightWidth = 0.0;
+  double buttonWidth = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _dividerPosition = openSettingPage ? 0.633 : 1.0;
+  }
+
   @override
   Widget build(BuildContext context) {
+    _totalWidth = MediaQuery.of(context).size.width;
+    buttonWidth = _totalWidth * _buttonFactor;
+    if (openSettingPage) {
+      _minLeftWidth = _totalWidth * _minLeftFactor;
+      _maxLeftWidth = _totalWidth * _maxLeftFactor;
+      leftWidth = (_totalWidth * (_dividerPosition - _buttonFactor)).clamp(_minLeftWidth, _maxLeftWidth);
+      rightWidth = _totalWidth - leftWidth -buttonWidth;
+    } else {
+      leftWidth = _totalWidth * (_dividerPosition - _buttonFactor);
+    }
     return Scaffold(
         appBar: const ChapterEditPageAppBar(),
         drawer: const LeftDrawer(widthFactor: 0.3,),
         endDrawer: const RightDrawer(widthFactor: 0.3,),
-        body: Row(
+        body: Stack(
           children: [
-            Expanded(
-              flex: 20,
-              child: TransBarScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: const <Widget>[
-                    PCChapterEditPageBody(),
-                  ],
+            Row(
+              children: [
+                SizedBox(
+                  width: leftWidth,
+                  height: double.infinity,
+                  child: const TransBarScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        PCChapterEditPageBody(),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: buttonWidth,
+                  child: SemicircleButton(
+                    icon: openSettingPage ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+                    callback: () {
+                      setState(() {
+                        openSettingPage = !openSettingPage;
+                        _dividerPosition = 1.0;
+                      });
+                    },
+                  ),
+                ),
+                openSettingPage
+                    ? SizedBox(width: rightWidth, child: const PCSettingEditPage(),)
+                    : const SizedBox.shrink(),
+              ],
+            ),
+            Positioned(
+              left: leftWidth + buttonWidth - 2,
+              top: 0,
+              bottom: 0,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.resizeLeftRight,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onPanStart: (details) {
+                    if (openSettingPage) {
+                      setState(() {
+                        _isDragging = true;
+                      });
+                    }
+                  },
+                  onPanUpdate: (details) {
+                    if (_isDragging) {
+                      setState(() {
+                        _dividerPosition += details.delta.dx * 2.5 / _totalWidth;
+                        _dividerPosition = _dividerPosition.clamp(0.0, 1.0);
+                      });
+                    }
+                  },
+                  onPanEnd: (_) {
+                    setState(() {
+                      _isDragging = false;
+                    });
+                  },
+                  child: Container(
+                    width: 4,
+                    color: Theme.of(context).primaryColorDark,
+                  ),
                 ),
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: SemicircleButton(
-                icon: openSettingPage ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
-                callback: () {
-                  setState(() {
-                    openSettingPage = !openSettingPage;
-                  });
-                },
-              ),
-            ),
-            RotatedBox(
-              quarterTurns: 1,
-              child: Divider(
-                height: 2,
-                thickness: 2,
-                color: Theme.of(context).primaryColorDark,
-              ),
-            ),
-            openSettingPage
-                ? const Expanded(flex: 9, child: PCSettingEditPage(),)
-                : const SizedBox(height: double.infinity,)
           ],
         ),
         floatingActionButton: const PCFloatButton()

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EditToastDialog extends StatefulWidget {
@@ -28,6 +27,12 @@ class _EditToastDialogState extends State<EditToastDialog> {
   }
 
   @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       shadowColor: Colors.transparent.withOpacity(0.5),
@@ -46,7 +51,7 @@ class _EditToastDialogState extends State<EditToastDialog> {
           child: const Text("确定"),
           onPressed: () {
             widget.callBack(textEditingController.text);
-            Navigator.pop(context);
+            // Navigator.pop(context);
           },
         ),
       ],

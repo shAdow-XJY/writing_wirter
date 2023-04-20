@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TextToastDialog extends StatefulWidget {
@@ -35,7 +34,7 @@ class _TextToastDialogState extends State<TextToastDialog> {
           child: const Text("确定"),
           onPressed: () {
             widget.callBack();
-            Navigator.pop(context);
+            // Navigator.pop(context);
           },
         ),
       ],

@@ -67,6 +67,7 @@ class _MobileExportPageState extends State<MobileExportPage> {
                   text: '确定分享书籍$bookName',
                   callBack: () => {
                     exportIOBase.shareBook(bookName, ioBase.getAllChapters(bookName)),
+                    Navigator.pop(context),
                   },
                 ),
               );

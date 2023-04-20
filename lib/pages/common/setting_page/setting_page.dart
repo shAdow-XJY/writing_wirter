@@ -51,6 +51,9 @@ class _SettingPageState extends State<SettingPage> with TickerProviderStateMixin
   @override
   void dispose() {
     saveAll();
+    uriController.dispose();
+    userController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
@@ -123,7 +126,7 @@ class _SettingPageState extends State<SettingPage> with TickerProviderStateMixin
                           /// 动态切换主题
                           ThemeSwitcher.of(context).changeTheme(theme: ThemeUtil.getPreSetTheme(themeName),);
                           /// 触发切换主题事件
-                          eventBus.fire(ChangeThemeEvent());
+                          eventBus.fire(ChangeThemeEvent(isDarkMode: false, themeName: themeName));
                         },
                         selectedColor: selectedColor,
                         colors: ThemeUtil.getColorsList(),

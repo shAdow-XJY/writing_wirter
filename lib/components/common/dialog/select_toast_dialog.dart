@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../buttons/drop_down_button.dart';
@@ -29,7 +28,7 @@ class _SelectToastDialogState extends State<SelectToastDialog> {
   @override
   void initState() {
     super.initState();
-    print(widget.items);
+    debugPrint(widget.items.toString());
   }
 
   @override

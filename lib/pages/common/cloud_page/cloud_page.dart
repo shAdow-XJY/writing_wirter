@@ -2,13 +2,17 @@ import 'dart:async';
 import 'package:event_bus/event_bus.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 import 'package:writing_writer/service/file/export_IOBase.dart';
 import 'package:writing_writer/service/web_dav/web_dav.dart';
+import 'package:writing_writer/state_machine/redux/action/text_action.dart';
 import '../../../components/common/dialog/select_toast_dialog.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../service/file/config_IOBase.dart';
 import '../../../state_machine/event_bus/webDAV_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
+import '../../../state_machine/redux/app_state/state.dart';
 
 class CloudPage extends StatefulWidget {
   const CloudPage({
@@ -51,12 +55,14 @@ class _CloudPageState extends State<CloudPage> {
     super.initState();
     webDAV = WebDAV(eventBus);
     webDAVInfo = configIOBase.getWevDAVInfo();
-    webDAV.login(webDAVInfo["uri"], webDAVInfo["user"], webDAVInfo["password"]).then((result) => {
-      setState(() {
-        linkFailed = !result;
-        linking = false;
-      })
-    });
+    webDAV
+        .login(webDAVInfo["uri"], webDAVInfo["user"], webDAVInfo["password"])
+        .then((result) => {
+              setState(() {
+                linkFailed = !result;
+                linking = false;
+              })
+            });
     localBookList = ioBase.getAllBooks();
     subscription_1 = eventBus.on<WebDavUploadBookDoneEvent>().listen((event) {
       setState(() {});
@@ -87,7 +93,7 @@ class _CloudPageState extends State<CloudPage> {
     return uploadBookList;
   }
 
-  ExpansionTileCard getCard(Map<String, dynamic> bookInfo) {
+  ExpansionTileCard getCard(Map<String, dynamic> bookInfo, void Function(String) overwriteBook) {
     // 书籍名字处理，去除".zip"后缀
     String bookName = bookInfo["name"];
     bookName = bookName.substring(0, bookName.length - 4);
@@ -99,9 +105,11 @@ class _CloudPageState extends State<CloudPage> {
       expandedColor: Theme.of(context).primaryColor,
       expandedTextColor: Theme.of(context).textSelectionTheme.selectionColor,
       leading: CircleAvatar(child: Text(bookName[0])),
-      title: Text(bookName,),
+      title: Text(
+        bookName,
+      ),
       initialPadding: const EdgeInsets.only(top: 12.0),
-      finalPadding: const EdgeInsets.only(top:6.0, bottom: 6.0),
+      finalPadding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
       children: [
         const Divider(
           thickness: 1.0,
@@ -117,7 +125,9 @@ class _CloudPageState extends State<CloudPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("书籍在本地：${inLocal ? "书籍存在本地" : "书籍不存在本地"}",),
+                  Text(
+                    "书籍在本地：${inLocal ? "书籍存在本地" : "书籍不存在本地"}",
+                  ),
                   Text("云端存储时间版本：${bookInfo["time"]}"),
                 ],
               )),
@@ -150,6 +160,9 @@ class _CloudPageState extends State<CloudPage> {
                 ],
               ),
               onPressed: () async {
+                if (inLocal) {
+                  overwriteBook(bookName);
+                }
                 await webDAV.downloadBook(bookName);
                 await exportIOBase.importZipFromWebDAV(bookName);
               },
@@ -181,8 +194,8 @@ class _CloudPageState extends State<CloudPage> {
               },
             ),
             TextButton(
-              child: Column(
-                children: const [
+              child: const Column(
+                children: [
                   Icon(
                     Icons.delete_forever_rounded,
                     color: Colors.redAccent,
@@ -210,64 +223,77 @@ class _CloudPageState extends State<CloudPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        centerTitle: true,
-        title: const Text("云端书籍存储"),
-        actions: [
-          TextButton(
-            child: const Text("上传书籍"),
+    return StoreConnector<AppState, void Function(String)>(converter: (Store store) {
+      debugPrint('store in cloud_page');
+      return (String bookName) {
+        if (bookName.compareTo(store.state.textModel.currentBook) == 0) {
+          store.dispatch(SetTextDataAction(currentBook: '', currentChapter: ''));
+        }
+      };
+    }, builder: (BuildContext context, void Function(String) overwriteBook) {
+      return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new),
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => SelectToastDialog(
-                  items: getUploadBookList(),
-                  title: '选择上传至云端的书籍',
-                  callBack: (uploadBookName) async => {
-                    if (uploadBookName.isNotEmpty)
-                      {
-                        await exportIOBase.exportZipForWebDAV(uploadBookName),
-                        await webDAV.uploadBook(uploadBookName),
-                      },
-                  },
-                ),
-              );
+              Navigator.pop(context);
             },
           ),
-        ],
-      ),
-      body: linking
-          ? const Center(child: CircularProgressIndicator())
-          : linkFailed
-              ? const Center(child: Text('Error: 登录WebDAV失败'))
-              : FutureBuilder(
-                  future: webDAV.getAllBooks(),
-                  builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                      case ConnectionState.active:
-                      case ConnectionState.waiting:
-                        return const Center(child: CircularProgressIndicator());
-                      case ConnectionState.done:
-                        if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        }
-                        webDAVBookList = snapshot.data ?? [];
-                        return ListView.builder(
-                          itemCount: webDAVBookList.length,
-                          itemBuilder: (context, index) {
-                            return getCard(webDAVBookList[index]);
-                          },
-                        );
-                    }
-                  },
-                ),
-    );
+          centerTitle: true,
+          title: const Text("云端书籍存储"),
+          actions: [
+            TextButton(
+              child: const Text("上传书籍"),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => SelectToastDialog(
+                    items: getUploadBookList(),
+                    title: '选择上传至云端的书籍',
+                    hintText: '选择未上传云端的本地书籍',
+                    callBack: (uploadBookName) async => {
+                      if (uploadBookName.isNotEmpty)
+                        {
+                          await exportIOBase.exportZipForWebDAV(uploadBookName),
+                          await webDAV.uploadBook(uploadBookName),
+                        },
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        body: linking
+            ? const Center(child: CircularProgressIndicator())
+            : linkFailed
+                ? const Center(child: Text('Error: 登录WebDAV失败'))
+                : FutureBuilder(
+                    future: webDAV.getAllBooks(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.active:
+                        case ConnectionState.waiting:
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        case ConnectionState.done:
+                          if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          }
+                          webDAVBookList = snapshot.data ?? [];
+                          return ListView.builder(
+                            itemCount: webDAVBookList.length,
+                            itemBuilder: (context, index) {
+                              return getCard(webDAVBookList[index], overwriteBook);
+                            },
+                          );
+                      }
+                    },
+                  ),
+      );
+    });
   }
 }

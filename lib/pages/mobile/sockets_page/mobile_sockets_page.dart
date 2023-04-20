@@ -3,9 +3,10 @@ import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:writing_writer/components/common/toast/global_toast.dart';
 import '../../../service/web_socket/web_socket_msg_type.dart';
 import '../../../service/web_socket/web_socket_server.dart';
-import '../../../state_machine/event_bus/mobile_events.dart';
+import '../../../state_machine/event_bus/ws_server_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
 class MobileSocketsPage extends StatefulWidget {
@@ -39,7 +40,7 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
     if (!appGetIt.isRegistered<WebSocketServer>(instanceName: "WebSocketServer")) {
       return;
     }
-    webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 2, msgContent: "", msgOffset: 0));
+    webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 2, msgTitle: "", msgContent: "", msgOffset: 0));
     webSocketServer.serverClose();
     await appGetIt.unregister<WebSocketServer>(instanceName: "WebSocketServer");
   }
@@ -60,21 +61,22 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
     serverStatus = webSocketServer.serverStatus;
     serverIP = webSocketServer.serverIP;
 
-    subscription_1 = eventBus.on<MobileGetServerIPEvent>().listen((event) {
+    subscription_1 = eventBus.on<WSServerGetServerIPEvent>().listen((event) {
       webSocketServer.serverInit();
       setState(() {
         serverIP = webSocketServer.serverIP;
       });
     });
-    subscription_2 = eventBus.on<MobileStartWebSocketEvent>().listen((event) {
+    subscription_2 = eventBus.on<WSServerStartWebSocketEvent>().listen((event) {
+      GlobalToast.showSuccessTop('桌面端连接成功');
       Navigator.pop(context);
     });
-    subscription_3 = eventBus.on<MobileBuildServerEvent>().listen((event) {
+    subscription_3 = eventBus.on<WSServerBuildServerEvent>().listen((event) {
       setState(() {
         serverStatus = webSocketServer.serverStatus;
       });
     });
-    subscription_4 = eventBus.on<MobileCloseServerEvent>().listen((event) {
+    subscription_4 = eventBus.on<WSServerCloseServerEvent>().listen((event) {
       setState(() {
         serverStatus = webSocketServer.serverStatus;
       });

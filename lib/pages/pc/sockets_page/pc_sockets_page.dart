@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:writing_writer/components/common/toast/global_toast.dart';
 
 import '../../../service/web_socket/web_socket_client.dart';
-import '../../../state_machine/event_bus/pc_events.dart';
+import '../../../state_machine/event_bus/ws_client_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
 class PCSocketsPage extends StatefulWidget {
@@ -20,6 +21,7 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
   /// 全局单例-事件总线工具类
   final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
   late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
 
   TextEditingController ipTextController = TextEditingController();
 
@@ -35,14 +37,20 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
 
     ipTextController.text = webSocketClient.inputIp;
 
-    subscription_1 = eventBus.on<PCConnectServerSuccessEvent>().listen((event) {
+    subscription_1 = eventBus.on<WSClientConnectServerSuccessEvent>().listen((event) {
+      GlobalToast.showSuccessTop('连接移动端成功');
       Navigator.pushNamed(context, '/space');
+    });
+    subscription_2 = eventBus.on<WSClientConnectServerErrorEvent>().listen((event) {
+      GlobalToast.showWarningTop('IP地址连接无响应，请确定移动端已启动同步');
     });
   }
 
   @override
   void dispose() {
     subscription_1.cancel();
+    subscription_2.cancel();
+    ipTextController.dispose();
     super.dispose();
   }
 

@@ -34,27 +34,19 @@ class _MobileDarkModeButtonState extends State<MobileDarkModeButton> {
   @override
   void initState() {
     super.initState();
-    if (sharedPreferences.getString("themeName") != null) {
-      themeName = sharedPreferences.getString("themeName")!;
-    } else {
-      themeName = ThemeUtil.getThemeName(null);
-    }
-    if (sharedPreferences.getBool("isDarkMode") == true) {
-      isDarkMode = true;
-    } else {
-      isDarkMode = false;
-    }
+    themeName = sharedPreferences.getString("themeName")!;
+    isDarkMode = sharedPreferences.getBool("isDarkMode")!;
+
     subscription_1 = eventBus.on<ChangeThemeEvent>().listen((event) {
       setState(() {
-        isDarkMode = sharedPreferences.getBool("isDarkMode")!;
-        themeName = sharedPreferences.getString("themeName")!;
+        isDarkMode = event.isDarkMode;
+        themeName = event.themeName;
       });
     });
   }
 
   @override
   void dispose() {
-    sharedPreferences.setBool("isDarkMode", isDarkMode);
     subscription_1.cancel();
     super.dispose();
   }
@@ -78,6 +70,7 @@ class _MobileDarkModeButtonState extends State<MobileDarkModeButton> {
             ),
             onPressed: () {
               isDarkMode = !isDarkMode;
+              sharedPreferences.setBool("isDarkMode", isDarkMode);
               ThemeSwitcher.of(context).changeTheme(
                 theme: isDarkMode
                     ? ThemeUtil.getDarkTheme()
