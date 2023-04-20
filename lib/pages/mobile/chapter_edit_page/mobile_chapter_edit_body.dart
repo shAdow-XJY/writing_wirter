@@ -28,8 +28,7 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   /// 全局单例-客户端webSocket
   late WebSocketServer webSocketServer;
   late StreamSubscription subscription_1;
-  /// 是否 textEditingController 的监听函数已完成设置
-  bool isAddWebSocketToListener = false;
+
   /// webSocket 传输的数据
   Map<String, dynamic> msgMap = {};
 
@@ -46,53 +45,51 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
   String currentBook = "";
   String currentChapter = "";
 
-  /// textEditingController 的webSocket监听函数已完成设置
-  void addWebSocketToListener() {
-    if (isAddWebSocketToListener) {
-      return;
-    }
-    clickTextEditingController.addListener(() {
-      if (!isWebSocketReceive) {
-        // 消息未发送成功
-        if (_timer != null && _timer!.isActive) {
-          // 重置定时器
-          _timer?.cancel();
-        }
-        // 发送消息
-        webSocketServer.serverSendMsg(WebSocketMsg.msgString(
-          msgCode: 1,
-          msgTitle: "$currentBook$currentChapter",
-          msgContent: clickTextEditingController.text,
-          msgOffset: clickTextEditingController.selection.baseOffset,
-        ));
-        // 设置定时器
-        _timer = Timer(const Duration(milliseconds: 500), () {
-          _timer = null;
-          // 消息发送成功，重置状态
-          isWebSocketReceive = false;
-        });
-      } else {
-        // 消息已经发送成功，重置状态
-        isWebSocketReceive = false;
+  /// textEditingController的发送监听函数
+  void sendListener() {
+    // print("isWebSocketReceive$isWebSocketReceive");
+    if (!isWebSocketReceive) {
+      // print("isWebSocketReceive// 消息未发送成功");
+      // 消息未发送成功
+      if (_timer != null && _timer!.isActive) {
+        // 重置定时器
+        _timer?.cancel();
       }
-    });
+      // 发送消息
+      webSocketServer.serverSendMsg(WebSocketMsg.msgString(
+        msgCode: 1,
+        msgTitle: "$currentBook$currentChapter",
+        msgContent: clickTextEditingController.text,
+        msgOffset: clickTextEditingController.selection.baseOffset,
+      ));
+      // 设置定时器
+      _timer = Timer(const Duration(milliseconds: 500), () {
+        _timer = null;
+        // 消息发送成功，重置状态
+        isWebSocketReceive = false;
+      });
+    } else {
+      // print("isWebSocketReceive// 消息已经发送成功，重置状态");
+      // 消息已经发送成功，重置状态
+      isWebSocketReceive = false;
+    }
+  }
 
-    webSocketServer.serverReceivedMsg((msg) => {
-      isWebSocketReceive = true,
-      msgMap = WebSocketMsg.msgStringToMap(msg),
-      if ("$currentBook$currentChapter".compareTo(msgMap['msgTitle']) == 0)
-        {
-          clickTextEditingController.value = TextEditingValue(
-            text: msgMap["msgContent"],
-            selection: TextSelection.fromPosition(
-              TextPosition(
-                affinity: TextAffinity.downstream,
-                offset: msgMap["msgOffset"],
-              ),
-            ),
+  /// WebSocket的接收监听函数
+  void receiveListener(dynamic msg) {
+    isWebSocketReceive = true;
+    msgMap = WebSocketMsg.msgStringToMap(msg);
+    if ("$currentBook$currentChapter".compareTo(msgMap['msgTitle']) == 0) {
+      clickTextEditingController.value = TextEditingValue(
+        text: msgMap["msgContent"],
+        selection: TextSelection.fromPosition(
+          TextPosition(
+            affinity: TextAffinity.downstream,
+            offset: msgMap["msgOffset"],
           ),
-        },
-    });
+        ),
+      );
+    }
   }
 
   @override
@@ -100,12 +97,14 @@ class _MobileChapterEditPageBodyState extends State<MobileChapterEditPageBody> {
     super.initState();
     if (appGetIt.isRegistered<WebSocketServer>(instanceName: "WebSocketServer")) {
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
-      addWebSocketToListener();
-      isAddWebSocketToListener = true;
+      clickTextEditingController.addListener(sendListener);
+      webSocketServer.serverReceivedMsg(receiveListener);
     }
     subscription_1 = eventBus.on<WSServerStartWebSocketEvent>().listen((event) {
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
-      addWebSocketToListener();
+      clickTextEditingController.removeListener(sendListener);
+      clickTextEditingController.addListener(sendListener);
+      webSocketServer.serverReceivedMsg(receiveListener);
     });
   }
 

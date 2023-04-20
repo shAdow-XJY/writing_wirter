@@ -26,9 +26,6 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
   /// 全局单例-客户端webSocket
   late WebSocketServer webSocketServer;
 
-  /// 是否 textEditingController 的监听函数已完成设置
-  bool isAddWebSocketToListener = false;
-
   /// 事件订阅器
   late StreamSubscription subscription_1;
 
@@ -48,67 +45,63 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
   /// 防抖发送数据包
   Timer? _timer;
 
-  /// textEditingController 的webSocket监听函数已完成设置
-  void addWebSocketToListener() {
-    if (isAddWebSocketToListener) {
-      return;
-    }
-    textEditingController.addListener(() {
-      if (!isWebSocketReceive) {
-        // 消息未发送成功
-        if (_timer != null && _timer!.isActive) {
-          // 重置定时器
-          _timer?.cancel();
-        }
-        // 发送消息
-        webSocketServer.serverSendMsg(WebSocketMsg.msgString(
-          msgCode: 1,
-          msgTitle: "$currentSet$currentSetting",
-          msgContent: textEditingController.text,
-          msgOffset: textEditingController.selection.baseOffset,
-        ));
-        // 设置定时器
-        _timer = Timer(const Duration(milliseconds: 500), () {
-          _timer = null;
-          // 消息发送成功，重置状态
-          isWebSocketReceive = false;
-        });
-      } else {
-        // 消息已经发送成功，重置状态
-        isWebSocketReceive = false;
+  /// textEditingController的发送监听函数
+  void sendListener() {
+    if (!isWebSocketReceive) {
+      // 消息未发送成功
+      if (_timer != null && _timer!.isActive) {
+        // 重置定时器
+        _timer?.cancel();
       }
-    });
+      // 发送消息
+      webSocketServer.serverSendMsg(WebSocketMsg.msgString(
+        msgCode: 1,
+        msgTitle: "$currentSet$currentSetting",
+        msgContent: textEditingController.text,
+        msgOffset: textEditingController.selection.baseOffset,
+      ));
+      // 设置定时器
+      _timer = Timer(const Duration(milliseconds: 500), () {
+        _timer = null;
+        // 消息发送成功，重置状态
+        isWebSocketReceive = false;
+      });
+    } else {
+      // 消息已经发送成功，重置状态
+      isWebSocketReceive = false;
+    }
+  }
 
-    webSocketServer.serverReceivedMsg((msg) => {
-          isWebSocketReceive = true,
-          msgMap = WebSocketMsg.msgStringToMap(msg),
-          if ("$currentSet$currentSetting".compareTo(msgMap['msgTitle']) == 0)
-            {
-              textEditingController.value = TextEditingValue(
-                text: msgMap["msgContent"],
-                selection: TextSelection.fromPosition(
-                  TextPosition(
-                    affinity: TextAffinity.downstream,
-                    offset: msgMap["msgOffset"],
-                  ),
-                ),
-              ),
-            }
-        });
+  /// WebSocket的接收监听函数
+  void receiveListener(dynamic msg) {
+    isWebSocketReceive = true;
+    msgMap = WebSocketMsg.msgStringToMap(msg);
+    if ("$currentSet$currentSetting".compareTo(msgMap['msgTitle']) == 0) {
+      textEditingController.value = TextEditingValue(
+        text: msgMap["msgContent"],
+        selection: TextSelection.fromPosition(
+          TextPosition(
+            affinity: TextAffinity.downstream,
+            offset: msgMap["msgOffset"],
+          ),
+        ),
+      );
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    if (appGetIt.isRegistered<WebSocketServer>(
-        instanceName: "WebSocketServer")) {
+    if (appGetIt.isRegistered<WebSocketServer>(instanceName: "WebSocketServer")) {
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
-      addWebSocketToListener();
-      isAddWebSocketToListener = true;
+      textEditingController.addListener(sendListener);
+      webSocketServer.serverReceivedMsg(receiveListener);
     }
     subscription_1 = eventBus.on<WSServerStartWebSocketEvent>().listen((event) {
       webSocketServer = appGetIt.get(instanceName: "WebSocketServer");
-      addWebSocketToListener();
+      textEditingController.removeListener(sendListener);
+      textEditingController.addListener(sendListener);
+      webSocketServer.serverReceivedMsg(receiveListener);
     });
   }
 

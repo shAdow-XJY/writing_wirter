@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:web_socket_channel/io.dart';
