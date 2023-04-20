@@ -28,12 +28,16 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
   bool isWebSocketReceive = false;
   /// 防抖发送数据包
   Timer? _timer;
+  /// msgTitle
+  String msgTitle = '';
+
   @override
   void initState() {
     super.initState();
     webSocketClient.clientReceivedMsg((msg) => {
       isWebSocketReceive = true,
       msgMap = WebSocketMsg.msgStringToMap(msg),
+      msgTitle = msgMap['msgTitle'],
       if (msgMap["msgCode"] == 2) {
         GlobalToast.showWarningTop('移动端断开连接'),
         Navigator.pop(context),
@@ -58,7 +62,7 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
           _timer?.cancel();
         }
         // 发送消息
-        webSocketClient.clientSendMsg(WebSocketMsg.msgString(msgCode: 0, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset));
+        webSocketClient.clientSendMsg(WebSocketMsg.msgString(msgCode: 0, msgTitle: msgTitle, msgContent: textEditingController.text, msgOffset: textEditingController.selection.baseOffset,));
         // 设置定时器
         _timer = Timer(const Duration(milliseconds: 500), () {
           _timer = null;

@@ -35,6 +35,10 @@ class WebSocketClient {
 
       _clientSocketChannel.stream.listen((msg){
         _handleMsg(msg);
+      }, onError: (error) {
+        _eventBus.fire(WSClientConnectServerErrorEvent());
+      }, onDone: () {
+        _eventBus.fire(WSClientConnectServerErrorEvent());
       });
     } catch (e,s) {
       debugPrintStack(stackTrace: s);

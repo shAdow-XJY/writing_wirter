@@ -40,7 +40,7 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
     if (!appGetIt.isRegistered<WebSocketServer>(instanceName: "WebSocketServer")) {
       return;
     }
-    webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 2, msgContent: "", msgOffset: 0));
+    webSocketServer.serverSendMsg(WebSocketMsg.msgString(msgCode: 2, msgTitle: "", msgContent: "", msgOffset: 0));
     webSocketServer.serverClose();
     await appGetIt.unregister<WebSocketServer>(instanceName: "WebSocketServer");
   }

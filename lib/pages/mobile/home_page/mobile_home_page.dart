@@ -61,6 +61,7 @@ class _MobileHomePageState extends State<MobileHomePage> with SingleTickerProvid
         });
       },
       mainPage: GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onHorizontalDragEnd: (details) {
           if (isOpened) {
             FocusScope.of(context).requestFocus(FocusNode());
