@@ -22,8 +22,10 @@ files number in /lib：114
 lines number in /lib：6257
 added lines: 34667, removed lines: 6394, total lines: 28273
 
-v7.0.0:
-
+v7.0.0 + v7.1.0:
+files number in /lib：127
+lines number in /lib：7690
+added lines: 38723, removed lines: 8887, total lines: 29836
 
 ```
 
