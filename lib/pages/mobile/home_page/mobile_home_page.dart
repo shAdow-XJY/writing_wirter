@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../components/common/left_drawer/left_drawer.dart';
 import '../../../components/common/right_drawer/right_drawer.dart';
-import '../../../components/common/slide_transition_x.dart';
+import '../../../components/common/animated/slide_transition_x.dart';
 import '../../../components/common/transparent_bar_scroll_view.dart';
 import '../../../components/mobile/mobile_float_button.dart';
 import '../../common/chapter_edit_page/chapter_edit_app_bar.dart';

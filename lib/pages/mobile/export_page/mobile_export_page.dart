@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:writing_writer/components/common/animated/slide_icon.dart';
 import 'package:writing_writer/service/file/export_IOBase.dart';
 import '../../../components/common/dialog/select_toast_dialog.dart';
 import '../../../components/common/dialog/text_toast_dialog.dart';
+import '../../../components/common/transparent_bar_scroll_view.dart';
 import '../../../service/file/IOBase.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 
@@ -31,8 +34,33 @@ class _MobileExportPageState extends State<MobileExportPage> {
 
   Slidable getSlidable(String bookName) {
     return Slidable(
+      startActionPane: ActionPane(
+        extentRatio: 0.4,
+        motion: const StretchMotion(),
+        children: [
+          SlidableAction(
+              backgroundColor: const Color(0xFFBE0909),
+              foregroundColor: Colors.white,
+              icon: Icons.archive_outlined,
+              label: '.zip',
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (context) => TextToastDialog(
+                    title: '分享.zip可移植文件',
+                    text: '确定.zip可移植书籍文件 $bookName.zip?',
+                    callBack: () => {
+                      exportIOBase.shareZip(bookName),
+                      Navigator.pop(context),
+                    },
+                  ),
+                );
+              }
+          ),
+        ],
+      ),
       endActionPane: ActionPane(
-        motion: const ScrollMotion(),
+        motion: const StretchMotion(),
         children: [
           SlidableAction(
             backgroundColor: const Color(0xFF7BC043),
@@ -79,7 +107,6 @@ class _MobileExportPageState extends State<MobileExportPage> {
         height: 60.0,
         alignment: Alignment.center,
         color: Theme.of(context).focusColor,
-        margin: const EdgeInsets.only(top: 3.0),
         child: Text(bookName),
       ),
     );
@@ -96,9 +123,16 @@ class _MobileExportPageState extends State<MobileExportPage> {
           },
         ),
         centerTitle: true,
-        title: const Text("本地书籍分享(右滑)"),
+        title: const Text("本地书籍分享"),
+        actions: const [
+          SlideIcon(icon: Icon(CupertinoIcons.hand_draw_fill, size: 30)),
+        ],
       ),
-      body: ListView.builder(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: ListView.separated(
+        separatorBuilder: (BuildContext context, int index) {
+          return const Divider(height: 3.0,);
+        },
         itemCount: bookNameList.length,
         itemBuilder: (context, index) {
           return getSlidable(bookNameList[index]);
