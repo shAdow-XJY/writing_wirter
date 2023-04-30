@@ -94,3 +94,4 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 21. [animated_theme_switcher](https://pub.dev/packages/animated_theme_switcher)
 22. [flutter_material_color_picker](https://pub.dev/packages/flutter_material_color_picker)
 23. [expansion_tile_card](https://pub.dev/packages/expansion_tile_card)
+24. [bitsdojo_window](https://pub.dev/packages/bitsdojo_window)

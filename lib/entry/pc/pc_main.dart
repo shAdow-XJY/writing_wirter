@@ -1,4 +1,5 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -31,13 +32,72 @@ class PcApp extends StatelessWidget {
                   title: 'Writing Writer',
                   theme: myTheme,
                   debugShowCheckedModeBanner: false,
+                  builder: (context, child) {
+                    return Scaffold(
+                      appBar: AppBar(
+                        automaticallyImplyLeading: false,
+                        flexibleSpace: MoveWindow(),
+                        actions: [
+                          WindowButtons()
+                        ],
+                      ),
+                      body: child,
+                    );
+                  },
                   initialRoute: '/',
-                  onGenerateRoute: pcGenerateRoute
+                  onGenerateRoute: pcGenerateRoute,
               );
             },
           );
         },
       ),
+    );
+  }
+}
+
+final buttonColors = WindowButtonColors(
+    iconNormal: const Color(0xFF805306),
+    mouseOver: const Color(0xFFF6A00C),
+    mouseDown: const Color(0xFF805306),
+    iconMouseOver: const Color(0xFF805306),
+    iconMouseDown: const Color(0xFFFFD500));
+
+final closeButtonColors = WindowButtonColors(
+    mouseOver: const Color(0xFFD32F2F),
+    mouseDown: const Color(0xFFB71C1C),
+    iconNormal: const Color(0xFF805306),
+    iconMouseOver: Colors.white);
+
+class WindowButtons extends StatefulWidget {
+  const WindowButtons({Key? key}) : super(key: key);
+
+  @override
+  _WindowButtonsState createState() => _WindowButtonsState();
+}
+
+class _WindowButtonsState extends State<WindowButtons> {
+  void maximizeOrRestore() {
+    setState(() {
+      appWindow.maximizeOrRestore();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        MinimizeWindowButton(colors: buttonColors),
+        appWindow.isMaximized
+            ? RestoreWindowButton(
+          colors: buttonColors,
+          onPressed: maximizeOrRestore,
+        )
+            : MaximizeWindowButton(
+          colors: buttonColors,
+          onPressed: maximizeOrRestore,
+        ),
+        CloseWindowButton(colors: closeButtonColors),
+      ],
     );
   }
 }
