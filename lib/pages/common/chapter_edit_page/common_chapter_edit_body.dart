@@ -140,6 +140,13 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
             onTapText: (String clickText) {
               map["clickHighLightSetting"](clickText);
             },
+            clickTextStyle: TextStyle(
+              textBaseline: TextBaseline.alphabetic,
+              background: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 2
+                ..color = Theme.of(context).primaryColorLight,
+            ),
             decoration: const InputDecoration(
               /// 消除下边框
               border: OutlineInputBorder(

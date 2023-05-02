@@ -15,7 +15,6 @@ class TransBarScrollView extends StatelessWidget {
             scrollbars: false,
             dragDevices: {
               PointerDeviceKind.touch,
-              PointerDeviceKind.mouse,
             },
         ),
         child: SingleChildScrollView(
