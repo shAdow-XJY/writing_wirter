@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:blur_glass/blur_glass.dart';
 import 'package:click_text_field/click_text_field.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +69,16 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
     ioBase.saveChapter(currentBook, currentChapter, currentText);
   }
 
+  /// 节流Timer：定时保存
+  Timer? _throttleTimer;
+  void throttleSaveText() {
+    _throttleTimer?.cancel();
+    _throttleTimer = Timer(const Duration(seconds: 15), () {
+      _throttleTimer = null;
+      saveText();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -86,12 +98,17 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
         // TextField has lost focus
         saveText();
         debugPrint("失去焦点保存内容");
+        _throttleTimer?.cancel();
+      } else {
+        debugPrint('开启节流保存');
+        throttleSaveText();
       }
     });
   }
 
   @override
   void dispose() {
+    _throttleTimer?.cancel();
     saveText();
     super.dispose();
   }

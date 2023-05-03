@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:blur_glass/blur_glass.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
@@ -130,6 +132,16 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
     currentDescription = textEditingController.text;
   }
 
+  /// 节流Timer：定时保存
+  Timer? _throttleTimer;
+  void throttleSaveSetting() {
+    _throttleTimer?.cancel();
+    _throttleTimer = Timer(const Duration(seconds: 15), () {
+      _throttleTimer = null;
+      saveSetting();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -147,12 +159,16 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
         // TextField has lost focus
         saveSetting();
         debugPrint("失去焦点保存内容");
+        _throttleTimer?.cancel();
+      } else {
+        throttleSaveSetting();
       }
     });
   }
 
   @override
   void dispose() {
+    _throttleTimer?.cancel();
     saveSetting();
     super.dispose();
   }
