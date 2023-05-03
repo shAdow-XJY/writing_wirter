@@ -6,6 +6,7 @@ import 'package:redux/redux.dart';
 import 'package:writing_writer/pages/common/setting_edit_page/common_setting_edit_page.dart';
 import '../../../service/web_socket/web_socket_msg_type.dart';
 import '../../../service/web_socket/web_socket_server.dart';
+import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/event_bus/ws_server_events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
@@ -28,6 +29,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
 
   /// 事件订阅器
   late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
 
   /// webSocket 传输的数据
   Map<String, dynamic> msgMap = {};
@@ -41,6 +43,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
   /// 编辑的状态变量
   String currentSet = "";
   String currentSetting = "";
+  String currentSettingFlag = "1";
 
   /// 防抖发送数据包
   Timer? _timer;
@@ -56,7 +59,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
       // 发送消息
       webSocketServer.serverSendMsg(WebSocketMsg.msgString(
         msgCode: 1,
-        msgTitle: "$currentSet$currentSetting",
+        msgTitle: "$currentSet$currentSetting$currentSettingFlag",
         msgContent: textEditingController.text,
         msgOffset: textEditingController.selection.baseOffset,
       ));
@@ -76,7 +79,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
   void receiveListener(dynamic msg) {
     isWebSocketReceive = true;
     msgMap = WebSocketMsg.msgStringToMap(msg);
-    if ("$currentSet$currentSetting".compareTo(msgMap['msgTitle']) == 0) {
+    if ("$currentSet$currentSetting$currentSettingFlag".compareTo(msgMap['msgTitle']) == 0) {
       textEditingController.value = TextEditingValue(
         text: msgMap["msgContent"],
         selection: TextSelection.fromPosition(
@@ -103,6 +106,9 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
       textEditingController.addListener(sendListener);
       webSocketServer.serverReceivedMsg(receiveListener);
     });
+    subscription_2 = eventBus.on<SettingFlagChangeEvent>().listen((event) {
+      currentSettingFlag = event.selectedFlag;
+    });
   }
 
   @override
@@ -111,6 +117,7 @@ class _SettingEditPageState extends State<MobileSettingEditPage> {
       _timer?.cancel();
     }
     subscription_1.cancel();
+    subscription_2.cancel();
     textEditingController.dispose();
     super.dispose();
   }

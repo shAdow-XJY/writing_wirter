@@ -103,7 +103,7 @@ class _CloudPageState extends State<CloudPage> {
     return ExpansionTileCard(
       baseColor: Theme.of(context).primaryColor.withOpacity(0.3),
       expandedColor: Theme.of(context).primaryColor,
-      expandedTextColor: Theme.of(context).textSelectionTheme.selectionColor,
+      expandedTextColor: Colors.white,
       leading: CircleAvatar(child: Text(bookName[0])),
       title: Text(
         bookName,

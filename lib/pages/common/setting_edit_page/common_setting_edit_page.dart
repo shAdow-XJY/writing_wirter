@@ -1,4 +1,5 @@
 import 'package:blur_glass/blur_glass.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -9,6 +10,7 @@ import '../../../components/common/dialog/number_edit_dialog.dart';
 import '../../../components/common/dialog/text_toast_dialog.dart';
 import '../../../components/common/toast/global_toast.dart';
 import '../../../service/file/IOBase.dart';
+import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
@@ -26,6 +28,8 @@ class CommonSettingEditPage extends StatefulWidget {
 class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
 
   /// status 状态变量
   String currentBook = "";
@@ -212,8 +216,10 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                               items: chapterFlagsShow,
                               onChanged: (String selected) {
                                 saveSetting();
+                                final String selectedFlag = selected.split('~').first;
+                                eventBus.fire(SettingFlagChangeEvent(selectedFlag: selectedFlag));
                                 setState(() {
-                                  currentFlagIndexChange(selected.split('~').first);
+                                  currentFlagIndexChange(selectedFlag);
                                 });
                               },
                             ),
