@@ -4,9 +4,11 @@ packages:
   animated_stack:
     dependency: "direct main"
     description:
-      path: "package_fit/animated_stack"
-      relative: true
-    source: path
+      path: "."
+      ref: master
+      resolved-ref: "681ba63ab303c998bb9e1c77bca6720ed5d6ef9d"
+      url: "https://github.com/shAdow-XJY/animated_stack.git"
+    source: git
     version: "0.2.0"
   animated_theme_switcher:
     dependency: "direct main"
@@ -219,9 +221,11 @@ packages:
   expansion_tile_card:
     dependency: "direct main"
     description:
-      path: "package_fit/expansion_tile_card"
-      relative: true
-    source: path
+      path: "."
+      ref: master
+      resolved-ref: "1b86658c3b427c0489d584a4d8cef43fb16f4d48"
+      url: "https://github.com/shAdow-XJY/expansion_tile_card.git"
+    source: git
     version: "2.0.0"
   fake_async:
     dependency: transitive

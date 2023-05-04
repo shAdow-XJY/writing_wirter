@@ -1,4 +1,3 @@
-import 'package:animated_stack/animated_stack.dart';
 import 'package:flutter/material.dart';
 
 import '../../pages/mobile/sockets_page/mobile_sockets_page.dart';
