@@ -4,10 +4,9 @@ packages:
   animated_stack:
     dependency: "direct main"
     description:
-      name: animated_stack
-      sha256: "8fccb9416dd9e1e5389670a91f7fe6e3a27b438f8a87a7febed56f86bdf3ec14"
-      url: "https://pub.dev"
-    source: hosted
+      path: "package_fit/animated_stack"
+      relative: true
+    source: path
     version: "0.2.0"
   animated_theme_switcher:
     dependency: "direct main"
@@ -220,10 +219,9 @@ packages:
   expansion_tile_card:
     dependency: "direct main"
     description:
-      name: expansion_tile_card
-      sha256: "0812d52e4a2effa4957286b9037c81394e1881ac49bcd8f006f631f2ea5ef6eb"
-      url: "https://pub.dev"
-    source: hosted
+      path: "package_fit/expansion_tile_card"
+      relative: true
+    source: path
     version: "2.0.0"
   fake_async:
     dependency: transitive

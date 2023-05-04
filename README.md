@@ -67,6 +67,24 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 27. [InputDecoration](https://book.flutterchina.club/chapter3/input_and_form.html#_3-5-1-textfield)
 28. [【文件上传下载】各种类型文件对应的content-type的值](https://blog.csdn.net/zzddada/article/details/123005455)
 29. [icon change](https://blog.csdn.net/mengks1987/article/details/95306508)
+30. [Flutter 重新创建指定语言的android/ios目录](https://blog.csdn.net/qq_16696763/article/details/115550086)
+31. [https://www.youtube.com/watch?v=NRuW223LY58](https://www.youtube.com/watch?v=NRuW223LY58)
+
+---
+
+## support website
+1. [https://pub.dev/](https://pub.dev/)
+2. [https://juejin.cn/](https://juejin.cn/)
+3. [https://www.csdn.net/](https://www.csdn.net/)
+4. [https://www.jianshu.com/](https://www.jianshu.com/)
+5. [https://chat.openai.com/](https://chat.openai.com/)
+6. [https://www.youtube.com/](https://www.youtube.com/)
+7. [https://stackoverflow.com/](https://stackoverflow.com/)
+8. [https://codemagic.io/start/](https://codemagic.io/start/)
+9. [https://zhuanlan.zhihu.com/](https://zhuanlan.zhihu.com/)
+10. [https://www.fluttercampus.com/](https://www.fluttercampus.com/)
+11. [https://book.flutterchina.club/](https://book.flutterchina.club/)
+12. [https://github.com/flutter/flutter/](https://github.com/flutter/flutter/)
 
 ---
 

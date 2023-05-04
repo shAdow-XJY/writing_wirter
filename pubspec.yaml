@@ -45,7 +45,8 @@ dependencies:
   # file picker
   file_picker: ^5.2.6
   # item component
-  expansion_tile_card: ^2.0.0
+  expansion_tile_card:
+    path: package_fit/expansion_tile_card
   # theme switch
   animated_theme_switcher: ^2.0.8
   # 虚线边框
@@ -63,7 +64,8 @@ dependencies:
   ## pc pack use ##
 
   ## mobile pack use ##
-  animated_stack: ^0.2.0
+  animated_stack:
+    path: package_fit/animated_stack
   flutter_slidable: ^2.0.0
   ## mobile pack use ##
 
