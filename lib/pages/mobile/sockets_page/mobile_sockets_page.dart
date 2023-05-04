@@ -143,6 +143,7 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
                 rebuildServer();
               },
             ),
+            const SizedBox(height: 20.0,),
             TextButton(
               child: const SizedBox(
                 width: 100.0,
