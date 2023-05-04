@@ -23,3 +23,13 @@
     
     widget.onChanged(opened),
 ```
+
+```
+    \Local\Pub\Cache\hosted\pub.dev\expansion_tile_card
+    
+    theme.accentColor 
+      
+    => 
+    
+    theme.primaryColor
+```
