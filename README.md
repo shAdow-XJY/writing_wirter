@@ -68,7 +68,7 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 28. [【文件上传下载】各种类型文件对应的content-type的值](https://blog.csdn.net/zzddada/article/details/123005455)
 29. [icon change](https://blog.csdn.net/mengks1987/article/details/95306508)
 30. [Flutter 重新创建指定语言的android/ios目录](https://blog.csdn.net/qq_16696763/article/details/115550086)
-31. [https://www.youtube.com/watch?v=NRuW223LY58](https://www.youtube.com/watch?v=NRuW223LY58)
+31. [How to build iOS app without a MacBook - Flutter tutorial](https://www.youtube.com/watch?v=NRuW223LY58)
 
 ---
 

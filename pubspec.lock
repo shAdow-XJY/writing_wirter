@@ -123,12 +123,11 @@ packages:
     source: hosted
     version: "2.0.1"
   click_text_field:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
-      name: click_text_field
-      sha256: "069e3e75159586c37b59d20a809cf41daeb69671e1ce80d32412bbf711cb3be6"
-      url: "https://pub.dev"
-    source: hosted
+      path: "E:/Android Studio Projects/click_text_field/"
+      relative: false
+    source: path
     version: "0.0.7+3"
   clock:
     dependency: transitive
