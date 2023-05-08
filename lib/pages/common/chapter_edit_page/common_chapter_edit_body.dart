@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:blur_glass/blur_glass.dart';
 import 'package:click_text_field/click_text_field.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +13,11 @@ import '../../../state_machine/redux/app_state/state.dart';
 
 class CommonChapterEditPageBody extends StatefulWidget {
   final ClickTextEditingController clickTextEditingController;
+  final bool needSuggest;
   const CommonChapterEditPageBody({
     Key? key,
     required this.clickTextEditingController,
+    this.needSuggest = false,
   }) : super(key: key);
 
   @override
@@ -67,6 +71,16 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
     ioBase.saveChapter(currentBook, currentChapter, currentText);
   }
 
+  /// 节流Timer：定时保存
+  Timer? _throttleTimer;
+  void throttleSaveText() {
+    _throttleTimer?.cancel();
+    _throttleTimer = Timer(const Duration(seconds: 15), () {
+      _throttleTimer = null;
+      saveText();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -86,12 +100,17 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
         // TextField has lost focus
         saveText();
         debugPrint("失去焦点保存内容");
+        _throttleTimer?.cancel();
+      } else {
+        debugPrint('开启节流保存');
+        throttleSaveText();
       }
     });
   }
 
   @override
   void dispose() {
+    _throttleTimer?.cancel();
     saveText();
     super.dispose();
   }
@@ -132,28 +151,52 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
         return currentChapter.isEmpty
             ? const SizedBox()
             : BlurGlass(
-          outBorderRadius: 0.0,
-          child: ClickTextField(
-            focusNode: focusNode,
-            controller: clickTextEditingController,
-            regExp: Parser.generateRegExp(currentParserObj),
-            onTapText: (String clickText) {
-              map["clickHighLightSetting"](clickText);
-            },
-            decoration: const InputDecoration(
-              /// 消除下边框
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
+            margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+            child: widget.needSuggest
+                ? SuggestClickTextField(
+              focusNode: focusNode,
+              controller: clickTextEditingController,
+              regExp: Parser.generateRegExp(currentParserObj),
+              onTapText: (String clickText) {
+                map["clickHighLightSetting"](clickText);
+              },
+              clickTextStyle: TextStyle(
+                textBaseline: TextBaseline.alphabetic,
+                background: Paint()
+                  ..style = PaintingStyle.stroke
+                  ..strokeWidth = 2
+                  ..color = Theme.of(context).primaryColorLight,
               ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide.none,
+            )
+                : ClickTextField(
+              focusNode: focusNode,
+              controller: clickTextEditingController,
+              regExp: Parser.generateRegExp(currentParserObj),
+              onTapText: (String clickText) {
+                map["clickHighLightSetting"](clickText);
+              },
+              clickTextStyle: TextStyle(
+                textBaseline: TextBaseline.alphabetic,
+                background: Paint()
+                  ..style = PaintingStyle.stroke
+                  ..strokeWidth = 2
+                  ..color = Theme.of(context).primaryColorLight,
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide.none,
+              decoration: const InputDecoration(
+                /// 消除下边框
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
-          ),
-        );
+          );
       },
     );
   }

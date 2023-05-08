@@ -106,8 +106,8 @@ class ThemeUtil {
       primaryColor: color[600],
       dialogBackgroundColor: color[100],
       scaffoldBackgroundColor: color[100],
-      textSelectionTheme: const TextSelectionThemeData(
-        selectionColor: Colors.white,
+      textSelectionTheme: TextSelectionThemeData(
+        selectionColor: color[600],
       ),
       appBarTheme: AppBarTheme(
         color: color[600],

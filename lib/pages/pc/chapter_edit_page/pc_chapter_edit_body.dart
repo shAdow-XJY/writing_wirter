@@ -24,6 +24,6 @@ class _PCChapterEditPageBodyState extends State<PCChapterEditPageBody> {
 
   @override
   Widget build(BuildContext context) {
-    return CommonChapterEditPageBody(clickTextEditingController: clickTextEditingController,);
+    return CommonChapterEditPageBody(clickTextEditingController: clickTextEditingController, needSuggest: true,);
   }
 }

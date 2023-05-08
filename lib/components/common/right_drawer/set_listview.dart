@@ -13,7 +13,7 @@ import '../../../state_machine/redux/action/parser_action.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 import '../dialog/edit_toast_dialog.dart';
 import '../dialog/rename_or_dialog.dart';
-import '../vertical_expand_animated_widget.dart';
+import '../animated/vertical_expand_animated_widget.dart';
 import '../toast/global_toast.dart';
 import '../transparent_checkbox.dart';
 import '../buttons/transparent_icon_button.dart';

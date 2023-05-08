@@ -57,6 +57,7 @@ class _PCHomePageState extends State<PCHomePage>{
     } else {
       leftWidth = _totalWidth * (_dividerPosition - _buttonFactor);
     }
+
     return Scaffold(
         appBar: const ChapterEditPageAppBar(),
         drawer: const LeftDrawer(widthFactor: 0.3,),

@@ -147,28 +147,28 @@ class FileConfig {
     return webDAVLocalRootDirPath() + Platform.pathSeparator + bookName + zipFilePostfix;
   }
 }
-/// 书籍结构实例：
-/// 书名：西游记
-/// 章节：第一回　灵根育孕源流出　心性修持大道生
-/// 设定集： 人物集
-/// 设定： 孙悟空
 /// — —  wWriter
 ///   — — — —  write
-///     — — — — — —  西游记
+///     — — — — — —  ${bookName}
 ///       — — — — — — — — — —  Chapter.json
 ///       — — — — — — — — — —  Chapter
-///         — — — — — — — — — — — —  第一回　灵根育孕源流出　心性修持大道生.txt
+///         — — — — — — — — — — — —  ${chapterName}.txt
 ///       — — — — — — — — — —  Set
 ///         — — — — — — — — — — — —  Set.json
-///         — — — — — — — — — — — —  人物集
-///           — — — — — — — — — — — — — —  孙悟空.json
+///         — — — — — — — — — — — —  ${setName}
+///           — — — — — — — — — — — — — —  ${settingName}.json
 ///           — — — — — — — — — — — — — —  Setting.sort
 ///   — — — —  export
-///     — — — — — —  西游记
+///     — — — — — —  ${bookName}
 ///       — — — — — — — —  chs
-///         — — — — — — — — — —  第一回　灵根育孕源流出　心性修持大道生.txt
+///         — — — — — — — — — —  ${chapterName}.txt
 ///       — — — — — — — —  bok
-///         — — — — — — — — — —  1.第一回　灵根育孕源流出　心性修持大道生.txt
+///         — — — — — — — — — —  1.${chapterName}.txt
+///         — — — — — — — — — —  2.${chapterName}.txt
 ///         — — — — — — — — — —  ······
 ///       — — — — — — — —  zip
-///         — — — — — — — — — —  西游记.zip
+///         — — — — — — — — — —  ${bookName}.zip
+///   — — — —  webdav
+///     — — — — — —  ${bookName}.zip
+///   — — — —  config
+///     — — — — — —  user.json

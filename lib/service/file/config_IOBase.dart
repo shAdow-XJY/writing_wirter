@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import '../encrypt/encryption_helper.dart';
 import 'file_configure.dart';
 import 'dart:convert' as convert;
 import 'package:path_provider/path_provider.dart';
@@ -41,7 +42,8 @@ class ConfigIOBase
     File userJsonFile = File("$_appDocPath${Platform.pathSeparator}${FileConfig.configUserFilePath()}");
     if (!userJsonFile.existsSync()){
       userJsonFile.createSync(recursive: true);
-      userJsonFile.writeAsStringSync(UserConfig.getDefaultUserJsonString());
+      String decryptedStr = UserConfig.getDefaultUserJsonString();
+      userJsonFile.writeAsStringSync(EncryptionHelper.getEncryptedString(decryptedStr));
     }
   }
 
@@ -54,6 +56,7 @@ class ConfigIOBase
     String jsonContent = "";
     try {
       jsonContent = userJsonFile.readAsStringSync();
+      jsonContent = EncryptionHelper.getDecryptedString(jsonContent);
     } on Exception catch (e, s) {
       debugPrint("user.json读取");
       debugPrintStack(stackTrace: s);
@@ -68,7 +71,8 @@ class ConfigIOBase
       if (!userJsonFile.existsSync()) {
         userJsonFile.createSync(recursive: true);
       }
-      userJsonFile.writeAsStringSync(convert.jsonEncode(userJson));
+      String decryptedStr = convert.jsonEncode(userJson);
+      userJsonFile.writeAsStringSync(EncryptionHelper.getEncryptedString(decryptedStr));
     } on Exception catch (e, s) {
       debugPrint("/// user.json保存");
       debugPrintStack(stackTrace: s);

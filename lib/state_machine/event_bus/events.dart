@@ -71,3 +71,8 @@ class RemoveSettingEvent {
   String settingName;
   RemoveSettingEvent({required this.setName, required this.settingName});
 }
+/// settingFlagChangeEvent
+class SettingFlagChangeEvent {
+  String selectedFlag;
+  SettingFlagChangeEvent({required this.selectedFlag});
+}

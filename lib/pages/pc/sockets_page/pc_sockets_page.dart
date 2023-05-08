@@ -27,6 +27,9 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
 
   late WebSocketClient webSocketClient;
 
+  /// ip regExp
+  final RegExp ipRegExp = RegExp(r'^([0-9]{1,3}\.){3}[0-9]{1,3}$');
+
   @override
   void initState() {
     super.initState();
@@ -74,7 +77,14 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("点击手机端的同步写作，将显示的ip地址输入在下方："),
+              const Text(
+                "点击手机端的同步写作，将显示的ip地址输入在下方：",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                  wordSpacing: 2.0,
+                ),
+              ),
               TextFormField(
                 controller: ipTextController,
                 decoration: const InputDecoration(
@@ -82,6 +92,7 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
                   hintText: "请输入移动端显示的IP地址",
                   icon: Icon(Icons.wifi),
                 ),
+                style: const TextStyle(color: Colors.white,),
               ),
               const SizedBox(height: 16.0,),
               Row(
@@ -91,7 +102,11 @@ class _PCSocketsPageState extends State<PCSocketsPage> {
                       child: TextButton(
                         child: const Text("确定"),
                         onPressed: () {
-                          webSocketClient.clientConnect(ipTextController.text);
+                          if (ipRegExp.hasMatch(ipTextController.text)) {
+                            webSocketClient.clientConnect(ipTextController.text);
+                          } else {
+                            GlobalToast.showErrorTop('ip 地址不合法，请重新输入');
+                          }
                         },
                       ),
                   ),

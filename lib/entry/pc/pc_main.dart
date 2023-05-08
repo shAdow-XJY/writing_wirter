@@ -5,6 +5,7 @@ import 'package:redux/redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:writing_writer/router/pc/pc_router.dart';
 import 'package:writing_writer/service/theme/theme.dart';
+import '../../components/pc/pc_custom_title_bar.dart';
 import '../../state_machine/get_it/app_get_it.dart';
 import '../../state_machine/redux/app_state/state.dart';
 
@@ -31,8 +32,14 @@ class PcApp extends StatelessWidget {
                   title: 'Writing Writer',
                   theme: myTheme,
                   debugShowCheckedModeBanner: false,
+                  builder: (context, child) {
+                    return Scaffold(
+                      appBar: const PcCustomTitleBar(),
+                      body: child,
+                    );
+                  },
                   initialRoute: '/',
-                  onGenerateRoute: pcGenerateRoute
+                  onGenerateRoute: pcGenerateRoute,
               );
             },
           );

@@ -44,6 +44,11 @@ class ExportIOBase
 
   /// 根据路径打开资源管理器
   void openFileManager(String bookName) {
+    /// 先保证目录存在可打开export/${bookName}
+    Directory dir = Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookDirPath(bookName)}");
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
     final Uri url = Uri.file("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookDirPath(bookName)}");
     /// launchUrl(url);
     /// 改用下面的方法解决路径中包含中文导致打开失败
@@ -107,7 +112,7 @@ class ExportIOBase
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  //                                导出文件                                  //
+  //                                分享文件                                  //
   ////////////////////////////////////////////////////////////////////////////
   /// 分享单一章节
   void shareChapter(String bookName, String chapterName) {
@@ -123,6 +128,12 @@ class ExportIOBase
     await encoder.addDirectory(Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookBokDirPath(bookName)}"));
     encoder.close();
     Share.shareXFiles([XFile("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookZipFilePath(bookName)}")], text: 'share book');
+  }
+
+  /// 导出可移植.zip（包含chapter 和 set）
+  Future<void> shareZip(String bookName) async {
+    exportZip(bookName);
+    Share.shareXFiles([XFile("$_appDocPath${Platform.pathSeparator}${FileConfig.exportBookZipFilePath(bookName)}")], text: 'share .zip');
   }
 
   /////////////////////////////////////////////////////////////////////////////

@@ -111,20 +111,47 @@ class _PCSocketsPageState extends State<MobileSocketsPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("点击手机端的同步写作，将显示的ip地址输入在下方："),
-            Text(serverIP),
             Text(
-              serverStatus ? "已启动" : "已断开"
+              "点击桌面端的同步写作\n输入下方IP地址进行连接",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Theme.of(context).primaryColorDark,
+                fontSize: 18.0,
+              ),
             ),
+            const SizedBox(height: 40.0,),
+            Text(
+              'IP Status: ${serverStatus ? "已启动" : "已断开"}',
+              textAlign: TextAlign.start,
+            ),
+            const SizedBox(height: 20.0,),
+            Text(
+              'IP Address: $serverIP',
+              textAlign: TextAlign.start,
+            ),
+            const SizedBox(height: 40.0,),
             TextButton(
-              child: const Text("refresh"),
+              child: SizedBox(
+                width: 100.0,
+                child: Text(
+                  serverStatus ? "重建服务器" : "启动服务器",
+                  textAlign: TextAlign.center,
+                ),
+              ),
               onPressed: () {
                 closeServer();
                 rebuildServer();
               },
             ),
+            const SizedBox(height: 20.0,),
             TextButton(
-              child: const Text("close server"),
+              child: const SizedBox(
+                width: 100.0,
+                child: Text(
+                  "关闭服务器",
+                  textAlign: TextAlign.center,
+                ),
+              ),
               onPressed: () {
                 closeServer();
               },

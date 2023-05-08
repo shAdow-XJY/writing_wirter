@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:blur_glass/blur_glass.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -9,6 +12,7 @@ import '../../../components/common/dialog/number_edit_dialog.dart';
 import '../../../components/common/dialog/text_toast_dialog.dart';
 import '../../../components/common/toast/global_toast.dart';
 import '../../../service/file/IOBase.dart';
+import '../../../state_machine/event_bus/events.dart';
 import '../../../state_machine/get_it/app_get_it.dart';
 import '../../../state_machine/redux/app_state/state.dart';
 
@@ -26,6 +30,8 @@ class CommonSettingEditPage extends StatefulWidget {
 class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
   /// 全局单例-文件操作工具类
   final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
 
   /// status 状态变量
   String currentBook = "";
@@ -126,6 +132,16 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
     currentDescription = textEditingController.text;
   }
 
+  /// 节流Timer：定时保存
+  Timer? _throttleTimer;
+  void throttleSaveSetting() {
+    _throttleTimer?.cancel();
+    _throttleTimer = Timer(const Duration(seconds: 15), () {
+      _throttleTimer = null;
+      saveSetting();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -143,12 +159,16 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
         // TextField has lost focus
         saveSetting();
         debugPrint("失去焦点保存内容");
+        _throttleTimer?.cancel();
+      } else {
+        throttleSaveSetting();
       }
     });
   }
 
   @override
   void dispose() {
+    _throttleTimer?.cancel();
     saveSetting();
     super.dispose();
   }
@@ -191,86 +211,89 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                 body: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Row(
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [Theme.of(context).primaryColor.withOpacity(0.5), Theme.of(context).primaryColorDark],
+                          ),
+                        ),
+                        child:Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           const Flexible(
-                            child: Text('设定结点:'),
-                          ),
-                          const Flexible(
-                            child: Text('第'),
+                            child: Text('章节范围'),
                           ),
                           Flexible(
                             flex: 5,
                             child: DropDownButton(
-                            initIndex: currentFlagIndex,
-                            items: chapterFlagsShow,
-                            onChanged: (String selected) {
-                              saveSetting();
-                              setState(() {
-                                currentFlagIndexChange(selected.split('~').first);
-                              });
-                            },
-                          ),
-                          ),
-                          const Flexible(
-                            child: Text('章'),
+                              initIndex: currentFlagIndex,
+                              items: chapterFlagsShow,
+                              onChanged: (String selected) {
+                                saveSetting();
+                                final String selectedFlag = selected.split('~').first;
+                                eventBus.fire(SettingFlagChangeEvent(selectedFlag: selectedFlag));
+                                setState(() {
+                                  currentFlagIndexChange(selectedFlag);
+                                });
+                              },
+                            ),
                           ),
                           Flexible(
                             child: TransIconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => NumberEditDialog(
-                                  title: '新建设定节点',
-                                  callBack: (String flagChapterNumber) => {
-                                    if (!chapterFlags.contains(flagChapterNumber))
-                                      {
-                                        setState(() {
-                                          saveSetting();
-                                          currentFlagIndexChange(flagChapterNumber, insertNewFlag: true);
-                                        }),
-                                        Navigator.pop(context),
-                                      } else {
-                                      GlobalToast.showErrorTop('该设定节点$flagChapterNumber已存在',),
+                              icon: const Icon(Icons.add),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => NumberEditDialog(
+                                    title: '新建设定节点',
+                                    callBack: (String flagChapterNumber) => {
+                                      if (!chapterFlags.contains(flagChapterNumber))
+                                        {
+                                          setState(() {
+                                            saveSetting();
+                                            currentFlagIndexChange(flagChapterNumber, insertNewFlag: true);
+                                          }),
+                                          Navigator.pop(context),
+                                        } else {
+                                        GlobalToast.showErrorTop('该设定节点$flagChapterNumber已存在',),
+                                      },
                                     },
-                                  },
-                                ),
-                              );
-                            },
-                          ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                           Flexible(
                             child: TransIconButton(
-                            icon: const Icon(Icons.delete_outline),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => TextToastDialog(
-                                  title: '删除设定节点',
-                                  text: '确定删除当前设定结点 ${chapterFlags[currentFlagIndex]} ?',
-                                  callBack: () {
-                                    if (currentFlagIndex != 0) {
-                                      setState(() {
-                                        currentFlagIndexRemove();
-                                        saveSetting();
-                                      });
-                                      Navigator.pop(context);
-                                    } else {
-                                      GlobalToast.showErrorTop('设定节点 1 不支持删除',);
-                                    }
-                                  },
-                                ),
-                              );
-                            },
-                          ),
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => TextToastDialog(
+                                    title: '删除设定节点',
+                                    text: '确定删除当前设定结点 ${chapterFlags[currentFlagIndex]} ?',
+                                    callBack: () {
+                                      if (currentFlagIndex != 0) {
+                                        setState(() {
+                                          currentFlagIndexRemove();
+                                          saveSetting();
+                                        });
+                                        Navigator.pop(context);
+                                      } else {
+                                        GlobalToast.showErrorTop('设定节点 1 不支持删除',);
+                                      }
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
+                      ),
                       BlurGlass(
-                        marginValue: 0.0,
-                        paddingValue: 0.0,
                         inBorderRadius: 0.0,
                         outBorderRadius: 0.0,
                         child: TextField(
@@ -280,6 +303,12 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                           decoration: const InputDecoration(
                             /// 消除下边框
                             border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide.none,
                             ),
                           ),
