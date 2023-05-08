@@ -27,12 +27,17 @@ files number in /lib：127
 lines number in /lib：7690
 added lines: 38723, removed lines: 8887, total lines: 29836
 
+v8.0.0
+files number in /lib：134
+lines number in /lib：8156
+added lines: 40039, removed lines: 9406, total lines: 30633
+
 ```
 
 ---
 
 ## thinking
-emmmm.....
+hmm.....
 Hypnotized myself as an excuse for not being too lazy to write a novel, but later used it for a graduation project
 
 ---
