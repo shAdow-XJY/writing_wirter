@@ -13,9 +13,11 @@ import '../../../state_machine/redux/app_state/state.dart';
 
 class CommonChapterEditPageBody extends StatefulWidget {
   final ClickTextEditingController clickTextEditingController;
+  final bool needSuggest;
   const CommonChapterEditPageBody({
     Key? key,
     required this.clickTextEditingController,
+    this.needSuggest = false,
   }) : super(key: key);
 
   @override
@@ -148,21 +150,53 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
       builder: (BuildContext context, Map<String, dynamic> map) {
         return currentChapter.isEmpty
             ? const SizedBox()
-            : SuggestClickTextField(
-          focusNode: focusNode,
-          controller: clickTextEditingController,
-          regExp: Parser.generateRegExp(currentParserObj),
-          onTapText: (String clickText) {
-            map["clickHighLightSetting"](clickText);
-          },
-          clickTextStyle: TextStyle(
-            textBaseline: TextBaseline.alphabetic,
-            background: Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 2
-              ..color = Theme.of(context).primaryColorLight,
-          ),
-        );
+            : BlurGlass(
+            margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+            child: widget.needSuggest
+                ? SuggestClickTextField(
+              focusNode: focusNode,
+              controller: clickTextEditingController,
+              regExp: Parser.generateRegExp(currentParserObj),
+              onTapText: (String clickText) {
+                map["clickHighLightSetting"](clickText);
+              },
+              clickTextStyle: TextStyle(
+                textBaseline: TextBaseline.alphabetic,
+                background: Paint()
+                  ..style = PaintingStyle.stroke
+                  ..strokeWidth = 2
+                  ..color = Theme.of(context).primaryColorLight,
+              ),
+            )
+                : ClickTextField(
+              focusNode: focusNode,
+              controller: clickTextEditingController,
+              regExp: Parser.generateRegExp(currentParserObj),
+              onTapText: (String clickText) {
+                map["clickHighLightSetting"](clickText);
+              },
+              clickTextStyle: TextStyle(
+                textBaseline: TextBaseline.alphabetic,
+                background: Paint()
+                  ..style = PaintingStyle.stroke
+                  ..strokeWidth = 2
+                  ..color = Theme.of(context).primaryColorLight,
+              ),
+              decoration: const InputDecoration(
+                /// 消除下边框
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+          );
       },
     );
   }

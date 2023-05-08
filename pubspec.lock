@@ -94,10 +94,10 @@ packages:
     dependency: "direct main"
     description:
       name: blur_glass
-      sha256: "2e3e0f812e1baf075ff6e6499048fd36630cfa8216fe34a4604525b652081ca2"
+      sha256: "0697db059805a96aec437d01934b9eabfba7693abcf383831fcf7ed624560b36"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -123,12 +123,13 @@ packages:
     source: hosted
     version: "2.0.1"
   click_text_field:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
-      path: "E:/Android Studio Projects/click_text_field/"
-      relative: false
-    source: path
-    version: "0.0.7+3"
+      name: click_text_field
+      sha256: c0a8e9c9356099d670eb4dd6db8f671481e4664f7db4b43162694f7ecda5bb12
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.8+1"
   clock:
     dependency: transitive
     description:

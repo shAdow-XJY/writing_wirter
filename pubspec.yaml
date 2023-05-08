@@ -13,8 +13,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   ## own pack ##
-  blur_glass: ^0.0.1
-  click_text_field: ^0.0.8
+  blur_glass: ^0.0.2
+  click_text_field: ^0.0.8+1
   ## own pack ##
   # 系统/文件路径
   path_provider: ^2.0.12
@@ -77,6 +77,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+#  blur_glass:
+#    path: E:/Android Studio Projects/blur_glass/
 #  click_text_field:
 #    path: E:/Android Studio Projects/click_text_field/
 

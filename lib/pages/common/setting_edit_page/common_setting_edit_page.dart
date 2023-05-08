@@ -294,8 +294,6 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                       ),
                       ),
                       BlurGlass(
-                        marginValue: 0.0,
-                        paddingValue: 10.0,
                         inBorderRadius: 0.0,
                         outBorderRadius: 0.0,
                         child: TextField(
