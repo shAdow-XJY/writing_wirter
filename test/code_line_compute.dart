@@ -8,8 +8,8 @@ int lineCount = 0;
 Future<void> main() async {
   recursionFile("E:\\AndroidStudioProjects\\writing_writer\\lib");
   if (kDebugMode) {
-    print("files number in /lib：$fileCount");
-    print("lines number in /lib：$lineCount");
+    print("files number in /lib:$fileCount");
+    print("lines number in /lib:$lineCount");
   }
 }
 void recursionFile(String pathName) {
