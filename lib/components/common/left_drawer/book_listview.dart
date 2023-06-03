@@ -50,7 +50,6 @@ class _BookListViewState extends State<BookListView> {
     subscription_2 = eventBus.on<RemoveBookEvent>().listen((event) {
       setState(() {
         bookNameList.remove(event.bookName);
-        bookNameList;
       });
     });
   }
@@ -67,9 +66,13 @@ class _BookListViewState extends State<BookListView> {
     return ListView.builder(
       controller: ScrollController(),
       itemCount: bookNameList.length,
-      itemBuilder: (context, index) => BookListViewItem(
-        bookName: bookNameList[index],
-      ),
+      itemBuilder: (context, index) {
+        final bookName = bookNameList[index];
+        return BookListViewItem(
+          key: Key(bookName), // 使用唯一的Key标识每个列表项
+          bookName: bookName,
+        );
+      },
     );
   }
 }
