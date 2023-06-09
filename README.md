@@ -29,7 +29,7 @@ added lines: 38723, removed lines: 8887, total lines: 29836
 
 v8.0.0
 files number in /lib:133
-lines number in /lib:8156
+lines number in /lib:7413
 added lines: 40333, removed lines: 9621, total lines: 30712
 
 
