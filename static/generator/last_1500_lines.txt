@@ -1,0 +1,1625 @@
+import 'dart:io';
+class FileConfig {
+  /// writing writer 根文件夹名称
+  static String rootName = "wWriter";
+  /// writing writer 写作内容根文件夹名称
+  static String writeRootName = "write";
+  /// writing writer 写作内容子文件夹名称
+  static String writeSetDirName = "Set";
+  static String writeChapterDirName = "Chapter";
+  static String writeSettingSortFileName = "Setting";
+  /// writing writer 导出内容根文件夹名称
+  static String exportRootName = "export";
+  /// writing writer 导出内容子文件夹名称
+  static String exportChapterDirName = "chs";
+  static String exportBookDirName = "bok";
+  static String exportZipDirName = "zip";
+  /// writing writer 应用配置根文件夹名称
+  static String configRootName = "config";
+  /// writing writer 应用配置内容子文件名称
+  static String configUserFileName = "user";
+  /// writing writer webdav内容中间站根文件夹名称
+  static String webDAVRootName = "webdav";
+  /// 文件格式后缀
+  static String chsFilePostfix = ".txt";
+  static String jsonFilePostfix = ".json";
+  static String zipFilePostfix = ".zip";
+  static String sortFilePostfix = ".sort";
+  /// 文件相对路径函数
+  /// wWriter
+  static String rootDirPath() {
+    return rootName;
+  }
+  /// 写作部分
+  /// wWriter/write
+  static String writeRootDirPath() {
+    return rootDirPath() + Platform.pathSeparator + writeRootName;
+  }
+  /// wWriter/write/${bookName}
+  static String writeBookDirPath(String bookName) {
+    return writeRootDirPath() + Platform.pathSeparator + bookName;
+  }
+  /// 写作部分: 设定集
+  /// wWriter/write/${bookName}/Set
+  static String writeBookSetRootDirPath(String bookName) {
+    return writeBookDirPath(bookName) + Platform.pathSeparator + writeSetDirName;
+  }
+  /// wWriter/write/${bookName}/Set/Set.json
+  static String writeBookSetJsonFilePath(String bookName) {
+    return writeBookSetRootDirPath(bookName) + Platform.pathSeparator + writeSetDirName + jsonFilePostfix;
+  }
+  /// wWriter/write/${bookName}/Set/${setName}
+  static String writeBookSetDirPath(String bookName, String setName) {
+    return writeBookSetRootDirPath(bookName) + Platform.pathSeparator + setName;
+  }
+  /// wWriter/write/${bookName}/Set/${setName}/Setting.sort
+  static String writeBookSettingSortFilePath(String bookName, String setName) {
+    return writeBookSetDirPath(bookName, setName) + Platform.pathSeparator + writeSettingSortFileName + sortFilePostfix;
+  }
+  /// wWriter/write/${bookName}/Set/${setName}/${settingName}.json
+  static String writeBookSettingJsonFilePath(String bookName, String setName, String settingName) {
+    return writeBookSetDirPath(bookName, setName) + Platform.pathSeparator + settingName + jsonFilePostfix;
+  }
+  /// 写作部分: 章节
+  /// wWriter/write/${bookName}/Chapter.json
+  static String writeBookChapterJsonFilePath(String bookName) {
+    return writeBookDirPath(bookName) + Platform.pathSeparator + writeChapterDirName + jsonFilePostfix;
+  }
+  /// wWriter/write/${bookName}/Chapter
+  static String writeBookChapterDirPath(String bookName) {
+    return writeBookDirPath(bookName) + Platform.pathSeparator + writeChapterDirName;
+  }
+  /// wWriter/write/${bookName}/Chapter/${chapterName}.txt
+  static String writeBookChapterFilePath(String bookName, String chapterName) {
+    return writeBookChapterDirPath(bookName) + Platform.pathSeparator + chapterName + chsFilePostfix;
+  }
+  /// 导出部分
+  /// wWriter/export
+  static String exportRootDirPath() {
+    return rootDirPath() + Platform.pathSeparator + exportRootName;
+  }
+  /// wWriter/export/${bookName}
+  static String exportBookDirPath(String bookName) {
+    return exportRootDirPath() + Platform.pathSeparator + bookName;
+  }
+  /// 导出部分: 导出章节
+  /// wWriter/export/${bookName}/chs
+  static String exportBookChsDirPath(String bookName) {
+    return exportBookDirPath(bookName) + Platform.pathSeparator + exportChapterDirName;
+  }
+  /// wWriter/export/${bookName}/chs/${chapterName}.txt
+  static String exportBookChapterFilePath(String bookName, String chapterName) {
+    return exportBookChsDirPath(bookName) + Platform.pathSeparator + chapterName + chsFilePostfix;
+  }
+  /// 导出部分: 导出书籍
+  /// wWriter/export/${bookName}/bok
+  static String exportBookBokDirPath(String bookName) {
+    return exportBookDirPath(bookName) + Platform.pathSeparator + exportBookDirName;
+  }
+  /// wWriter/export/${bookName}/bok/${index}${chapterName}.txt
+  static String exportBookBokChapterFilePath(String bookName, int index, String chapterName) {
+    return exportBookBokDirPath(bookName) + Platform.pathSeparator + index.toString() + chapterName + chsFilePostfix;
+  }
+  /// 导出部分: 导出.zip文件
+  /// wWriter/export/${bookName}/zip
+  static String exportBookZipDirPath(String bookName) {
+    return exportBookDirPath(bookName) + Platform.pathSeparator + exportZipDirName;
+  }
+  /// wWriter/export/${bookName}/zip/${bookName}.zip
+  static String exportBookZipFilePath(String bookName) {
+    return exportBookZipDirPath(bookName) + Platform.pathSeparator + bookName + zipFilePostfix;
+  }
+  /// 用户配置部分
+  /// wWriter/user
+  static String configRootDirPath() {
+    return rootDirPath() + Platform.pathSeparator + configRootName;
+  }
+  /// wWriter/user/userConfigFileName.json
+  static String configUserFilePath() {
+    return configRootDirPath() + Platform.pathSeparator + configUserFileName + jsonFilePostfix;
+  }
+  /// webDAV部分
+  /// 云端网盘路径：/wWriter
+  static String webDAVRootDirPath() {
+    return "/${rootDirPath()}";
+  }
+  /// 云端网盘路径：/wWriter/${bookName}.zip
+  static String webDAVBookFilePath(String bookName) {
+    return "${webDAVRootDirPath()}/$bookName$zipFilePostfix";
+  }
+  /// 本地暂时路径：wWriter/webdav
+  static String webDAVLocalRootDirPath() {
+    return rootDirPath() + Platform.pathSeparator + webDAVRootName;
+  }
+  /// 本地暂时路径：wWriter/webdav/${bookName}.zip
+  static String webDAVLocalBookFilePath(String bookName) {
+    return webDAVLocalRootDirPath() + Platform.pathSeparator + bookName + zipFilePostfix;
+  }
+}
+// ignore_for_file: file_names
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:writing_writer/service/file/file_configure.dart';
+import 'dart:convert' as convert;
+import '../../components/common/toast/global_toast.dart';
+import '../config/BookConfig.dart';
+class IOBase
+{
+  /// 电脑文档目录路径
+  late final String _appDocPath;
+  /// writing writer 写作根目录路径
+  late final Directory _writeRootDir;
+  IOBase() {
+    getApplicationDocumentsDirectory().then((appDocDir) => {
+      _appDocPath = appDocDir.path,
+      _init(),
+    });
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  //                                私有函数                                  //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 构造函数内部使用：初始化函数
+  void _init() {
+    /// 创建应用文件夹
+    Directory rootDir = Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.rootDirPath()}");
+    if (!rootDir.existsSync()){
+      rootDir.createSync(recursive: true);
+      // debugPrint(_rootDir.path);
+    }
+    /// 创建应用子文件夹：写作文件夹
+    _writeRootDir = Directory("$_appDocPath${Platform.pathSeparator}${FileConfig.writeRootDirPath()}");
+    if (!_writeRootDir.existsSync()){
+      _writeRootDir.createSync(recursive: true);
+    }
+  }
+  /// 目录路径统一生成函数
+  String _dirPath({String bookName = "", bool isChapterDir = false, bool isSetDir = false, String setName = ""}) {
+    String path = _appDocPath;
+    if (bookName.isNotEmpty) {
+      /// ${bookName}/Chapter
+      if (isChapterDir) {
+        path += "${Platform.pathSeparator}${FileConfig.writeBookChapterDirPath(bookName)}";
+      }
+      /// ${bookName}/Set
+      else if (isSetDir && setName.isEmpty) {
+        path += "${Platform.pathSeparator}${FileConfig.writeBookSetRootDirPath(bookName)}";
+      }
+      /// ${bookName}/Set/${setName}
+      else if (isSetDir && setName.isNotEmpty) {
+        path += "${Platform.pathSeparator}${FileConfig.writeBookSetDirPath(bookName, setName)}";
+      }
+      /// ${bookName}
+      else {
+        path += "${Platform.pathSeparator}${FileConfig.writeBookDirPath(bookName)}";
+      }
+    } else {
+      path += "${Platform.pathSeparator}${FileConfig.rootDirPath()}";
+    }
+    return path;
+  }
+  /// 章节文件路径统一生成函数
+  String _chsFilePath({String bookName = "", String chapterName = ""}) {
+    String path = _appDocPath;
+    if (bookName.isNotEmpty && chapterName.isNotEmpty) {
+      path += "${Platform.pathSeparator}${FileConfig.writeBookChapterFilePath(bookName, chapterName)}";
+    }
+    return path;
+  }
+  /// Setting.sort文件路径统一生成函数
+  String _sortFilePath({String bookName = "", String setName = ""}) {
+    String path = _appDocPath;
+    if (bookName.isNotEmpty && setName.isNotEmpty) {
+      path += "${Platform.pathSeparator}${FileConfig.writeBookSettingSortFilePath(bookName, setName)}";
+    }
+    return path;
+  }
+  /// json文件路径统一生成函数
+  String _jsonFilePath({String bookName = "", bool isChapterJson = false, bool isSetJson = false, bool isSettingJson = false, String setName = "", String settingName = ""}) {
+    String path = _appDocPath;
+    if (bookName.isNotEmpty) {
+      /// ${bookName}/Chapter.json
+      if (isChapterJson) {
+        path += "${Platform.pathSeparator}${FileConfig.writeBookChapterJsonFilePath(bookName)}";
+      }
+      /// ${bookName}/Set/Set.json
+      else if (isSetJson) {
+        path += "${Platform.pathSeparator}${FileConfig.writeBookSetJsonFilePath(bookName)}";
+      }
+      /// {$settingName}.json
+      else if (isSettingJson || (setName.isNotEmpty && settingName.isNotEmpty)) {
+        path += "${Platform.pathSeparator}${FileConfig.writeBookSettingJsonFilePath(bookName, setName, settingName)}";
+      }
+    }
+    return path;
+  }
+  /// 判断是书/设定集：文件夹
+  bool _isDir(Object object) {
+    return (object.runtimeType.toString() == "_Directory");
+  }
+  /// 判断是章节/设定：文件
+  bool _isFile(Object object) {
+    return (object.runtimeType.toString() == "_File");
+  }
+  /// 根据路径打开资源管理器
+  void _openFileManager(String path) {
+    final Uri url = Uri.file(path);
+    /// launchUrl(url);
+    /// 改用下面的方法解决路径中包含中文导致打开失败
+    launchUrlString(url.toFilePath());
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  //                          额外可供访问函数                                  //
+  ////////////////////////////////////////////////////////////////////////////
+  void openRootDirectory() {
+    _openFileManager(_dirPath());
+  }
+  void openBookDirectory(String bookName) {
+    _openFileManager(_dirPath(bookName: bookName, isChapterDir: true));
+  }
+  void openSettingDirectory(String bookName) {
+    _openFileManager(_dirPath(bookName: bookName, isSetDir: true));
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  //                             书籍                                        //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 遍历所有书名：遍历根文件夹
+  List<String> getAllBooks() {
+    List<String> bookNames = [];
+    try {
+      _writeRootDir.listSync().forEach((fileSystemEntity) {
+        if (_isDir(fileSystemEntity)) {
+          bookNames.add(fileSystemEntity.path.split(Platform.pathSeparator).last);
+          // debugPrint(fileSystemEntity.path.split(Platform.pathSeparator).last);
+        }
+      });
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('获取书籍失败');
+      debugPrintStack(stackTrace: s);
+    }
+    bookNames.sort();
+    return bookNames;
+  }
+  /// 创建一本书：文件夹
+  void createBook(String bookName) {
+    try {
+      Directory dir = Directory(_dirPath(bookName: bookName));
+      if (!dir.existsSync()) {
+        dir.createSync(recursive: true);
+        /// 创建书对应Chapter：文件夹
+        createBookNameChapterDir(bookName);
+        /// 创建该书对应Set：文件夹
+        createBookNameSetDir(bookName);
+      }
+      GlobalToast.showSuccessTop('创建书籍成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('创建书籍失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// 书籍删除
+  void removeBook(String bookName) {
+    try {
+      Directory dir = Directory(_dirPath(bookName: bookName));
+      if (dir.existsSync()) {
+        dir.deleteSync(recursive: true);
+      }
+      GlobalToast.showSuccessTop('删除书籍成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('删除书籍失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// 书籍重命名
+  void renameBook(String oldBookName, String newBookName) {
+    try {
+      Directory dir = Directory(_dirPath(bookName: oldBookName));
+      if (dir.existsSync()) {
+        dir.renameSync(_dirPath(bookName: newBookName));
+      }
+      GlobalToast.showSuccessTop('重命名书籍成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('重命名书籍失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  //                             章节                                        //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 创建书对应Chapter：文件夹
+  void createBookNameChapterDir(String bookName) {
+    Directory dir2 = Directory(_dirPath(bookName: bookName, isChapterDir: true));
+    if (!dir2.existsSync()) {
+      dir2.createSync(recursive: true);
+    }
+    /// 创建该书对应Chapter.json：json文件
+    _createBookChapterJson(bookName);
+  }
+  /// 遍历指定书下所有章节：读取对应书籍-章节文件：Chapter.json
+  List<String> getAllChapters(String bookName) {
+    List<String> chapterNames = [];
+    if (bookName.isEmpty) {
+      return chapterNames;
+    }
+    try {
+      if (_getBookChapterJsonContent(bookName)["chapterList"] != null) {
+        chapterNames = _getBookChapterJsonContent(bookName)["chapterList"].cast<String>();
+      }
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('获取书籍章节失败');
+      debugPrintStack(stackTrace: s);
+    }
+    return chapterNames;
+  }
+  /// 创建一章节：文件
+  void createChapter(String bookName, String chapterName) {
+    try {
+      File file = File(_chsFilePath(bookName: bookName, chapterName: chapterName));
+      if (!file.existsSync()) {
+        file.createSync(recursive: true);
+      }
+      _addNewChapterInChapterJson(bookName, chapterName);
+      GlobalToast.showSuccessTop('创建章节成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('创建章节失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// 删除一章节：文件
+  void removeChapter(String bookName, String chapterName) {
+    try {
+      File file = File(_chsFilePath(bookName: bookName, chapterName: chapterName));
+      if (file.existsSync()) {
+        file.deleteSync(recursive: true);
+      }
+      _removeChapterInChapterJson(bookName, chapterName);
+      GlobalToast.showSuccessTop('删除章节成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('删除章节失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// 章节重命名
+  void renameChapter(String bookName, String oldChapterName, String newChapterName) {
+    try {
+      File file = File(_chsFilePath(bookName: bookName, chapterName: oldChapterName));
+      if (file.existsSync()) {
+        file.renameSync(_chsFilePath(bookName: bookName, chapterName: newChapterName));
+      }
+      /// chapter.json 章节重命名
+      _renameChapterInChapterJson(bookName, oldChapterName, newChapterName);
+      GlobalToast.showSuccessTop('重命名章节成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('重命名章节失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// 保存章节
+  void saveChapter(String bookName, String chapterName, String content) {
+    File file = File(_chsFilePath(bookName: bookName, chapterName: chapterName));
+    if (file.existsSync()) {
+      file.writeAsStringSync(content);
+    }
+  }
+  /// 获取章节的文字内容：读取章节文件
+  String getChapterContent(String bookName, String chapterName) {
+    File file = File(_chsFilePath(bookName: bookName, chapterName: chapterName));
+    String content = "";
+    try {
+      content = file.readAsStringSync();
+      // debugPrint(file.readAsStringSync());
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('获取章节文字内容失败');
+      debugPrintStack(stackTrace: s);
+    }
+    return content;
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  //                             设定集                                       //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 创建书对应Set：文件夹
+  void createBookNameSetDir(String bookName) {
+    Directory dir2 = Directory(_dirPath(bookName: bookName, isSetDir: true));
+    if (!dir2.existsSync()) {
+      dir2.createSync(recursive: true);
+    }
+    /// 创建书对应Set.json：json文件
+    _createBookSetJson(bookName);
+  }
+  /// 遍历书下所有设定集：该书对应Set.json：json文件
+  List<String> getAllSets(String bookName) {
+    List<String> setList = [];
+    if (bookName.isEmpty) {
+      return setList;
+    }
+    try {
+      setList = getBookSetJsonContent(bookName)["setList"].cast<String>();
+    } on Exception catch (e, s) {
+      debugPrint("/// 遍历书下所有设定集：该书对应Set.json：json文件");
+      GlobalToast.showErrorTop('获取书籍设定集失败');
+      debugPrintStack(stackTrace: s);
+    }
+    return setList;
+  }
+  /// 创建一个设定集：文件夹
+  void createSet(String bookName, String setName) {
+    try {
+      Directory dir2 = Directory(_dirPath(bookName: bookName, isSetDir: true, setName: setName));
+      if (!dir2.existsSync()) {
+        dir2.createSync(recursive: true);
+      }
+      /// 文件夹下初始化Setting.sort
+      _createSettingSort(bookName, setName);
+      /// Set.json添加（新建设定类）
+      _addNewSetInSetJson(bookName, setName);
+      GlobalToast.showSuccessTop('创建设定集成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('创建设定集失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// 设定集(文件夹)重命名
+  void renameSet(String bookName, String oldSetName, String newSetName) {
+    try {
+      Directory dir = Directory(_dirPath(bookName: bookName, isSetDir: true, setName: oldSetName));
+      if (dir.existsSync()) {
+        dir.renameSync(_dirPath(bookName: bookName, isSetDir: true, setName: newSetName));
+      }
+      /// Set.json操作：设定集重命名
+      _renameSetInSetJson(bookName, oldSetName, newSetName);
+      GlobalToast.showSuccessTop('重命名设定集成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('重命名设定集失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// 设定集(文件夹)删除
+  void removeSet(String bookName, String setName) {
+    try {
+      Directory dir = Directory(_dirPath(bookName: bookName, isSetDir: true, setName: setName));
+      if (dir.existsSync()) {
+        dir.deleteSync(recursive: true);
+      }
+      /// Set.json操作：设定集重命名
+      _removeSetInSetJson(bookName, setName);
+      GlobalToast.showSuccessTop('删除设定集成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('删除设定集失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  //                      设定 {$settingName}.json                           //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 获取指定设定集下所有设定：从Setting.sort获取设定List（.json文件）
+  List<String> getAllSettings(String bookName, String setName) {
+    List<String> settingNames = [];
+    if (bookName.isEmpty || setName.isEmpty) {
+      return settingNames;
+    }
+    try {
+      if (_getSettingSortMap(bookName, setName)["settingList"] != null) {
+        settingNames = _getSettingSortMap(bookName, setName)["settingList"].cast<String>();
+      }
+    } on Exception catch (e, s) {
+      debugPrint("/// 获取指定设定集下所有设定：从Setting.sort获取设定List（.json文件）");
+      GlobalToast.showErrorTop('获取设定集的设定失败');
+      debugPrintStack(stackTrace: s);
+    }
+    return settingNames;
+  }
+  /// 创建设定集内一个设定：json文件
+  void createSetting(String bookName, String setName, String settingName) {
+    try {
+      File file2 = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: settingName));
+      if (!file2.existsSync()) {
+        file2.createSync(recursive: true);
+      }
+      saveSetting(
+          bookName,
+          setName,
+          settingName,
+          BookConfig.getDefaultSetSettingJsonString(),
+      );
+      /// Setting.sort添加设定（新建设定）
+      _addNewSettingInSort(bookName, setName, settingName);
+      GlobalToast.showSuccessTop('创建设定成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('创建设定失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// 获取设定的内容：读取设定json文件内容
+  Map<String, dynamic> getSettingJson(String bookName, String setName, String settingName) {
+    String bookSettingContent = "{}";
+    try {
+      File file2 = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: settingName));
+      if (file2.existsSync()) {
+        bookSettingContent = file2.readAsStringSync();
+      }
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('获取设定的内容失败');
+      debugPrintStack(stackTrace: s);
+    }
+    return convert.jsonDecode(bookSettingContent);
+  }
+  /// 保存设定(json文件)
+  void saveSetting(String bookName, String setName, String settingName, String content) {
+    File file = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: settingName));
+    if (file.existsSync()) {
+      file.writeAsStringSync(content);
+    }
+  }
+  /// 设定(json文件)重命名
+  void renameSetting(String bookName, String setName, String oldSettingName, String newSettingName) {
+    try {
+      File file = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: oldSettingName));
+      if (file.existsSync()) {
+        file.renameSync(_jsonFilePath(bookName: bookName, setName: setName, settingName: newSettingName));
+      }
+      /// Setting.sort重命名设定
+      _renameSettingInSort(bookName, setName, oldSettingName, newSettingName);
+      GlobalToast.showSuccessTop('重命名设定成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('重命名设定失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// 设定(json文件)删除
+  void removeSetting(String bookName, String setName, String settingName) {
+    try {
+      File file = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: settingName));
+      file.deleteSync(recursive: true);
+      /// Setting.sort删除设定
+      _removeSettingInSort(bookName, setName, settingName);
+      GlobalToast.showSuccessTop('删除设定成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('删除设定失败');
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  //                (书籍-章节)Chapter.json                                   //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 创建该书对应Chapter.json：json文件
+  void _createBookChapterJson(String bookName) {
+    File file2 = File(_jsonFilePath(bookName: bookName, isChapterJson: true));
+    if (!file2.existsSync()) {
+      file2.createSync(recursive: true);
+    }
+    _saveBookChapterJson(bookName, BookConfig.getDefaultBookChapterJsonString());
+  }
+  /// Chapter.json读取
+  Map<String, dynamic> _getBookChapterJsonContent(String bookName) {
+    File file = File(_jsonFilePath(bookName: bookName, isChapterJson: true));
+    String jsonContent = "{}";
+    try {
+      jsonContent = file.readAsStringSync();
+    } on Exception catch (e, s) {
+      debugPrint("/// Chapter.json读取");
+      debugPrintStack(stackTrace: s);
+    }
+    return convert.jsonDecode(jsonContent);
+  }
+  /// Chapter.json保存（初始化、章节顺序有变化）
+  void _saveBookChapterJson(String bookName, String content) {
+    File file = File(_jsonFilePath(bookName: bookName, isChapterJson: true));
+    if (file.existsSync()) {
+      file.writeAsStringSync(content);
+    }
+  }
+  /// Chapter.json操作：添加新建章节
+  void _addNewChapterInChapterJson(String bookName, String chapterName) {
+    Map<String, dynamic> bookChapterJson = _getBookChapterJsonContent(bookName);
+    bookChapterJson["chapterList"].add(chapterName);
+    _saveBookChapterJson(bookName, convert.jsonEncode(bookChapterJson));
+  }
+  /// Chapter.json操作：删除已有章节
+  void _removeChapterInChapterJson(String bookName, String chapterName) {
+    Map<String, dynamic> bookChapterJson = _getBookChapterJsonContent(bookName);
+    List<String> bookList = bookChapterJson["chapterList"].cast<String>();
+    bookList.removeAt(bookList.indexOf(chapterName));
+    bookChapterJson["chapterList"] = bookList;
+    _saveBookChapterJson(bookName, convert.jsonEncode(bookChapterJson));
+  }
+  /// Chapter.json操作：章节重命名
+  void _renameChapterInChapterJson(String bookName, String oldChapterName, String newChapterName) {
+    Map<String, dynamic> bookChapterJson = _getBookChapterJsonContent(bookName);
+    int index = bookChapterJson["chapterList"].indexOf(oldChapterName);
+    bookChapterJson["chapterList"][index] = newChapterName;
+    _saveBookChapterJson(bookName, convert.jsonEncode(bookChapterJson));
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  //                     (书籍-设定)Set.json                                  //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 创建该书对应Set.json：json文件
+  void _createBookSetJson(String bookName) {
+    File file2 = File(_jsonFilePath(bookName: bookName, isSetJson: true));
+    if (!file2.existsSync()) {
+      file2.createSync(recursive: true);
+    }
+    _saveBookSetJson(bookName, BookConfig.getDefaultBookSetJsonString());
+  }
+  /// Set.json读取
+  Map<String, dynamic> getBookSetJsonContent(String bookName) {
+    File file = File(_jsonFilePath(bookName: bookName, isSetJson: true));
+    String jsonContent = "{}";
+    try {
+      jsonContent = file.readAsStringSync();
+    } on Exception catch (e, s) {
+      debugPrint("Set.json读取");
+      debugPrintStack(stackTrace: s);
+    }
+    return convert.jsonDecode(jsonContent);
+  }
+  /// Set.json保存
+  void _saveBookSetJson(String bookName, String content) {
+    try {
+      File file = File(_jsonFilePath(bookName: bookName, isSetJson: true));
+      if (file.existsSync()) {
+        file.writeAsStringSync(content);
+      }
+    } on Exception catch (e, s) {
+      debugPrint("/// Set.json保存");
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// Set.json操作：添加新建设定类
+  void _addNewSetInSetJson(String bookName, String setName) {
+    Map<String, dynamic> bookSetJson = getBookSetJsonContent(bookName);
+    /// setList: ["${setName}"]
+    bookSetJson["setList"].add(setName);
+    /// ${setName}: {"isParsed": true}
+    bookSetJson[setName] = {"isParsed": true};
+    /// 保存
+    _saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
+  }
+  /// Set.json操作：设定集重命名
+  void _renameSetInSetJson(String bookName, String oldSetName, String newSetName) {
+    Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
+    List<String> settingList = bookSetJson["setList"].cast<String>();
+    settingList[settingList.indexOf(oldSetName)] = newSetName;
+    bookSetJson["setList"] = settingList;
+    bookSetJson[newSetName] = bookSetJson.remove(oldSetName);
+    /// 保存
+    _saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
+  }
+  /// Set.json操作：设定集重命名
+  void _removeSetInSetJson(String bookName, String setName) {
+    Map<String, dynamic> bookSetJson =  getBookSetJsonContent(bookName);
+    List<String> settingList = bookSetJson["setList"].cast<String>();
+    settingList.removeAt(settingList.indexOf(setName));
+    bookSetJson["setList"] = settingList;
+    bookSetJson.remove(setName);
+    /// 保存
+    _saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
+  }
+  /// Set.json操作：修改属性值isParsed（是否加入解析）
+  void changeParserOfBookSetJson(String bookName, String setName, bool isParsed) {
+    Map<String, dynamic> bookSetJson = getBookSetJsonContent(bookName);
+    bookSetJson[setName]["isParsed"] = isParsed;
+    /// 保存
+    _saveBookSetJson(bookName, convert.jsonEncode(bookSetJson));
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  //                      设定 Setting.sort  (json内容)                       //
+  ////////////////////////////////////////////////////////////////////////////
+  /// 创建Setting.sort文件
+  void _createSettingSort(String bookName, String setName) {
+    File file2 = File(_sortFilePath(bookName: bookName, setName: setName));
+    if (!file2.existsSync()) {
+      file2.createSync(recursive: true);
+    }
+    file2.writeAsStringSync(BookConfig.getDefaultBookSettingSortJsonString());
+  }
+  /// Setting.sort文件: 保存内容
+  void _saveSettingSort(String bookName, String setName, String content) {
+    try {
+      File file2 = File(_sortFilePath(bookName: bookName, setName: setName));
+      if (file2.existsSync()) {
+        file2.writeAsStringSync(content);
+      }
+    } on Exception catch (e, s) {
+      debugPrint("/// Setting.sort文件: 保存内容");
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// Setting.sort文件: 获取内容
+  Map<String, dynamic> _getSettingSortMap(String bookName, String setName) {
+    String jsonContent = "{}";
+    try {
+      File file = File(_sortFilePath(bookName: bookName, setName: setName));
+      if (file.existsSync()) {
+        jsonContent = file.readAsStringSync();
+      }
+    } on Exception catch (e, s) {
+      debugPrint("/// Setting.sort文件: 获取内容");
+      debugPrintStack(stackTrace: s);
+    }
+    return convert.jsonDecode(jsonContent);
+  }
+  /// Setting.sort文件: 添加设定
+  void _addNewSettingInSort(String bookName, String setName, String settingName) {
+    try {
+      Map<String, dynamic> sortMap = _getSettingSortMap(bookName, setName);
+      // List<String> settingList = sortMap["settingList"].cast<String>();
+      // 添加item
+      sortMap["settingList"].add(settingName);
+      // sortMap["settingList"] = settingList;
+      _saveSettingSort(bookName, setName, convert.jsonEncode(sortMap));
+    } on Exception catch (e, s) {
+      debugPrint("/// Setting.sort文件: 添加设定");
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// Setting.sort文件: 设定重命名
+  void _renameSettingInSort(String bookName, String setName, String oldSettingName, String newSettingName) {
+    try {
+      Map<String, dynamic> sortMap = _getSettingSortMap(bookName, setName);
+      List<String> settingList = sortMap["settingList"].cast<String>();
+      // 更换item
+      settingList[settingList.indexOf(oldSettingName)] = newSettingName;
+      sortMap["settingList"] = settingList;
+      _saveSettingSort(bookName, setName, convert.jsonEncode(sortMap));
+    } on Exception catch (e, s) {
+      debugPrint("/// Setting.sort文件: 设定重命名");
+      debugPrintStack(stackTrace: s);
+    }
+  }
+  /// Setting.sort文件: 设定重命名
+  void _removeSettingInSort(String bookName, String setName, String settingName) {
+    try {
+      Map<String, dynamic> sortMap = _getSettingSortMap(bookName, setName);
+      List<String> settingList = sortMap["settingList"].cast<String>();
+      // 移除item
+      settingList.removeAt(settingList.indexOf(settingName));
+      sortMap["settingList"] = settingList;
+      _saveSettingSort(bookName, setName, convert.jsonEncode(sortMap));
+    } on Exception catch (e, s) {
+      debugPrint("/// Setting.sort文件: 设定重命名");
+      debugPrintStack(stackTrace: s);
+    }
+  }
+}
+import 'package:shared_preferences/shared_preferences.dart';
+import '../theme/theme.dart';
+class MySharedPreferences {
+  static late SharedPreferences prefs;
+  static Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
+    /// init 变量， 之后 get 不用进行 null check
+    if (prefs.getBool("isDarkMode") == null) {
+      await prefs.setBool("isDarkMode", false);
+    }
+    if (prefs.getString("themeName") == null) {
+      await prefs.setString("themeName", ThemeUtil.getThemeName(null));
+    }
+  }
+}
+// ignore_for_file: file_names
+import 'package:collection/collection.dart';
+import 'package:writing_writer/service/file/IOBase.dart';
+class Parser
+{
+  static RegExp generateRegExp(Map<String, Set<String>> parser) {
+    String regExpString = '';
+    parser.forEach((set, settings) {
+      for (var setting in settings) {
+        regExpString += setting.toString();
+        regExpString += '|';
+      }
+    });
+    RegExp result = RegExp(r'' + regExpString);
+    // print(result);
+    return result;
+  }
+  /// parser 对象: 添加元素
+  static Map<String, Set<String>> addSetToParser(Map<String, Set<String>> currentParser, String setName, List<String> settingsList) {
+    Map<String, Set<String>> newObj = deepClone(currentParser);
+    newObj[setName] = <String>{};
+    newObj[setName]?.addAll(settingsList);
+    return newObj;
+  }
+  /// parser 对象: 删除元素
+  static Map<String, Set<String>> removeSetFromParser(Map<String, Set<String>> currentParser, String setName) {
+    Map<String, Set<String>> newObj = deepClone(currentParser);
+    if (newObj.containsKey(setName)) {
+      newObj.remove(setName);
+    }
+    return newObj;
+  }
+  /// parser 对象: 替换元素
+  static Map<String, Set<String>> replaceSetInParser(Map<String, Set<String>> currentParser, String oldSetName, String newSetName) {
+    Map<String, Set<String>> newObj = deepClone(currentParser);
+    newObj[newSetName] = newObj.remove(oldSetName)!;
+    return newObj;
+  }
+  /// parser 对象: 替换元素
+  static Map<String, Set<String>> replaceSettingInParser(Map<String, Set<String>> currentParser, String setName, String oldSettingName, String newSettingName) {
+    Map<String, Set<String>> newObj = deepClone(currentParser);
+    newObj[setName]?.remove(oldSettingName);
+    newObj[setName]?.add(newSettingName);
+    return newObj;
+  }
+  /// parser 对象变量比较
+  /// equals : true
+  static bool compareParser(Map<String, Set<String>> parserOne, Map<String, Set<String>> parserTwo) {
+    return const DeepCollectionEquality().equals(parserOne, parserTwo);
+  }
+  /// Map<String, Set<String>> 对象深拷贝
+  static Map<String, Set<String>> deepClone(Map<String, Set<String>> parser) {
+    Map<String, Set<String>> newObj = {};
+    parser.forEach((set, settings) {
+      newObj[set] = <String>{};
+      newObj[set]?.addAll(settings);
+    });
+    return newObj;
+  }
+  /// parser 对象: 整本书最开始的parserModel获取（在点击另一本书的章节时调用）
+  static Map<String, Set<String>> getBookInitParserModel(IOBase ioBase, String bookName) {
+    Map<String, Set<String>> newParserModel = {};
+    Map<String, dynamic> setJson = ioBase.getBookSetJsonContent(bookName);
+    List<dynamic> setList = setJson["setList"] ?? [];
+    List<String> setListStr = setList.map((e) => e.toString()).toList();
+    for (var setName in setListStr) {
+      if (setJson[setName]["isParsed"]) {
+        newParserModel = addSetToParser(newParserModel, setName, ioBase.getAllSettings(bookName, setName));
+      }
+    }
+    // print(newParserModel);
+    return newParserModel;
+  }
+}
+import 'package:flutter/material.dart';
+class ThemeUtil {
+  /// 搭配sharedPreferences缓存中的key
+  /// themeName: red/pink/blueGrey
+  /// isDarkMode: true/false
+  /// 缓存中的变量如果为空，即之前没有赋过值，初始化为下面的变量
+  /// themeName = "blueGrey"
+  /// isDarkMode = false
+  /// 默认主题
+  static String defaultTheme = "blueGrey";
+  static ColorSwatch defaultColor = Colors.blueGrey;
+  /// 预设主题色调
+  static Map<String, ColorSwatch> colorsMap = {
+    "red": Colors.red,
+    "pink": Colors.pink,
+    "amber": Colors.amber,
+    "yellow": Colors.yellow,
+    "blueGrey": Colors.blueGrey,
+    "lightGreen": Colors.lightGreen,
+    "deepPurple": Colors.deepPurple,
+  };
+  /// 预设主题色调: key
+  static String getThemeName(ColorSwatch? selectedColor) {
+    String key = defaultTheme;
+    if (selectedColor != null) {
+      for (var color in colorsMap.entries) {
+        if (color.value.value.compareTo(selectedColor.value) == 0) {
+          key = color.key;
+          break;
+        }
+      }
+    }
+    return key;
+  }
+  /// 预设主题色调: value
+  static Color? getColor(String? themeName) {
+    if (colorsMap.containsKey(themeName)) {
+      return colorsMap[themeName];
+    }
+    return defaultColor;
+  }
+  /// 预设主题色调: values 数组
+  static List<ColorSwatch> getColorsList() {
+    return colorsMap.values.toList();
+  }
+  /// 获取初始主题
+  static ThemeData getInitTheme({String? themeName, bool? isDarkMode}) {
+    debugPrint(themeName);
+    debugPrint(isDarkMode.toString());
+    if (isDarkMode == true) {
+      return getDarkTheme();
+    }
+    return getPreSetTheme(themeName);
+  }
+  /// 获取预设主题色调主题
+  static ThemeData getPreSetTheme(String? themeName) {
+    if (colorsMap.containsKey(themeName)) {
+      return generateTheme(colorsMap[themeName]!);
+    }
+    return generateTheme(defaultColor);
+  }
+  /// 获取预设夜间模式主题
+  static ThemeData getDarkTheme() {
+    return ThemeData(
+      brightness: Brightness.dark,
+      textSelectionTheme: const TextSelectionThemeData(
+        selectionColor: Colors.blueGrey,
+      ),
+    );
+  }
+  /// ColorSwatch 转化为 MaterialColor
+  static MaterialColor convertToMaterialColor(ColorSwatch primaryColor) {
+    Color color = Color(primaryColor.value);
+    return  MaterialColor(
+      primaryColor.value,
+      <int, Color>{
+        50: primaryColor[50] ?? color,
+        100: primaryColor[100] ?? color,
+        200: primaryColor[200] ?? color,
+        300: primaryColor[300] ?? color,
+        400: primaryColor[400] ?? color,
+        500: primaryColor[500] ?? color,
+        600: primaryColor[600] ?? color,
+        700: primaryColor[700] ?? color,
+        800: primaryColor[800] ?? color,
+        900: primaryColor[900] ?? color,
+      },
+    );
+  }
+  /// ThemeData 生成函数
+  static ThemeData generateTheme(ColorSwatch color) {
+    return ThemeData(
+      brightness: Brightness.light,
+      primarySwatch: convertToMaterialColor(color),
+      primaryColor: color[600],
+      dialogBackgroundColor: color[100],
+      scaffoldBackgroundColor: color[100],
+      textSelectionTheme: TextSelectionThemeData(
+        selectionColor: color[600],
+      ),
+      appBarTheme: AppBarTheme(
+        color: color[600],
+        toolbarTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all(Colors.black),
+          backgroundColor: MaterialStateProperty.all(color[600]),
+          overlayColor: MaterialStateProperty.all(color[700]),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          textStyle: MaterialStateProperty.all<TextStyle>(
+            const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ),
+      textTheme: const TextTheme(
+        bodyLarge: TextStyle(
+          color: Colors.black,
+          fontSize: 16,
+        ),
+        bodyMedium: TextStyle(
+          color: Colors.black,
+          fontSize: 14,
+        ),
+        titleLarge: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        labelStyle: TextStyle(
+          color: color,
+          fontWeight: FontWeight.bold,
+        ),
+        hintStyle: TextStyle(
+          color: Colors.grey[400],
+        ),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.grey,
+            width: 2,
+          ),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: color,
+            width: 2,
+          ),
+        ),
+      ),
+    );
+  }
+}
+import 'dart:io';
+import 'package:event_bus/event_bus.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:webdav_client/webdav_client.dart' as webdav;
+import '../../components/common/toast/global_toast.dart';
+import '../../state_machine/event_bus/webDAV_events.dart';
+import '../file/file_configure.dart';
+class WebDAV {
+  /// 电脑文档目录路径
+  late final String _appDocPath;
+  late EventBus _eventBus;
+  WebDAV(EventBus eventBus) {
+    _eventBus = eventBus;
+    getApplicationDocumentsDirectory().then((appDocDir) => {
+      _appDocPath = appDocDir.path,
+    });
+  }
+  late webdav.Client _client;
+  /// webDAV 登录
+  Future<bool> login(String uri, String user, String password) async {
+    bool result = false;
+    _client = webdav.newClient (
+      uri,
+      user: user,
+      password: password,
+      // debug: true,
+    );
+    try {
+      await _client.ping();
+      result = true;
+      debugPrint("login successfully");
+      // _eventBus.fire(WebDavLoginSuccessEvent());
+      init();
+    } catch (e) {
+      debugPrint("login failed");
+      // _eventBus.fire(WebDavLoginFailedEvent());
+      debugPrint(e.toString());
+    }
+    return result;
+  }
+  /// 关闭连接
+  void close() {
+    _client.c.close();
+  }
+  /// 初始化文件夹：/wWriter
+  void init() {
+    debugPrint("webDAV init");
+    _client.mkdir('/wWriter');
+  }
+  /// 获取所有云端的书籍：/wWriter/
+  Future<List<Map<String, dynamic>>> getAllBooks() async {
+    debugPrint("webDAV getAllBooks()");
+    List<Map<String, dynamic>> books = [];
+    try {
+      List<webdav.File> list2 = await _client.readDir('/wWriter');
+      for (var f in list2) {
+        if (!(f.isDir??false)) {
+          books.add({
+            "name": f.name,
+            "time": f.mTime,
+          });
+        }
+      }
+    } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      GlobalToast.showErrorTop('获取云端的书籍失败');
+    }
+    // _eventBus.fire(WebDavGetAllBooksEvent());
+    return books;
+  }
+  /// 上传更新书籍到云端
+  Future<void> uploadBook(String bookName) async {
+    debugPrint("webDAV uploadBook()");
+    try {
+      _client.setHeaders({"content-type" : "application/zip"});
+      await _client.writeFromFile(
+        "$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}",
+        FileConfig.webDAVBookFilePath(bookName),
+        onProgress: (c, t) {
+          // if (!((c/t) < 0.0)) {
+          //   _eventBus.fire(WebDavUploadBookDoneEvent());
+          // }
+        },
+      );
+      _eventBus.fire(WebDavUploadBookDoneEvent());
+      GlobalToast.showSuccessTop('更新云端书籍成功');
+    } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      GlobalToast.showErrorTop('更新云端书籍失败');
+    }
+  }
+  /// 云端书籍下载到本地
+  Future<void> downloadBook(String bookName) async {
+    debugPrint("webDAV downloadBook()");
+    try {
+      _client.setHeaders({"content-type" : "application/zip"});
+      await _client.read2File(
+          FileConfig.webDAVBookFilePath(bookName),
+          "$_appDocPath${Platform.pathSeparator}${FileConfig.webDAVLocalBookFilePath(bookName)}",
+          onProgress: (c, t) {}
+      );
+      GlobalToast.showSuccessTop('云端书籍导入本地成功');
+    } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      GlobalToast.showErrorTop('云端书籍导入本地失败');
+    }
+  }
+  /// 云端书籍删除
+  Future<void> removeBook(String bookName) async {
+    debugPrint("webDAV removeBook()");
+    try {
+      await _client.remove(FileConfig.webDAVBookFilePath(bookName));
+      _eventBus.fire(WebDavRemoveBookDoneEvent());
+      GlobalToast.showSuccessTop('云端书籍删除成功');
+    } on Exception catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      GlobalToast.showErrorTop('云端书籍删除失败');
+    }
+  }
+}
+import 'package:event_bus/event_bus.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:web_socket_channel/io.dart';
+import '../../state_machine/event_bus/ws_client_events.dart';
+class WebSocketClient {
+  /// 客户端 webSocketChannel
+  late IOWebSocketChannel _clientSocketChannel;
+  /// 接受消息处理函数，可由具体调用处自定义
+  late Function(String msg) clientReceived;
+  late EventBus _eventBus;
+  String inputIp = "";
+  final int _serverPort = 8090;
+  WebSocketClient(EventBus eventBus) {
+    _eventBus = eventBus;
+  }
+  /// 客户端操作
+  void clientConnect(String ip) async {
+    inputIp = ip;
+    try {
+      _clientSocketChannel = IOWebSocketChannel.connect(
+        Uri.parse('ws://$ip:${_serverPort.toString()}'),
+        connectTimeout: const Duration(milliseconds: 2000),
+      );
+      await _clientSocketChannel.ready;
+      _eventBus.fire(WSClientConnectServerSuccessEvent());
+      _clientSocketChannel.stream.listen((msg){
+        _handleMsg(msg);
+      }, onError: (error) {
+        _eventBus.fire(WSClientConnectServerErrorEvent());
+      }, onDone: () {
+        _eventBus.fire(WSClientConnectServerErrorEvent());
+      });
+    } catch (e,s) {
+      debugPrintStack(stackTrace: s);
+      _eventBus.fire(WSClientConnectServerErrorEvent());
+    }
+  }
+  /// 客户端关闭
+  void clientClose(){
+    _clientSocketChannel.sink.close();
+  }
+  /// 客户端 webSocket 监听函数
+  void _handleMsg(dynamic msg){
+    debugPrint('收到服务端消息：${msg.toString()}');
+    clientReceived(msg);
+  }
+  /// 服务端发送消息
+  void clientSendMsg(dynamic msg) {
+    _clientSocketChannel.sink.add(msg);
+  }
+  /// 调用处自定义接收到消息后的操作
+  void clientReceivedMsg(Function(dynamic msg) receive) {
+    clientReceived = receive;
+  }
+}
+import 'dart:convert';
+class WebSocketMsg {
+  static Map<String, dynamic> msgStringToMap(String msg) {
+    return jsonDecode(msg);
+  }
+  static String msgString({required int msgCode, required String msgTitle, required String msgContent, required int msgOffset}) {
+    Map<String, dynamic> msg = {
+      "msgCode": msgCode,
+      "msgTitle": msgTitle,
+      "msgContent": msgContent,
+      "msgOffset": msgOffset,
+    };
+    return jsonEncode(msg);
+  }
+}
+/**
+ * msgCode ： 传输的code
+ * 0 : server -> client
+ * 1 : client -> server
+ * 2 : server 断开
+ *
+ * msgTitle : "${book}${chapter}" / "${set}${setting}${flag}"
+ *
+ * msgContent : 传输的字符串数据
+ *
+ * msgOffset : 字符串选择偏移
+ * */
+import 'dart:io';
+import 'package:event_bus/event_bus.dart';
+import 'package:flutter/cupertino.dart';
+import '../../state_machine/event_bus/ws_server_events.dart';
+class WebSocketServer {
+  /// 服务端
+  late HttpServer _server;
+  /// 服务端 webSocket
+  late WebSocket _serverSocket;
+  /// 接受消息处理函数，可由具体调用处自定义重写
+  Function(dynamic msg) _serverReceived = (dynamic msg) {
+    debugPrint(msg.toString());
+  };
+  /// 传入的事件总线
+  late EventBus _eventBus;
+  /// 建立服务器的ip
+  String serverIP = "";
+  int serverPort = 8090;
+  /// 服务器启动状态
+  bool serverStatus = false;
+  WebSocketServer(EventBus eventBus) {
+    NetworkInterface.list(type: InternetAddressType.IPv4).then((value) => {
+      serverIP = value.first.addresses.first.address.toString(),
+      _eventBus = eventBus,
+      _eventBus.fire(WSServerGetServerIPEvent()),
+    });
+  }
+  /// 服务端启动
+  void serverInit() async {
+    // bind('127.0.0.1', 8090);
+    debugPrint('服务器绑定IP $serverIP : $serverPort');
+    _server = await HttpServer.bind(serverIP, serverPort);
+    debugPrint('-------------移动端建立服务器成功-------------');
+    serverStatus = true;
+    _eventBus.fire(WSServerBuildServerEvent());
+    _server.listen((HttpRequest req) async {
+      /// 监听"msg"数据
+      debugPrint('-------------桌面客户端连接服务器成功-------------');
+      if(WebSocketTransformer.isUpgradeRequest(req)) {
+        await WebSocketTransformer.upgrade(req).then((webSocket) {
+          webSocket.listen(_handleMsg);
+          _serverSocket = webSocket;
+          _eventBus.fire(WSServerStartWebSocketEvent());
+        });
+      }
+    });
+  }
+  /// 服务端关闭
+  void serverClose() {
+    serverStatus = false;
+    _eventBus.fire(WSServerCloseServerEvent());
+    try {
+      _serverSocket.close();
+      debugPrint('webSocket 连接断开');
+    } catch (e,s) {
+      debugPrintStack(stackTrace: s);
+      debugPrint('webSocket 不存在');
+    }
+    try {
+      _server.close();
+      debugPrint('http 连接断开');
+    } catch (e,s) {
+      debugPrintStack(stackTrace: s);
+      debugPrint('http 不存在');
+    }
+  }
+  /// 服务端 webSocket 监听函数
+  void _handleMsg(dynamic msg) {
+    debugPrint('收到客户端消息：${msg.toString()}');
+    _serverReceived(msg);
+  }
+  /// 服务端发送消息
+  void serverSendMsg(dynamic msg) {
+    try {
+      _serverSocket.add(msg);
+    } catch (e,s) {
+      debugPrintStack(stackTrace: s);
+      debugPrint('webSocket 不存在');
+    }
+  }
+  /// 调用处自定义接收到消息后的操作
+  void serverReceivedMsg(Function(dynamic msg) receive) {
+    _serverReceived = receive;
+  }
+}
+// All events defined here
+/// <!-- Book -->
+/// CreateNewBook
+class CreateNewBookEvent {}
+/// RenameBookNameEvent
+class RenameBookNameEvent {
+  String oldBookName;
+  String newBookName;
+  RenameBookNameEvent({required this.oldBookName, required this.newBookName});
+}
+/// RemoveBook
+class RemoveBookEvent {
+  String bookName;
+  RemoveBookEvent({required this.bookName});
+}
+/// <!-- Chapter -->
+/// CreateNewChapter
+class CreateNewChapterEvent {
+  String bookName;
+  String chapterName;
+  CreateNewChapterEvent({required this.bookName, required this.chapterName});
+}
+/// RenameChapterNameEvent
+class RenameChapterNameEvent {
+  String bookName;
+  String oldChapterName;
+  String newChapterName;
+  RenameChapterNameEvent({required this.bookName, required this.oldChapterName, required this.newChapterName});
+}
+/// RenameChapterNameEvent
+class RemoveChapterEvent {
+  String bookName;
+  String chapterName;
+  RemoveChapterEvent({required this.bookName, required this.chapterName});
+}
+/// <!-- Set -->
+/// CreateNewSet
+class CreateNewSetEvent {}
+/// RenameSet
+class RenameSetEvent {
+  String oldSetName;
+  String newSetName;
+  RenameSetEvent({required this.oldSetName, required this.newSetName});
+}
+/// RemoveSetEvent
+class RemoveSetEvent {
+  String setName;
+  RemoveSetEvent({required this.setName});
+}
+/// <!-- Setting -->
+/// createSetting
+class CreateNewSettingEvent {
+  String setName;
+  String settingName;
+  CreateNewSettingEvent({required this.setName, required this.settingName});
+}
+/// RenameSetting
+class RenameSettingEvent {
+  String setName;
+  String oldSettingName;
+  String newSettingName;
+  RenameSettingEvent({required this.setName, required this.oldSettingName, required this.newSettingName});
+}
+/// RemoveSettingEvent
+class RemoveSettingEvent {
+  String setName;
+  String settingName;
+  RemoveSettingEvent({required this.setName, required this.settingName});
+}
+/// settingFlagChangeEvent
+class SettingFlagChangeEvent {
+  String selectedFlag;
+  SettingFlagChangeEvent({required this.selectedFlag});
+}
+// All events defined here
+/// <!-- Theme -->
+/// ChangeThemeEvent
+class ChangeThemeEvent {
+  bool isDarkMode;
+  String themeName;
+  ChangeThemeEvent({
+    required this.isDarkMode,
+    required this.themeName,
+  });
+}
+// All events defined here
+/// <!-- webDAV -->
+// ignore_for_file: file_names
+/// WebDavLoginSuccessEvent
+class WebDavLoginSuccessEvent {}
+/// WebDavLoginFailedEvent
+class WebDavLoginFailedEvent {}
+/// WebDavDownloadBookDoneEvent
+class WebDavDownloadBookDoneEvent {}
+/// WebDavUploadBookDoneEvent
+class WebDavUploadBookDoneEvent {}
+/// WebDavRemoveBookDoneEvent
+class WebDavRemoveBookDoneEvent {}
+/// WebDavGetAllBooksEvent
+class WebDavGetAllBooksEvent {}
+// All events defined here
+/// <!-- WebSocket Client -->
+/// WSClientConnectServerSuccessEvent
+class WSClientConnectServerSuccessEvent {}
+/// WSClientConnectServerErrorEvent
+class WSClientConnectServerErrorEvent {}
+// All events defined here
+/// <!-- WebSocket Server -->
+/// WSServerGetServerIPEvent
+class WSServerGetServerIPEvent {}
+/// WSServerStartWebSocketEvent
+class WSServerStartWebSocketEvent {}
+/// WSServerBuildServerEvent
+class WSServerBuildServerEvent {}
+/// WSServerCloseServerEvent
+class WSServerCloseServerEvent {}
+import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:writing_writer/service/file/IOBase.dart';
+import 'package:event_bus/event_bus.dart';
+import 'package:writing_writer/service/file/export_IOBase.dart';
+import '../../service/file/config_IOBase.dart';
+import '../../service/my_share_preferences/my_share_preferences.dart';
+/// get_it to easy make Singleton Class
+GetIt appGetIt = GetIt.instance;
+Future<void> setupAppGetIt({bool test = false}) async {
+  /// tool one -- IOBase : file IO tool class register
+  appGetIt.registerSingleton<IOBase>(IOBase(), instanceName: "IOBase");
+  /// tool two -- EventBus : EventBus Stream tool class register
+  appGetIt.registerSingleton<EventBus>(EventBus(), instanceName: "EventBus");
+  /// tool three -- ExportIOBase : Export file IO tool class register
+  appGetIt.registerSingleton<ExportIOBase>(ExportIOBase(), instanceName: "ExportIOBase");
+  /// tool four -- ConfigIOBase : Config file IO tool class register
+  appGetIt.registerSingleton<ConfigIOBase>(ConfigIOBase(), instanceName: "ConfigIOBase");
+  /// tool five -- LocalStorage
+  await MySharedPreferences.init();
+  appGetIt.registerSingleton<SharedPreferences>(MySharedPreferences.prefs, instanceName: "SharedPreferences");
+}
+import 'package:redux/redux.dart';
+import '../model/parser_model.dart';
+class SetParserDataAction{
+  Map<String, Set<String>> parserObj;
+  SetParserDataAction({
+    required this.parserObj,
+  });
+  static ParserModel setParser(ParserModel parserModel, SetParserDataAction action) {
+    parserModel.parserObj = action.parserObj;
+    return parserModel;
+  }
+}
+/*
+ * 绑定Action与动作
+ */
+final parserReducer = combineReducers<ParserModel>([
+  TypedReducer<ParserModel, SetParserDataAction>(SetParserDataAction.setParser),
+]);
+import 'package:redux/redux.dart';
+import '../model/set_model.dart';
+class SetSetDataAction{
+  String currentSet;
+  String currentSetting;
+  SetSetDataAction({
+    required this.currentSet,
+    required this.currentSetting,
+  });
+  static SetModel setSet(SetModel setModel, SetSetDataAction action) {
+    setModel.currentSet = action.currentSet;
+    setModel.currentSetting = action.currentSetting;
+    return setModel;
+  }
+}
+/*
+ * 绑定Action与动作
+ */
+final setReducer = combineReducers<SetModel>([
+  TypedReducer<SetModel, SetSetDataAction>(SetSetDataAction.setSet),
+]);
+import 'package:redux/redux.dart';
+import '../model/text_model.dart';
+class SetTextDataAction{
+  String currentBook;
+  String currentChapter;
+  String currentChapterNumber;
+  SetTextDataAction({
+    required this.currentBook,
+    required this.currentChapter,
+    this.currentChapterNumber = "1",
+  });
+  static TextModel setText(TextModel textModel, SetTextDataAction action) {
+    textModel.currentBook = action.currentBook;
+    textModel.currentChapter = action.currentChapter;
+    textModel.currentChapterNumber = action.currentChapterNumber;
+    return textModel;
+  }
+}
+/*
+ * 绑定Action与动作
+ */
+final textReducer = combineReducers<TextModel>([
+  TypedReducer<TextModel, SetTextDataAction>(SetTextDataAction.setText),
+]);
+import 'package:flutter/material.dart';
+import '../action/parser_action.dart';
+import '../action/set_action.dart';
+import '../action/text_action.dart';
+import '../model/parser_model.dart';
+import '../model/set_model.dart';
+import '../model/text_model.dart';
+class AppState {
+  /// current text show info
+  late TextModel textModel;
+  /// current set show info
+  late SetModel setModel;
+  /// all set obj
+  late ParserModel parserModel;
+  AppState({
+    required this.textModel,
+    required this.setModel,
+    required this.parserModel,
+  });
+  /*
+   * 命名的构造方法
+   * 这里用来初始化
+   */
+  AppState.initialState() {
+    textModel = TextModel(currentBook: "", currentChapter: "", currentChapterNumber: "1");
+    setModel = SetModel(currentSet: "", currentSetting: "");
+    parserModel = ParserModel(parserObj: {});
+  }
+  AppState copyWith ({textModel, setModel, parserModel}){
+    return AppState(
+      textModel: textModel ?? this.textModel,
+      setModel: setModel ?? this.setModel,
+      parserModel: parserModel ?? this.parserModel,
+    );
+  }
+}
+/// 定义Reducer
+AppState appReducer(AppState state, action) {
+  debugPrint(action.runtimeType.toString());
+  switch(action.runtimeType) {
+    case SetTextDataAction: {
+      // 更换了另一本书
+      if (state.textModel.currentBook.compareTo(action.currentBook) != 0) {
+        return state.copyWith(
+          textModel: textReducer(state.textModel, action),
+          setModel: SetModel(currentSet: "", currentSetting: ""),
+          parserModel: ParserModel(parserObj: {}),
+        );
+      }
+      // 更换章节
+      return state.copyWith(textModel: textReducer(state.textModel, action));
+    }
+    case SetSetDataAction: {
+      return state.copyWith(setModel: setReducer(state.setModel, action));
+    }
+    case SetParserDataAction: {
+      return state.copyWith(parserModel: parserReducer(state.parserModel, action));
+    }
+    default:{
+      return state;
+    }
+  }
+}
+class ParserModel {
+  Map<String, Set<String>> parserObj;
+  ParserModel({
+    required this.parserObj,
+  });
+}
+class SetModel{
+  /// 当前选中的设定集名字
+  String currentSet;
+  /// 当前选中的设定名字
+  String currentSetting;
+  SetModel({
+    required this.currentSet,
+    required this.currentSetting,
+  });
+}
+class TextModel {
+  /// 当前选中的书名
+  String currentBook;
+  /// 当前选中的章节
+  String currentChapter;
+  /// 当前选中的章节的章节数
+  String currentChapterNumber;
+  TextModel({
+    required this.currentBook,
+    required this.currentChapter,
+    required this.currentChapterNumber,
+  });
+}

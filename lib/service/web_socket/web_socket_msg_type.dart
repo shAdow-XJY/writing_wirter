@@ -22,7 +22,7 @@ class WebSocketMsg {
  * 1 : client -> server
  * 2 : server 断开
  *
- * msgTitle : "${book}${chapter}" / "${set}${setting}"
+ * msgTitle : "${book}${chapter}" / "${set}${setting}${flag}"
  *
  * msgContent : 传输的字符串数据
  *

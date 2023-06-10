@@ -8,8 +8,8 @@ int lineCount = 0;
 Future<void> main() async {
   recursionFile("E:\\AndroidStudioProjects\\writing_writer\\lib");
   if (kDebugMode) {
-    print("files number in /lib：$fileCount");
-    print("lines number in /lib：$lineCount");
+    print("files number in /lib:$fileCount");
+    print("lines number in /lib:$lineCount");
   }
 }
 void recursionFile(String pathName) {
@@ -27,7 +27,14 @@ void recursionFile(String pathName) {
     if (entity is File) {
       File file = entity;
       final content = file.readAsStringSync();
-      lineCount += content.split("\n").length;
+      // lineCount += content.split("\n").length;
+      List<String> lines = content.split("\n");
+      for (String line in lines) {
+        // 判断是否为空行（只包含空白字符的行）
+        if (line.trim().isNotEmpty) {
+          lineCount += 1;
+        }
+      }
     } else if (entity is Directory) {
       Directory subDir = entity;
       recursionFile(subDir.path);

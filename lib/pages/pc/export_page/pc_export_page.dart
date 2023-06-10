@@ -182,7 +182,13 @@ class _PCExportPageState extends State<PCExportPage> {
           TextButton(
             child: const Text("导入可移植.zip书籍文件"),
             onPressed: () {
-              exportIOBase.importBook();
+              exportIOBase.importBook().then((importBookName) {
+                if (importBookName.isNotEmpty) {
+                  setState(() {
+                    bookNameList.add(importBookName);
+                  });
+                }
+              });
             },
           ),
         ],

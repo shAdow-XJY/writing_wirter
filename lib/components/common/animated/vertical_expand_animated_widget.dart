@@ -30,6 +30,13 @@ class _VerticalExpandAnimatedWidgetState extends State<VerticalExpandAnimatedWid
       parent: _controller,
       curve: Curves.easeInOut,
     );
+
+    // 添加以下代码以确保初始状态正确
+    if (widget.isExpanded) {
+      _controller.value = 1.0;
+    } else {
+      _controller.value = 0.0;
+    }
   }
 
   @override

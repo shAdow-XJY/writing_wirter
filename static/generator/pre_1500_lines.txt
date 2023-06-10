@@ -1,0 +1,1533 @@
+import 'package:flutter/material.dart';
+class AnimatedArrow extends StatefulWidget {
+  @override
+  _AnimatedArrowState createState() => _AnimatedArrowState();
+}
+class _AnimatedArrowState extends State<AnimatedArrow>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  @override
+  void initState() {
+    super.initState();
+    // 创建一个动画控制器
+    _animationController =
+    AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+      ..repeat(reverse: true); // 循环播放动画，reverse: true 表示反向播放
+  }
+  @override
+  void dispose() {
+    // 释放资源
+    _animationController.dispose();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedIcon(
+      // 指定图标类型，这里使用箭头向右的图标
+      icon: AnimatedIcons.search_ellipsis,
+      // 指定动画控制器
+      progress: _animationController,
+    );
+  }
+}
+import 'package:flutter/material.dart';
+class HorizontalExpandAnimatedWidget extends StatefulWidget {
+  final bool isExpanded;
+  final Widget child;
+  const HorizontalExpandAnimatedWidget({
+    Key? key,
+    required this.isExpanded,
+    required this.child
+  }) : super(key: key);
+  @override
+  State<HorizontalExpandAnimatedWidget> createState() => _HorizontalExpandAnimatedWidgetState();
+}
+class _HorizontalExpandAnimatedWidgetState extends State<HorizontalExpandAnimatedWidget> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+  }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  @override
+  void didUpdateWidget(covariant HorizontalExpandAnimatedWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isExpanded != oldWidget.isExpanded) {
+      if (widget.isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    } else if (widget.isExpanded) {
+      _controller.forward(from: 0.0);
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      alignment: Alignment.topCenter,
+      curve: Curves.easeInOut,
+      child: SizeTransition(
+        sizeFactor: _animation,
+        child: widget.child,
+      ),
+    );
+  }
+}
+import 'package:flutter/cupertino.dart';
+class SlideIcon extends StatefulWidget {
+  final Icon icon;
+  const SlideIcon(
+      {
+        super.key,
+        required this.icon,
+      });
+  @override
+  State<SlideIcon> createState() => _SlideIconState();
+}
+class _SlideIconState extends State<SlideIcon> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
+  }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: Offset.zero,
+        end: const Offset(0.5, 0.0),
+      ).animate(_controller),
+      child: widget.icon,
+    );
+  }
+}
+import 'package:flutter/cupertino.dart';
+/// reference: https://book.flutterchina.club/chapter9/animated_switcher.html#_9-6-3-slidetransitionx
+class SlideTransitionX extends AnimatedWidget {
+  SlideTransitionX({
+    Key? key,
+    required Animation<double> position,
+    this.transformHitTests = true,
+    this.direction = AxisDirection.left,
+    required this.child,
+  }) : super(key: key, listenable: position) {
+    switch (direction) {
+      case AxisDirection.up:
+        _tween = Tween(begin: const Offset(0, 1), end: const Offset(0, 0));
+        break;
+      case AxisDirection.right:
+        _tween = Tween(begin: const Offset(-1, 0), end: const Offset(0, 0));
+        break;
+      case AxisDirection.down:
+        _tween = Tween(begin: const Offset(0, -1), end: const Offset(0, 0));
+        break;
+      case AxisDirection.left:
+        _tween = Tween(begin: const Offset(1, 0), end: const Offset(0, 0));
+        break;
+    }
+  }
+  final bool transformHitTests;
+  final Widget child;
+  final AxisDirection direction;
+  late final Tween<Offset> _tween;
+  @override
+  Widget build(BuildContext context) {
+    final position = listenable as Animation<double>;
+    Offset offset = _tween.evaluate(position);
+    if (position.status == AnimationStatus.reverse) {
+      switch (direction) {
+        case AxisDirection.up:
+          offset = Offset(offset.dx, -offset.dy);
+          break;
+        case AxisDirection.right:
+          offset = Offset(-offset.dx, offset.dy);
+          break;
+        case AxisDirection.down:
+          offset = Offset(offset.dx, -offset.dy);
+          break;
+        case AxisDirection.left:
+          offset = Offset(-offset.dx, offset.dy);
+          break;
+      }
+    }
+    return FractionalTranslation(
+      translation: offset,
+      transformHitTests: transformHitTests,
+      child: child,
+    );
+  }
+}
+import 'package:flutter/material.dart';
+class VerticalExpandAnimatedWidget extends StatefulWidget {
+  final bool isExpanded;
+  final Widget child;
+  const VerticalExpandAnimatedWidget({
+    Key? key, 
+    required this.isExpanded,
+    required this.child
+  }) : super(key: key);
+  @override
+  State<VerticalExpandAnimatedWidget> createState() => _VerticalExpandAnimatedWidgetState();
+}
+class _VerticalExpandAnimatedWidgetState extends State<VerticalExpandAnimatedWidget> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+    // 添加以下代码以确保初始状态正确
+    if (widget.isExpanded) {
+      _controller.value = 1.0;
+    } else {
+      _controller.value = 0.0;
+    }
+  }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  @override
+  void didUpdateWidget(covariant VerticalExpandAnimatedWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isExpanded != oldWidget.isExpanded) {
+      if (widget.isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      alignment: Alignment.topCenter,
+      curve: Curves.easeInOut,
+      child: SizeTransition(
+        sizeFactor: _animation,
+        child: widget.child,
+      ),
+    );
+  }
+}
+import 'package:collection/collection.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/material.dart';
+class DropDownButton extends StatefulWidget {
+  final List<String> items;
+  final Function(String) onChanged;
+  final String? hintText;
+  final int? initIndex;
+  final double buttonWidth;
+  const DropDownButton({
+    Key? key,
+    required this.items,
+    required this.onChanged,
+    this.hintText,
+    this.initIndex,
+    this.buttonWidth = 140,
+  }) : super(key: key);
+  @override
+  State<DropDownButton> createState() => _DropDownButtonState();
+}
+class _DropDownButtonState extends State<DropDownButton> {
+  String? selectedValue;
+  int? initIndex;
+  @override
+  void initState() {
+    super.initState();
+    initIndex = widget.initIndex;
+    if (initIndex != null && initIndex! >= 0) {
+      selectedValue = widget.items[initIndex as int];
+    }
+  }
+  @override
+  void dispose() {
+    selectedValue = null;
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    if (widget.initIndex != null &&
+        (initIndex != widget.initIndex || !widget.items.contains(selectedValue))) {
+      initIndex = widget.initIndex!;
+      selectedValue = widget.items.elementAtOrNull(initIndex!);
+    } else if (selectedValue != null && !widget.items.contains(selectedValue)) {
+      selectedValue = widget.items.elementAtOrNull(0);
+    }
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2(
+        buttonHeight: 40,
+        buttonWidth: widget.buttonWidth,
+        itemHeight: 40,
+        focusColor: Colors.transparent,
+        selectedItemHighlightColor: Theme.of(context).primaryColorDark,
+        dropdownDecoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [Theme.of(context).primaryColor.withOpacity(0.5), Theme.of(context).primaryColorDark],
+          ),
+          borderRadius: BorderRadius.circular(0),
+        ),
+        buttonDecoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [Theme.of(context).primaryColor.withOpacity(0.5), Theme.of(context).primaryColorDark],
+          ),
+        ),
+        hint: Text(
+          widget.hintText??'Select Item',
+          style: TextStyle(
+            fontSize: 14,
+            color: Theme.of(context).hintColor,
+          ),
+        ),
+        buttonPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+        dropdownMaxHeight: 400,
+        value: selectedValue,
+        items: widget.items
+            .map(
+              (item) => DropdownMenuItem<String>(
+                value: item,
+                child: Text(
+                  item,
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            )
+            .toList(),
+        onChanged: (value) {
+          setState(() {
+            selectedValue = value as String;
+            widget.onChanged(selectedValue??"");
+          });
+        },
+      ),
+    );
+  }
+}
+import 'package:flutter/material.dart';
+class FloatButton extends StatefulWidget {
+  final VoidCallback callback;
+  const FloatButton(
+      {
+        Key? key,
+        required this.callback,
+      }) : super(key: key);
+  @override
+  State<FloatButton> createState() => _FloatButtonState();
+}
+class _FloatButtonState extends State<FloatButton>{
+  bool clickAgain = true;
+  @override
+  void initState() {
+    super.initState();
+  }
+  @override
+  void dispose() {
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      tooltip: '详情框',
+      onPressed: () {
+        clickAgain = !clickAgain;
+        widget.callback();
+      },
+      child: Icon(clickAgain ? Icons.check : Icons.close),
+    );
+  }
+}
+import 'package:flutter/material.dart';
+class SemicircleButton extends StatefulWidget {
+  final IconData icon;
+  final VoidCallback callback;
+  const SemicircleButton(
+      {
+        Key? key,
+        required this.icon,
+        required this.callback,
+      }) : super(key: key);
+  @override
+  State<SemicircleButton> createState() => _SemicircleButtonState();
+}
+class _SemicircleButtonState extends State<SemicircleButton>{
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.horizontal(left: Radius.circular(45.0), right: Radius.circular(0.0)),
+        ),
+        onPressed: () {
+          widget.callback();
+        },
+        color: Theme.of(context).primaryColorDark,
+        height: 60.0,
+        minWidth: 15.0,
+        child: SizedBox(
+          height: 10.0,
+          width: 10.0,
+          child: Icon(
+            widget.icon,
+            size: 10.0,
+          ),
+        )
+    );
+  }
+}
+import 'package:flutter/material.dart';
+class TransIconButton extends StatelessWidget {
+  final Icon icon;
+  final VoidCallback onPressed;
+  final EdgeInsetsGeometry? padding;
+  const TransIconButton({
+    Key? key,
+    required this.icon,
+    required this.onPressed,
+    this.padding,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      padding: padding,
+      focusColor: Colors.transparent,
+      hoverColor: Theme.of(context).focusColor,
+      splashRadius: 20.0,
+      splashColor: Theme.of(context).focusColor.withOpacity(0.2),
+      highlightColor: Colors.transparent,
+      icon: icon,
+      onPressed: () {
+        onPressed();
+      },
+    );
+  }
+}
+import 'package:flutter/material.dart';
+class TransTextButton extends StatelessWidget {
+  final Widget child;
+  final VoidCallback onPressed;
+  const TransTextButton({
+    Key? key,
+    required this.child,
+    required this.onPressed,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.labelLarge!.copyWith(
+      color: Theme.of(context).iconTheme.color,
+    );
+    return TextButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.transparent),
+        foregroundColor: MaterialStateProperty.all(Theme.of(context).iconTheme.color),
+        overlayColor: MaterialStateProperty.all(Theme.of(context).focusColor),
+        textStyle: MaterialStateProperty.all(textStyle),
+      ),
+      onPressed: () {
+        onPressed();
+      },
+      child: DefaultTextStyle(
+        style: textStyle,
+        child: child,
+      ),
+    );
+  }
+}
+import 'package:flutter/material.dart';
+class EditToastDialog extends StatefulWidget {
+  final String title;
+  final Function(String) callBack;
+  final String init;
+  const EditToastDialog({
+    Key? key,
+    required this.title,
+    required this.callBack,
+    this.init = '',
+  }) : super(key: key);
+  @override
+  State<EditToastDialog> createState() => _EditToastDialogState();
+}
+class _EditToastDialogState extends State<EditToastDialog> {
+  /// 输入框控制器
+  final TextEditingController textEditingController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    textEditingController.text = widget.init;
+  }
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shadowColor: Colors.transparent.withOpacity(0.5),
+      title: Text(widget.title,),
+      content: TextField(
+        controller: textEditingController,
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text("取消"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        TextButton(
+          child: const Text("确定"),
+          onPressed: () {
+            widget.callBack(textEditingController.text);
+            // Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import 'package:writing_writer/components/common/toast/global_toast.dart';
+class NumberEditDialog extends StatefulWidget {
+  final String title;
+  final Function(String) callBack;
+  final String init;
+  const NumberEditDialog({
+    Key? key,
+    required this.title,
+    required this.callBack,
+    this.init = '',
+  }) : super(key: key);
+  @override
+  State<NumberEditDialog> createState() => _NumberEditDialogState();
+}
+class _NumberEditDialogState extends State<NumberEditDialog> {
+  /// 输入框控制器
+  final TextEditingController textEditingController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    textEditingController.text = widget.init;
+  }
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shadowColor: Colors.transparent.withOpacity(0.5),
+      title: Text(widget.title,),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextFormField(
+            controller: textEditingController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              labelText: '请输入大于0的正整数~',
+            ),
+          )
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text("取消"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        TextButton(
+          child: const Text("确定"),
+          onPressed: () {
+            if (textEditingController.text.isEmpty) {
+              GlobalToast.showErrorTop('请输入数字');
+              return;
+            } else if (int.tryParse(textEditingController.text) == null) {
+              GlobalToast.showErrorTop('请输入有效数字');
+              return;
+            } else if (int.parse(textEditingController.text) < 1) {
+              GlobalToast.showErrorTop('请输入大于等于1的数字');
+              return;
+            }
+            widget.callBack(textEditingController.text);
+          },
+        ),
+      ],
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import '../buttons/drop_down_button.dart';
+class RemoveDialogMap {
+  final bool isChooseOne;
+  final String selectedOne;
+  final String selectedTwo;
+  RemoveDialogMap({
+    required this.isChooseOne,
+    required this.selectedOne,
+    required this.selectedTwo,
+  });
+}
+class RemoveOrDialog extends StatefulWidget {
+  final String dialogTitle;
+  final String titleOne;
+  final String titleTwo;
+  final String hintTextOne;
+  final String hintTextTwo;
+  final List<String>? itemsOne;
+  final List<String>? itemsTwo;
+  final List<String> Function(String)? getItemsTwo;
+  final Function(RemoveDialogMap) callBack;
+  const RemoveOrDialog({
+    Key? key,
+    required this.dialogTitle,
+    required this.titleOne,
+    required this.titleTwo,
+    this.hintTextOne = '',
+    this.hintTextTwo = '',
+    this.itemsOne,
+    this.itemsTwo,
+    this.getItemsTwo,
+    required this.callBack,
+  }) : super(key: key);
+  @override
+  State<RemoveOrDialog> createState() => _RemoveOrDialogState();
+}
+class _RemoveOrDialogState extends State<RemoveOrDialog> {
+  int _selectedIndex = 0;
+  /// 回调数据
+  String selectedOne = '';
+  String selectedTwo = '';
+  List<String> getItemsTwoInner(String selectedOne) {
+    if (widget.getItemsTwo == null) {
+      return widget.itemsTwo??[];
+    }
+    return widget.getItemsTwo!(selectedOne);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.dialogTitle),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            onTap: () {
+              setState(() {
+                _selectedIndex = 0;
+              });
+            },
+            selected: _selectedIndex == 0,
+            leading: const Icon(Icons.edit_outlined),
+            title: Text(widget.titleOne),
+          ),
+          ListTile(
+            onTap: () {
+              setState(() {
+                _selectedIndex = 1;
+              });
+            },
+            selected: _selectedIndex == 1,
+            leading: const Icon(Icons.edit_rounded),
+            title: Text(widget.titleTwo),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: DropDownButton(
+              items: widget.itemsOne??[],
+              buttonWidth: double.infinity,
+              hintText: widget.hintTextOne,
+              onChanged: (String selected) {
+                setState(() {
+                  selectedOne = selected;
+                });
+              },
+            ),
+          ),
+          if (_selectedIndex == 1)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: DropDownButton(
+                items: getItemsTwoInner(selectedOne),
+                buttonWidth: double.infinity,
+                hintText: widget.hintTextTwo,
+                onChanged: (String selected) {
+                  selectedTwo = selected;
+                },
+              ),
+            ),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('取消'),
+        ),
+        TextButton(
+          onPressed: () {
+            widget.callBack(
+                RemoveDialogMap(
+                  isChooseOne: _selectedIndex == 0,
+                  selectedOne: selectedOne,
+                  selectedTwo: selectedTwo,
+                ),
+            );
+          },
+          child: const Text('确定'),
+        ),
+      ],
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import '../buttons/drop_down_button.dart';
+class RenameDialogMap {
+  final bool isChooseOne;
+  final String selectedString;
+  final String inputString;
+  RenameDialogMap({
+    required this.isChooseOne,
+    required this.selectedString,
+    required this.inputString,
+  });
+}
+class RenameOrDialog extends StatefulWidget {
+  final String dialogTitle;
+  final String titleOne;
+  final String titleTwo;
+  final String initInputText;
+  final List<String>? items;
+  final Function(RenameDialogMap) callBack;
+  const RenameOrDialog({
+    Key? key,
+    required this.dialogTitle,
+    required this.titleOne,
+    required this.titleTwo,
+    this.initInputText = '',
+    this.items,
+    required this.callBack,
+  }) : super(key: key);
+  @override
+  State<RenameOrDialog> createState() => _RenameOrDialogState();
+}
+class _RenameOrDialogState extends State<RenameOrDialog> {
+  int _selectedIndex = 0;
+  final TextEditingController textEditingController = TextEditingController();
+  /// 回调数据
+  String selectedString = '';
+  String inputString = '';
+  @override
+  void initState() {
+    super.initState();
+    textEditingController.text = widget.initInputText;
+  }
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.dialogTitle),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            onTap: () {
+              setState(() {
+                _selectedIndex = 0;
+              });
+            },
+            selected: _selectedIndex == 0,
+            leading: const Icon(Icons.edit_outlined),
+            title: Text(widget.titleOne),
+          ),
+          ListTile(
+            onTap: () {
+              setState(() {
+                _selectedIndex = 1;
+              });
+            },
+            selected: _selectedIndex == 1,
+            leading: const Icon(Icons.edit_rounded),
+            title: Text(widget.titleTwo),
+          ),
+          if (_selectedIndex == 1)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: DropDownButton(
+                items: widget.items??[],
+                buttonWidth: double.infinity,
+                hintText: '选择要重命名的一项',
+                onChanged: (String selected) {
+                  selectedString = selected;
+                  textEditingController.text = selected;
+                },
+              ),
+            ),
+          TextField(
+            controller: textEditingController,
+            decoration: const InputDecoration(hintText: '输入新名称'),
+          )
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('取消'),
+        ),
+        TextButton(
+          onPressed: () {
+            // if (_selectedIndex == 1 && selectedString.isEmpty) {
+            //   GlobalToast.showWarningTop('选项列表中没有选中');
+            //   return;
+            // } else if (textEditingController.text.isEmpty) {
+            //   GlobalToast.showWarningTop('输入框中没有内容');
+            //   return;
+            // }
+            inputString = textEditingController.text;
+            widget.callBack(
+                RenameDialogMap(
+                    isChooseOne: _selectedIndex == 0,
+                    selectedString: selectedString,
+                    inputString: inputString,
+                ),
+            );
+          },
+          child: const Text('确定'),
+        ),
+      ],
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import '../buttons/drop_down_button.dart';
+class SelectToastDialog extends StatefulWidget {
+  final String title;
+  final Function(String) callBack;
+  final List<String> items;
+  final String? hintText;
+  final int? initIndex;
+  const SelectToastDialog({
+    Key? key,
+    required this.title,
+    required this.callBack,
+    required this.items,
+    this.hintText,
+    this.initIndex,
+  }) : super(key: key);
+  @override
+  State<SelectToastDialog> createState() => _SelectToastDialogState();
+}
+class _SelectToastDialogState extends State<SelectToastDialog> {
+  String selectedValue = "";
+  @override
+  void initState() {
+    super.initState();
+    debugPrint(widget.items.toString());
+  }
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shadowColor: Colors.transparent.withOpacity(0.5),
+      title: Text(widget.title,),
+      content: DropDownButton(
+        initIndex: widget.initIndex,
+        hintText: widget.hintText,
+        items: widget.items,
+        onChanged: (String selected) {
+          selectedValue = selected;
+        },
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text("取消"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        TextButton(
+          child: const Text("确定"),
+          onPressed: () {
+            widget.callBack(selectedValue);
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+  }
+}
+import 'package:flutter/material.dart';
+class TextToastDialog extends StatefulWidget {
+  final String title;
+  final String text;
+  final VoidCallback callBack;
+  const TextToastDialog({
+    Key? key,
+    required this.title,
+    required this.text,
+    required this.callBack,
+  }) : super(key: key);
+  @override
+  State<TextToastDialog> createState() => _TextToastDialogState();
+}
+class _TextToastDialogState extends State<TextToastDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.title,),
+      content: Text(widget.text),
+      shadowColor: Colors.transparent.withOpacity(0.5),
+      actions: <Widget>[
+        TextButton(
+          child: const Text("取消"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        TextButton(
+          child: const Text("确定"),
+          onPressed: () {
+            widget.callBack();
+            // Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+  }
+}
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:event_bus/event_bus.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'package:writing_writer/state_machine/redux/action/set_action.dart';
+import '../../../service/file/IOBase.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
+import '../../../state_machine/event_bus/events.dart';
+import '../../../state_machine/redux/action/parser_action.dart';
+import '../../../state_machine/redux/action/text_action.dart';
+import '../../../state_machine/redux/app_state/state.dart';
+import '../dialog/edit_toast_dialog.dart';
+import '../buttons/transparent_icon_button.dart';
+import '../dialog/rename_or_dialog.dart';
+import '../toast/global_toast.dart';
+import '../animated//vertical_expand_animated_widget.dart';
+import 'chapter_listview.dart';
+class BookListView extends StatefulWidget {
+  const BookListView({
+    Key? key,
+  }) : super(key: key);
+  @override
+  State<BookListView> createState() => _BookListViewState();
+}
+class _BookListViewState extends State<BookListView> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
+  late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
+  List<String> bookNameList = [];
+  @override
+  void initState() {
+    super.initState();
+    bookNameList = ioBase.getAllBooks();
+    subscription_1 = eventBus.on<CreateNewBookEvent>().listen((event) {
+      setState(() {
+        bookNameList = ioBase.getAllBooks();
+      });
+    });
+    subscription_2 = eventBus.on<RemoveBookEvent>().listen((event) {
+      setState(() {
+        bookNameList.remove(event.bookName);
+      });
+    });
+  }
+  @override
+  void dispose() {
+    subscription_1.cancel();
+    subscription_2.cancel();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      controller: ScrollController(),
+      itemCount: bookNameList.length,
+      itemBuilder: (context, index) {
+        final bookName = bookNameList[index];
+        return BookListViewItem(
+          key: Key(bookName), // 使用唯一的Key标识每个列表项
+          bookName: bookName,
+        );
+      },
+    );
+  }
+}
+class BookListViewItem extends StatefulWidget {
+  final String bookName;
+  const BookListViewItem({
+    Key? key,
+    required this.bookName,
+  }) : super(key: key);
+  @override
+  State<BookListViewItem> createState() => _BookListViewItemState();
+}
+class _BookListViewItemState extends State<BookListViewItem> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
+  late StreamSubscription subscription_1;
+  /// 书籍名称
+  late String bookName;
+  /// 列表是否展开
+  bool isExpanded = false;
+  @override
+  void initState() {
+    super.initState();
+    bookName = widget.bookName;
+    /// bus总线：修改后实时更新
+    subscription_1 = eventBus.on<RenameBookNameEvent>().listen((event) {
+      if (event.oldBookName.compareTo(bookName) == 0) {
+        setState(() {
+          bookName = event.newBookName;
+        });
+      }
+    });
+  }
+  @override
+  void dispose() {
+    subscription_1.cancel();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    return StoreConnector<AppState, Map<String, dynamic>>(
+        converter: (Store store) {
+      debugPrint("store in BookListViewItem");
+      void renameBook(String oldBookName, String newBookName) {
+        if (oldBookName.compareTo(store.state.textModel.currentBook) == 0) {
+          bookName = newBookName;
+          Map<String, Set<String>> parserObj = store.state.parserModel.parserObj;
+          String currentSet = store.state.setModel.currentSet;
+          String currentSetting = store.state.setModel.currentSetting;
+          store.dispatch(SetTextDataAction(
+            currentBook: newBookName,
+            currentChapter: store.state.textModel.currentChapter,
+          ));
+          store.dispatch(SetSetDataAction(
+            currentSet: currentSet,
+            currentSetting: currentSetting,
+          ));
+          store.dispatch(SetParserDataAction(parserObj: parserObj));
+        }
+      }
+      void renameChapter(
+          String bookName, String oldChapterName, String newChapterName) {
+        if (bookName.compareTo(store.state.textModel.currentBook) == 0) {
+          if (oldChapterName.compareTo(store.state.textModel.currentChapter) ==
+              0) {
+            store.dispatch(SetTextDataAction(
+                currentBook: bookName, currentChapter: newChapterName));
+          }
+        }
+      }
+      return {
+        "renameBook": renameBook,
+        "renameChapter": renameChapter,
+      };
+    }, builder: (BuildContext context, Map<String, dynamic> storeMap) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            child: Container(
+              height: height / 15.0,
+              color: Theme.of(context).primaryColorDark.withOpacity(0.8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      children: [
+                        TransIconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            List<String> bookList = ioBase.getAllBooks();
+                            List<String> chapterList = ioBase.getAllChapters(bookName);
+                            showDialog(
+                              context: context,
+                              builder: (context) => RenameOrDialog(
+                                dialogTitle: '重命名',
+                                titleOne: '重命名书籍',
+                                titleTwo: '重命名章节',
+                                initInputText: bookName,
+                                items: chapterList,
+                                callBack: (RenameDialogMap map) {
+                                  if (map.isChooseOne) {
+                                    // 重命名书籍
+                                    if (map.inputString.isNotEmpty) {
+                                      if (bookName.compareTo(map.inputString) == 0) {
+                                        // 书名没有修改
+                                        Navigator.pop(context);
+                                      } else if (!bookList.contains(map.inputString)) {
+                                        // 不存在该书名的书籍
+                                        ioBase.renameBook(bookName, map.inputString);
+                                        storeMap["renameBook"](bookName, map.inputString);
+                                        eventBus.fire(RenameBookNameEvent(oldBookName: bookName, newBookName: map.inputString));
+                                        Navigator.pop(context);
+                                      } else {
+                                        GlobalToast.showErrorTop('已存在该书名，请更改另一个名称');
+                                      }
+                                    } else {
+                                      GlobalToast.showErrorTop('新书籍的名字不能为空');
+                                    }
+                                  } else {
+                                    // 重命名章节
+                                    if (map.selectedString.isNotEmpty) {
+                                      if (map.inputString.isNotEmpty) {
+                                        if (map.selectedString.compareTo(map.inputString) == 0) {
+                                          // 章节名没有修改
+                                          Navigator.pop(context);
+                                        } else if (!chapterList.contains(map.inputString)) {
+                                          // 不存在该章节名的章节
+                                          ioBase.renameChapter(bookName, map.selectedString, map.inputString);
+                                          storeMap["renameChapter"](bookName, map.selectedString, map.inputString);
+                                          eventBus.fire(RenameChapterNameEvent(bookName: bookName, oldChapterName: map.selectedString, newChapterName: map.inputString));
+                                          Navigator.pop(context);
+                                        } else {
+                                          GlobalToast.showErrorTop('该书下已存在该章节名，请更改另一个名称');
+                                        }
+                                      } else {
+                                        GlobalToast.showErrorTop('新章节的名字不能为空');
+                                      }
+                                    } else {
+                                      GlobalToast.showErrorTop('没有选中要重新命名的旧章节名称');
+                                    }
+                                  }
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                        Flexible(
+                          child: Text(
+                            bookName,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              wordSpacing: 2.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: TransIconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              List<String> chapterList = ioBase.getAllChapters(bookName);
+                              showDialog(
+                                context: context,
+                                builder: (context) => EditToastDialog(
+                                  title: '新建章节',
+                                  callBack: (chapterName) => {
+                                    if (chapterName.isNotEmpty) {
+                                      if (!chapterList.contains(chapterName)) {
+                                        ioBase.createChapter(bookName, chapterName),
+                                        eventBus.fire(CreateNewChapterEvent(bookName: bookName, chapterName: chapterName)),
+                                        Navigator.pop(context),
+                                      } else {
+                                        GlobalToast.showErrorTop('该书下已存在该章节名，请更改另一个名称'),
+                                      }
+                                    } else {
+                                      GlobalToast.showErrorTop('章节名字不能为空'),
+                                    },
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Icon(isExpanded
+                              ? Icons.arrow_drop_down
+                              : Icons.arrow_drop_up),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            onTap: () {
+              setState(() {
+                isExpanded = !isExpanded;
+              });
+            },
+          ),
+          VerticalExpandAnimatedWidget(
+            isExpanded: isExpanded,
+            child: ChapterListView(bookName: bookName,),
+          ),
+          Divider(
+            thickness: 1,
+            height: 1,
+            color: Theme.of(context).dividerColor.withOpacity(0.6),
+          ),
+        ],
+      );
+    });
+  }
+}
+import 'dart:async';
+import 'package:event_bus/event_bus.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'package:writing_writer/components/common/toast/global_toast.dart';
+import 'package:writing_writer/service/parser/Parser.dart';
+import '../../../service/file/IOBase.dart';
+import '../../../state_machine/event_bus/events.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
+import '../../../state_machine/redux/action/parser_action.dart';
+import '../../../state_machine/redux/action/text_action.dart';
+import '../../../state_machine/redux/app_state/state.dart';
+class ChapterListView extends StatefulWidget {
+  final String bookName;
+  const ChapterListView({
+    Key? key,
+    required this.bookName,
+  }) : super(key: key);
+  @override
+  State<ChapterListView> createState() => _ChapterListViewState();
+}
+class _ChapterListViewState extends State<ChapterListView> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
+  late StreamSubscription subscription_1;
+  late StreamSubscription subscription_2;
+  late StreamSubscription subscription_3;
+  List<String> chapterList = [];
+  @override
+  void initState() {
+    super.initState();
+    chapterList = ioBase.getAllChapters(widget.bookName);
+    subscription_1 = eventBus.on<CreateNewChapterEvent>().listen((event) {
+      if (event.bookName.compareTo(widget.bookName) == 0) {
+        setState(() {
+          chapterList = ioBase.getAllChapters(widget.bookName);
+        });
+      }
+    });
+    subscription_2  = eventBus.on<RenameChapterNameEvent>().listen((event) {
+      if (event.bookName.compareTo(widget.bookName) == 0) {
+        setState(() {
+          chapterList[chapterList.indexOf(event.oldChapterName)] = event.newChapterName;
+        });
+      }
+    });
+    subscription_3  = eventBus.on<RemoveChapterEvent>().listen((event) {
+      if (event.bookName.compareTo(widget.bookName) == 0) {
+        setState(() {
+          chapterList.remove(event.chapterName);
+        });
+      }
+    });
+  }
+  @override
+  void dispose() {
+    subscription_1.cancel();
+    subscription_2.cancel();
+    subscription_3.cancel();
+    super.dispose();
+  }
+  List<Widget> createChapterList(List<String> chapterList) {
+    List<Widget> chapterListViewItems = [];
+    for (var index = 0; index < chapterList.length; ++index) {
+      chapterListViewItems.add(ChapterListViewItem(
+        bookName: widget.bookName,
+        chapterNumber: (index + 1).toString(),
+        chapterName: chapterList[index],
+      ));
+    }
+    return chapterListViewItems;
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: createChapterList(chapterList),
+    );
+  }
+}
+class ChapterListViewItem extends StatelessWidget {
+  final String bookName;
+  final String chapterNumber;
+  final String chapterName;
+  const ChapterListViewItem({
+    Key? key,
+    required this.bookName,
+    required this.chapterNumber,
+    required this.chapterName,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    return StoreConnector<AppState, VoidCallback>(
+      converter: (Store store) {
+        debugPrint("store in chapter_listview_item");
+        /// 切换到别的书籍，设定解析addTextParser初始化
+        void clickAnotherBook() {
+          Map<String, Set<String>> newParserModel = Parser.getBookInitParserModel(appGetIt.get(instanceName: "IOBase"), bookName);
+          store.dispatch(SetParserDataAction(parserObj: newParserModel));
+        }
+        return () => {
+          if (store.state.textModel.currentBook.toString().compareTo(bookName) != 0){
+            store.dispatch(SetTextDataAction(currentBook: bookName, currentChapter: chapterName, currentChapterNumber: chapterNumber),),
+            clickAnotherBook(),
+          } else {
+            store.dispatch(SetTextDataAction(currentBook: bookName, currentChapter: chapterName, currentChapterNumber: chapterNumber),),
+          },
+        };
+      },
+      builder: (BuildContext context, VoidCallback clickChapter) {
+        return InkWell(
+          child: Container(
+            height: height / 18.0,
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColorDark.withOpacity(0.5),
+              border: Border(
+                bottom: BorderSide(
+                  width: 1.0,
+                  color: Theme.of(context).dividerColor,
+                )
+              )
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 20,),
+                Text('第$chapterNumber章'),
+                const SizedBox(width: 20,),
+                Flexible(
+                  child: Text(
+                    chapterName,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          onTap: () {
+            clickChapter();
+          },
+        );
+      },
+    );
+  }
+}
+import 'package:event_bus/event_bus.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import '../../../service/file/IOBase.dart';
+import '../../../state_machine/event_bus/events.dart';
+import '../../../state_machine/get_it/app_get_it.dart';
+import '../../../state_machine/redux/action/text_action.dart';
+import '../../../state_machine/redux/app_state/state.dart';
+import '../dialog/edit_toast_dialog.dart';
+import '../dialog/remove_or_dialog.dart';
+import '../toast/global_toast.dart';
+import 'book_listview.dart';
+class LeftDrawer extends StatefulWidget {
+  final double? widthFactor;
+  const LeftDrawer({
+    Key? key,
+    this.widthFactor,
+  }) : super(key: key);
+  @override
+  State<LeftDrawer> createState() => _LeftDrawerState();
+}
+class _LeftDrawerState extends State<LeftDrawer> {
+  /// 全局单例-文件操作工具类
+  final IOBase ioBase = appGetIt.get(instanceName: "IOBase");
+  /// 全局单例-事件总线工具类
+  final EventBus eventBus = appGetIt.get(instanceName: "EventBus");
+  /// 抽屉的宽度因子
+  double widthFactor = 0.9;
+  @override
+  void initState() {
+    super.initState();
+    widthFactor = widget.widthFactor ?? widthFactor;
+    if (widthFactor < 0.0 || widthFactor > 1.0) {
+      widthFactor = 0.9;
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return StoreConnector<AppState, Map<String, dynamic>>(
+      converter: (Store store) {
+        void removeBook(String bookName) {
+          if (bookName.compareTo(store.state.textModel.currentBook) == 0) {
+            store.dispatch(SetTextDataAction(currentBook: '', currentChapter: '',));
+          }
+        }
+        void removeChapter(String bookName, String chapterName) {
+          if (bookName.compareTo(store.state.textModel.currentBook) == 0) {
+            if (chapterName.compareTo(store.state.textModel.currentChapter) == 0) {
+              store.dispatch(SetTextDataAction(currentBook: bookName, currentChapter: ''));
+            }
+          }
+        }
+        return {
+          "removeBook": removeBook,
+          "removeChapter": removeChapter,
+        };
+      },
+      builder: (BuildContext context, Map<String, dynamic> storeMap) {
+        return Drawer(
+            width: MediaQuery.of(context).size.width * widthFactor,
+            child: Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                title: const Text('目录'),
+                leading: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => RemoveOrDialog(
+                        dialogTitle: '删除',
+                        titleOne: '删除书籍',
+                        titleTwo: '删除章节',
+                        hintTextOne: '请选择一本书',
+                        hintTextTwo: '请选择一章节',
+                        itemsOne: ioBase.getAllBooks(),
+                        getItemsTwo: (String selectedBookName) {
+                          return ioBase.getAllChapters(selectedBookName);
+                        },
+                        callBack: (RemoveDialogMap map) {
+                          if (map.isChooseOne) {
+                            // 删除书籍
+                            if (map.selectedOne.isNotEmpty) {
+                              ioBase.removeBook(map.selectedOne);
+                              storeMap["removeBook"](map.selectedOne);
+                              eventBus.fire(RemoveBookEvent(bookName: map.selectedOne));
+                              Navigator.pop(context);
+                            } else {
+                              GlobalToast.showErrorTop('没有选择删除的书籍');
+                            }
+                          } else {
+                            // 删除章节
+                            if (map.selectedOne.isNotEmpty) {
+                              if (map.selectedTwo.isNotEmpty) {
+                                ioBase.removeChapter(map.selectedOne, map.selectedTwo);
+                                storeMap["removeChapter"](map.selectedOne, map.selectedTwo);
+                                eventBus.fire(RemoveChapterEvent(bookName: map.selectedOne, chapterName: map.selectedTwo));
+                                Navigator.pop(context);
+                              } else {
+                                GlobalToast.showErrorTop('没有选择删除的章节');
+                              }
+                            } else {
+                              GlobalToast.showErrorTop('没有选择指定书籍');
+                            }
+                          }
+                        },
+                      ),
+                    );
+                  },
+                ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      List<String> bookList = ioBase.getAllBooks();
+                      showDialog(
+                        context: context,
+                        builder: (context) => EditToastDialog(
+                          title: '新建书籍',
+                          callBack: (bookName) => {
+                            if (bookName.isNotEmpty) {
+                              if (!bookList.contains(bookName)) {
+                                ioBase.createBook(bookName),
+                                eventBus.fire(CreateNewBookEvent()),
+                                Navigator.pop(context),
+                              } else {
+                                GlobalToast.showErrorTop('已存在该书名，请更改另一个名称'),
+                              }
+                            } else {
+                              GlobalToast.showErrorTop('书籍名字不能为空'),
+                            },
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              body: const BookListView(),
+            ),
+        );
+      },
+    );
+  }
+}

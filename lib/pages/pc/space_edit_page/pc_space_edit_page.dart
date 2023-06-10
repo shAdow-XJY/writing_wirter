@@ -98,6 +98,10 @@ class _ChapterEditPageBodyState extends State<PCSpaceEditPage> {
         ),
       ),
       body: BlurGlass(
+        margin: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(10.0),
+        outBorderRadius: 0.0,
+        inBorderRadius: 0.0,
         child: TextField(
           controller: textEditingController,
           maxLines: null,

@@ -28,9 +28,10 @@ lines number in /lib：7690
 added lines: 38723, removed lines: 8887, total lines: 29836
 
 v8.0.0
-files number in /lib：134
-lines number in /lib：8156
-added lines: 40039, removed lines: 9406, total lines: 30633
+files number in /lib:133
+lines number in /lib:7413
+added lines: 40333, removed lines: 9621, total lines: 30712
+
 
 ```
 
@@ -71,7 +72,7 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 26. [Flutter 动画曲线Curves 效果一览](https://blog.csdn.net/qq_17766199/article/details/95632571)
 27. [InputDecoration](https://book.flutterchina.club/chapter3/input_and_form.html#_3-5-1-textfield)
 28. [【文件上传下载】各种类型文件对应的content-type的值](https://blog.csdn.net/zzddada/article/details/123005455)
-29. [icon change](https://blog.csdn.net/mengks1987/article/details/95306508)
+29. [app icon change](https://blog.csdn.net/mengks1987/article/details/95306508)
 30. [Flutter 重新创建指定语言的android/ios目录](https://blog.csdn.net/qq_16696763/article/details/115550086)
 31. [How to build iOS app without a MacBook - Flutter tutorial](https://www.youtube.com/watch?v=NRuW223LY58)
 
