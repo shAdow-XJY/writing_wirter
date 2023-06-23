@@ -5,6 +5,9 @@
 3. git push --set-upstream origin v1.0.0
 4. git branch -d v1.0.0
 
+### git add back
+git reset HEAD
+
 ### calculate code lines
 git log --since=2020-01-01 --until=2023-12-01 --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }'
 ### lib Dir lines count
