@@ -1,38 +1,14 @@
 # writing_writer
 A write application (desktop and app) developed and used myself with local storage.
 
-
 ---
 
 ## git code lines
 ```
-v2.0.0:
-added lines: 12752, removed lines: 1595, total lines: 11157
-v3.0.0:
-added lines: 28178, removed lines: 3654, total lines: 24524
-v4.0.0:
-added lines: 30282, removed lines: 4403, total lines: 25879
-
-v5.0.0:
-files number in /lib：102
-lines number in /lib：4994
-
-v6.0.0:
-files number in /lib：114
-lines number in /lib：6257
-added lines: 34667, removed lines: 6394, total lines: 28273
-
-v7.0.0 + v7.1.0:
-files number in /lib：127
-lines number in /lib：7690
-added lines: 38723, removed lines: 8887, total lines: 29836
-
 v8.0.0
 files number in /lib:133
 lines number in /lib:7413
 added lines: 40333, removed lines: 9621, total lines: 30712
-
-
 ```
 
 ---

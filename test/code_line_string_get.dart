@@ -7,24 +7,20 @@ List<String> codeLines = [];
 
 /// 读取lib目录文件，统计代码行数脚本
 Future<void> main() async {
-  recursionFile("E:\\AndroidStudioProjects\\writing_writer\\lib");
+  recursionDirectory("E:\\AndroidStudioProjects\\writing_writer\\lib");
   if (kDebugMode) {
     print("lines number in /lib: $lineCount");
-
     // 获取前面连续的1500行代码
     List<String> first1500Lines = codeLines.sublist(0, 1500);
-    // print("First 1500 lines:\n${first1500Lines.join("\n")}");
     createFile('E:\\AndroidStudioProjects\\writing_writer\\static\\generator\\pre_1500_lines.txt', first1500Lines.join("\n"));
-
     // 获取最后连续的1500行代码
     List<String> last1500Lines = codeLines.sublist(codeLines.length - 1500);
-    // print("Last 1500 lines:\n${last1500Lines.join("\n")}");
     createFile('E:\\AndroidStudioProjects\\writing_writer\\static\\generator\\last_1500_lines.txt', last1500Lines.join("\n"));
-
   }
+  codeLines = [];
 }
 
-void recursionFile(String pathName) {
+void recursionDirectory(String pathName) {
   Directory dir = Directory(pathName);
 
   if (!dir.existsSync()) {
@@ -37,16 +33,19 @@ void recursionFile(String pathName) {
       File file = entity;
       final content = file.readAsStringSync();
       List<String> lines = content.split("\n");
+      List<String> lines0 = [];
       for (String line in lines) {
         // 判断是否为空行（只包含空白字符的行）
         if (line.trim().isNotEmpty) {
           lineCount += 1;
+          lines0.add(line);
           codeLines.add(line);
         }
       }
+      createFile('E:/AndroidStudioProjects/writing_writer/static/generator/files/${file.path.split(Platform.pathSeparator).last}.txt', lines0.join('\n'));
     } else if (entity is Directory) {
       Directory subDir = entity;
-      recursionFile(subDir.path);
+      recursionDirectory(subDir.path);
     }
   }
 }
