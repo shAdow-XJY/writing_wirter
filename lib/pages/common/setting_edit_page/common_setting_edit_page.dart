@@ -136,7 +136,7 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
   Timer? _throttleTimer;
   void throttleSaveSetting() {
     _throttleTimer?.cancel();
-    _throttleTimer = Timer(const Duration(seconds: 15), () {
+    _throttleTimer = Timer(const Duration(seconds: 3), () {
       _throttleTimer = null;
       saveSetting();
     });

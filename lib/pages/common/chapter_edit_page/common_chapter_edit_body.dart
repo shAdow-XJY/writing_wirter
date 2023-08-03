@@ -75,7 +75,7 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
   Timer? _throttleTimer;
   void throttleSaveText() {
     _throttleTimer?.cancel();
-    _throttleTimer = Timer(const Duration(seconds: 15), () {
+    _throttleTimer = Timer(const Duration(seconds: 3), () {
       _throttleTimer = null;
       saveText();
     });
