@@ -3,6 +3,12 @@ A write application (desktop and app) developed and used myself with local stora
 
 ---
 
+## output
+windows/ubuntu/android already have output application/exe/...
+something need to be better in Fix_RECORD.md, so nothing release now.
+
+---
+
 ## git code lines
 ```
 v8.0.0
