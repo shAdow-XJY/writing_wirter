@@ -1,5 +1,7 @@
 ### just cmd for build, not env instruction
 
+first, checkout the main.dart, select the entry version.
+
 ---
 
 ## Android apk build
