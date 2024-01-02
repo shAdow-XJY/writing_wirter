@@ -1,0 +1,5 @@
+1. [Windows 11 上安装 macOS系统](https://www.bilibili.com/video/BV1eN4y1573K/?spm_id_from=333.880.my_history.page.click&vd_source=7f470a794558fd74d5bdeba354eb1f32)
+2. [虚拟机安装 macOS 黑苹果系统！所需要的资料](https://www.freedidi.com/5257.html)
+3. [苹果系统之家](https://macoshome.com/)
+4. [](https://blog.csdn.net/m0_50999619/article/details/127255454?spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-4-127255454-blog-108093059.235%5Ev38%5Epc_relevant_default_base&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-4-127255454-blog-108093059.235%5Ev38%5Epc_relevant_default_base&utm_relevant_index=8)
+5. [](https://blog.csdn.net/xucarlos/article/details/130737637?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-130737637-blog-106182539.235^v38^pc_relevant_default_base&spm=1001.2101.3001.4242.1&utm_relevant_index=3)

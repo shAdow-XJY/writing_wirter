@@ -43,7 +43,7 @@ dependencies:
   # share file
   share_plus: ^6.3.1
   # file picker
-  file_picker: ^5.2.6
+  file_picker: ^5.2.10
   # item component
   expansion_tile_card:
     git:
