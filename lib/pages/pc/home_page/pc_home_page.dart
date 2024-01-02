@@ -25,6 +25,8 @@ class _PCHomePageState extends State<PCHomePage>{
   ///
   bool _isDragging = false;
 
+  final double _drawerFactor = 0.2;
+
   final double _minLeftFactor = 0.5;
   final double _maxLeftFactor = 0.666;
   final double _buttonFactor = 0.033;
@@ -34,6 +36,7 @@ class _PCHomePageState extends State<PCHomePage>{
   double _minLeftWidth = 0;
   double _maxLeftWidth = 0;
   double _totalWidth = 0;
+  double _drawerWidth = 0;
 
   double leftWidth = 0.0;
   double rightWidth = 0.0;
@@ -47,7 +50,8 @@ class _PCHomePageState extends State<PCHomePage>{
 
   @override
   Widget build(BuildContext context) {
-    _totalWidth = MediaQuery.of(context).size.width;
+    _drawerWidth = MediaQuery.of(context).size.width * _drawerFactor;
+    _totalWidth = MediaQuery.of(context).size.width - _drawerWidth * 2;
     buttonWidth = _totalWidth * _buttonFactor;
     if (openSettingPage) {
       _minLeftWidth = _totalWidth * _minLeftFactor;
@@ -60,12 +64,13 @@ class _PCHomePageState extends State<PCHomePage>{
 
     return Scaffold(
         appBar: const ChapterEditPageAppBar(),
-        drawer: const LeftDrawer(widthFactor: 0.3,),
-        endDrawer: const RightDrawer(widthFactor: 0.3,),
+        // drawer: const LeftDrawer(widthFactor: 0.2,),
+        // endDrawer: const RightDrawer(widthFactor: 0.2,),
         body: Stack(
           children: [
             Row(
               children: [
+                LeftDrawer(widthFactor: _drawerFactor,),
                 SizedBox(
                   width: leftWidth,
                   height: double.infinity,
@@ -93,10 +98,11 @@ class _PCHomePageState extends State<PCHomePage>{
                 openSettingPage
                     ? SizedBox(width: rightWidth, child: const PCSettingEditPage(),)
                     : const SizedBox.shrink(),
+                RightDrawer(widthFactor: _drawerFactor,),
               ],
             ),
             Positioned(
-              left: leftWidth + buttonWidth - 2,
+              left: _drawerWidth + leftWidth + buttonWidth - 2,
               top: 0,
               bottom: 0,
               child: MouseRegion(
