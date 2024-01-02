@@ -58,6 +58,7 @@ Hypnotized myself as an excuse for not being too lazy to write a novel, but late
 30. [Flutter 重新创建指定语言的android/ios目录](https://blog.csdn.net/qq_16696763/article/details/115550086)
 31. [flutter build desktop window/mac/linux](https://juejin.cn/post/7221347166820024377)
 32. [在 macOS 上安装和配置 Flutter 开发环境](https://flutter.cn/docs/get-started/install/macos)
+33. [git给分支添加tag标签](https://www.jianshu.com/p/046bf2956178)
 
 ---
 
