@@ -288,9 +288,15 @@ class IOBase
 
   /// 保存章节
   void saveChapter(String bookName, String chapterName, String content) {
-    File file = File(_chsFilePath(bookName: bookName, chapterName: chapterName));
-    if (file.existsSync()) {
-      file.writeAsStringSync(content);
+    try {
+      File file = File(_chsFilePath(bookName: bookName, chapterName: chapterName));
+      if (file.existsSync()) {
+        file.writeAsStringSync(content);
+      }
+      GlobalToast.showSuccessTop('保存章节文字内容成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('保存章节文字内容失败');
+      debugPrintStack(stackTrace: s);
     }
   }
 
@@ -450,10 +456,17 @@ class IOBase
 
   /// 保存设定(json文件)
   void saveSetting(String bookName, String setName, String settingName, String content) {
-    File file = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: settingName));
-    if (file.existsSync()) {
-      file.writeAsStringSync(content);
+    try {
+      File file = File(_jsonFilePath(bookName: bookName, setName: setName, settingName: settingName));
+      if (file.existsSync()) {
+        file.writeAsStringSync(content);
+      }
+      GlobalToast.showSuccessTop('保存设定成功');
+    } on Exception catch (e, s) {
+      GlobalToast.showErrorTop('保存设定失败');
+      debugPrintStack(stackTrace: s);
     }
+
   }
 
   /// 设定(json文件)重命名

@@ -13,10 +13,11 @@ Future<void> main() async {
     final win = appWindow;
     const initialSize = Size(1080, 700);
     win.minSize = initialSize;
-    win.size = initialSize;
+    // win.size = initialSize;
     win.alignment = Alignment.center;
     win.title = "Writing Writer";
     win.show();
+    win.maximize();  // 将窗口设置为全屏
   });
 }
 

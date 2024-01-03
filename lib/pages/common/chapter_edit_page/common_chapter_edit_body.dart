@@ -71,7 +71,7 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
     ioBase.saveChapter(currentBook, currentChapter, currentText);
   }
 
-  /// 节流Timer：定时保存
+  /// 防抖Timer：输入后保存
   Timer? _throttleTimer;
   void throttleSaveText() {
     _throttleTimer?.cancel();
@@ -80,6 +80,9 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
       saveText();
     });
   }
+
+  /// 循环定时器：定时保存
+  Timer? _periodicTimer;
 
   @override
   void initState() {
@@ -106,11 +109,19 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
         throttleSaveText();
       }
     });
+
+    // 每隔一定时间（例如5秒）执行一次保存操作
+    _periodicTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      saveText();
+    });
   }
 
   @override
   void dispose() {
     _throttleTimer?.cancel();
+    _periodicTimer?.cancel(); // 停止定时器
+    _throttleTimer = null;
+    _periodicTimer = null;
     saveText();
     super.dispose();
   }
@@ -161,7 +172,11 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
               onTapText: (String clickText) {
                 map["clickHighLightSetting"](clickText);
               },
+              textStyle: const TextStyle(
+                fontSize: 26.0,
+              ),
               clickTextStyle: TextStyle(
+                fontSize: 30.0,
                 textBaseline: TextBaseline.alphabetic,
                 background: Paint()
                   ..style = PaintingStyle.stroke
@@ -176,7 +191,11 @@ class _CommonChapterEditPageBodyState extends State<CommonChapterEditPageBody> {
               onTapText: (String clickText) {
                 map["clickHighLightSetting"](clickText);
               },
+              textStyle: const TextStyle(
+                fontSize: 26.0,
+              ),
               clickTextStyle: TextStyle(
+                fontSize: 26.0,
                 textBaseline: TextBaseline.alphabetic,
                 background: Paint()
                   ..style = PaintingStyle.stroke

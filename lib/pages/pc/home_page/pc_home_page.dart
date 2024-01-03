@@ -20,15 +20,15 @@ class PCHomePage extends StatefulWidget {
 class _PCHomePageState extends State<PCHomePage>{
 
   /// 侧边按钮
-  bool openSettingPage = false;
+  bool openSettingPage = true;
 
   ///
   bool _isDragging = false;
 
-  final double _drawerFactor = 0.2;
+  final double _drawerFactor = 0.12;
 
   final double _minLeftFactor = 0.5;
-  final double _maxLeftFactor = 0.666;
+  final double _maxLeftFactor = 0.55;
   final double _buttonFactor = 0.033;
   /// 分割线位置
   double _dividerPosition = 0.633;
@@ -64,8 +64,6 @@ class _PCHomePageState extends State<PCHomePage>{
 
     return Scaffold(
         appBar: const ChapterEditPageAppBar(),
-        // drawer: const LeftDrawer(widthFactor: 0.2,),
-        // endDrawer: const RightDrawer(widthFactor: 0.2,),
         body: Stack(
           children: [
             Row(

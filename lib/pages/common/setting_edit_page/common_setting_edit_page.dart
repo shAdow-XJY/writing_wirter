@@ -132,7 +132,7 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
     currentDescription = textEditingController.text;
   }
 
-  /// 节流Timer：定时保存
+  /// 防抖Timer：输入后保存
   Timer? _throttleTimer;
   void throttleSaveSetting() {
     _throttleTimer?.cancel();
@@ -141,6 +141,9 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
       saveSetting();
     });
   }
+
+  /// 循环定时器：定时保存
+  Timer? _periodicTimer;
 
   @override
   void initState() {
@@ -164,11 +167,18 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
         throttleSaveSetting();
       }
     });
+    // 每隔一定时间（例如5秒）执行一次保存操作
+    _periodicTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      saveSetting();
+    });
   }
 
   @override
   void dispose() {
     _throttleTimer?.cancel();
+    _periodicTimer?.cancel(); // 停止定时器
+    _throttleTimer = null;
+    _periodicTimer = null;
     saveSetting();
     super.dispose();
   }
@@ -300,6 +310,9 @@ class _CommonSettingEditPageState extends State<CommonSettingEditPage> {
                           maxLines: null,
                           focusNode: FocusNode(),
                           controller: textEditingController,
+                          style: const TextStyle(
+                            fontSize: 26.0,
+                          ),
                           decoration: const InputDecoration(
                             /// 消除下边框
                             border: OutlineInputBorder(
